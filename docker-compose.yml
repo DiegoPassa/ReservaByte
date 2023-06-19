@@ -1,49 +1,52 @@
-version: "3"
+version: "3.8"
 
 services:
   ui:
-    build:
-      context: ./angular
-      dockerfile: Dockerfile
+    build: angular
+    container_name: mean_angular
     ports:
       - 4200:4200
-    container_name: mean-angular
     networks:
-      - mean-stack-net
+      - taw_unnamed_network
     # volumes:
-    #   - ./Angular/src:/usr/app/src
-    #   - ./Angular/public:/usr/app/public
+    #   - ./angular/src:/usr/app/src
+    #   - ./angular/public:/usr/app/public
     depends_on:
       - api
     stdin_open: true
     tty: true
 
   api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
+    build: api
+    container_name: mean_api
     ports:
       - 3080:3080
-    container_name: mean-api
     networks:
-      - mean-stack-net
+      - taw_unnamed_network
     # volumes:
-    #   - ./API/src:/usr/app/src
+    #   - ./api/src:/usr/app/src
     depends_on:
       - db
 
   db:
     image: mongo
+    container_name: mean_mongo
+    restart: always
     ports:
       - 27017:27017
-    container_name: mean-mongo
     networks:
-      - mean-stack-net
+      - taw_unnamed_network
     volumes:
       - mongo-data:/data/db
 
+  # nginx:
+  #   container_name: mean_nginx
+  #   restart: always
+  #   ports:
+  #     - 80:80
+
 networks:
-  mean-stack-net:
+  taw_unnamed_network:
     driver: bridge
 
 volumes:
