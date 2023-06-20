@@ -7,4 +7,4 @@ COPY . .
 
 EXPOSE 3080
 
-# CMD [ "npm", "run", "dev" ]
+CMD [ "node", "src/index.js" ]

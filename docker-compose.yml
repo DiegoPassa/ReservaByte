@@ -8,9 +8,9 @@ services:
       - 4200:4200
     networks:
       - taw_unnamed_network
-    # volumes:
-    #   - ./angular/src:/usr/app/src
-    #   - ./angular/public:/usr/app/public
+    volumes:
+      - ./angular/src:/usr/app/src
+      - ./angular/public:/usr/app/public
     depends_on:
       - api
     stdin_open: true
@@ -23,15 +23,15 @@ services:
       - 3080:3080
     networks:
       - taw_unnamed_network
-    # volumes:
-    #   - ./api/src:/usr/app/src
+    volumes:
+      - ./api/src:/usr/app/src
     depends_on:
       - db
 
   db:
     image: mongo
     container_name: mean_mongo
-    restart: always
+    # restart: always
     ports:
       - 27017:27017
     networks:
@@ -39,11 +39,20 @@ services:
     volumes:
       - mongo-data:/data/db
 
-  # nginx:
-  #   container_name: mean_nginx
-  #   restart: always
-  #   ports:
-  #     - 80:80
+  nginx:
+    image: nginx
+    container_name: mean_nginx
+    # restart: always
+    ports:
+      - 80:80
+    networks:
+      - taw_unnamed_network
+
+  redis:
+    image: redis
+    container_name: mean_redis
+    networks:
+      - taw_unnamed_network
 
 networks:
   taw_unnamed_network:
