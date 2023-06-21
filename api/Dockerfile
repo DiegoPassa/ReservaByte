@@ -7,4 +7,4 @@ COPY . .
 
 EXPOSE 3080
 
-CMD [ "node", "src/index.js" ]
+CMD [ "node", "dist/index.js" ]
