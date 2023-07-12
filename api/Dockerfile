@@ -6,5 +6,5 @@ RUN npm install
 COPY . .
 
 EXPOSE 3080
-
-CMD [ "node", "dist/index.js" ]
+# CMD [ "node", "dist/index.js"]
+CMD ["npm", "run", "dev"]
