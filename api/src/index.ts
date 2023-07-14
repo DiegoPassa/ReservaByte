@@ -14,6 +14,8 @@ import chalk from "chalk";
 import log from "./libraries/Logger";
 import { config } from "./config/config";
 
+import UserRoutes from './routes/User'
+
 const jwt = require("jsonwebtoken");
 
 const router = express();
@@ -26,9 +28,8 @@ router.use(
 
 mongoose.connect(config.mongo.url)
     .then(() => {
-        // console.log(`Connected to ${chalk.green('mongoDB')}`);
-        console.log("----------------------------------------");
-        log.info("Connected to mongoDB");
+        console.log("--------------------------------------");
+        log.success("Connected to mongoDB");
         startServer();
     })
     .catch(error => {
@@ -37,8 +38,9 @@ mongoose.connect(config.mongo.url)
     });
 
 const startServer = () => {
-
+    
     router.use((req, res, next) => {
+        console.log("");
         log.info(`Incoming --- Method: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
         res.on('finish', () => {
             log.info(`Incoming --- Method: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}] - Status: [${res.statusCode}]`);
@@ -60,16 +62,14 @@ const startServer = () => {
     });
 
     /** ROUTES */
-    router.post("/login", function (req, res) {
-        const jwt_token = jwt.sign({ name: "diego" }, config.jwt.access_token, { expiresIn: "30s" });
-        res.cookie("jwt", jwt_token, { httpOnly: true });
-        res.send("token saved");
-    });
+    // router.post("/login", function (req, res) {
+    //     const jwt_token = jwt.sign({ name: "diego" }, config.jwt.access_token, { expiresIn: "30s" });
+    //     res.cookie("jwt", jwt_token, { httpOnly: true });
+    //     res.send("token saved");
+    // });
+
+    router.use('/users', UserRoutes);
     /** ------ */
-    
-    router.get("/", function (req, res) {
-        res.send("Home page");
-    });
 
     /** PING */
     router.get("/ping", (req, res) => res.status(200).json({ message: "pong" }));
@@ -84,6 +84,6 @@ const startServer = () => {
     // const server = http.createServer(router);
     http.createServer(router).listen(config.server.port, () => {
         // console.log(`Server running on ${chalk.blue('http://localhost:' + config.server.port + '/')}`);
-        log.warn(`Server running on http://localhost:${config.server.port}/`);
+        log.success(`Server running on http://localhost:${config.server.port}/`);
     });
 }

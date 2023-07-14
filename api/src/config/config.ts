@@ -3,7 +3,7 @@ dotenv.config();
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
-const SERVER_PORT = process.env.PORT;
+const SERVER_PORT = process.env.SERVER_PORT;
 
 export const config = {
     mongo: {
