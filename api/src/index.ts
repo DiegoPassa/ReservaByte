@@ -10,62 +10,80 @@ import cors from "cors";
 import passport = require("passport");
 import passportHTTP = require("passport-http");
 
-import jsonwebtoken = require("jsonwebtoken");
 import chalk from "chalk";
+import log from "./libraries/Logger";
+import { config } from "./config/config";
 
-// require('dotenv').config();
-import 'dotenv/config' // ES6
+const jwt = require("jsonwebtoken");
 
-const PORT = process.env.PORT || 5000;
+const router = express();
 
-declare global {
-  namespace express {
-    interface User {
-      first_name: string;
-      last_name: string;
-      roles: string[];
-      id: string;
-    }
-    interface Request {
-      auth: {
-        mail: string;
-      };
-    }
-  }
-}
-
-const app = express();
-
-app.use(
-  cors({
-    credentials: true,
-  })
+router.use(
+    cors({
+        credentials: true,
+    })
 );
 
-app.get("/test", function (req, res) {
-  res.send("SEZIONE SUPER SEGRETA");
-  // const token = await jsonwebtoken.sign({
-  //   test: "test"
-  // }, "password", {
-  //   expiresIn: 36000
-  // });
+mongoose.connect(config.mongo.url)
+    .then(() => {
+        // console.log(`Connected to ${chalk.green('mongoDB')}`);
+        console.log("----------------------------------------");
+        log.info("Connected to mongoDB");
+        startServer();
+    })
+    .catch(error => {
+        log.error('Unable to connect to mongoDB');
+        log.error(error);
+    });
 
-  // res.json({
-  //   token
-  // });
-});
+const startServer = () => {
 
-app.get("/", function (req, res) {
-  res.send("Home page");
-});
+    router.use((req, res, next) => {
+        log.info(`Incoming --- Method: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
+        res.on('finish', () => {
+            log.info(`Incoming --- Method: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}] - Status: [${res.statusCode}]`);
+        });
+        next();
+    });
 
-mongoose.connect("mongodb://mean_mongo:27017").then(() => {
-  console.log(`Connected to ${chalk.green('mongoDB')}`);
-});
+    router.use(express.urlencoded({ extended: true }));
+    router.use(express.json());
 
-const server = http.createServer(app);
+    router.use((req, res, next) => {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+        if (req.method === 'OPTIONS'){
+            res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+            return res.status(200).json({});
+        }
+        next();
+    });
 
-server.listen(PORT, () => {
-  console.log("----------------------------------------");
-  console.log(`Server running on ${chalk.blue('http://localhost:' + PORT + '/')}`);
-});
+    /** ROUTES */
+    router.post("/login", function (req, res) {
+        const jwt_token = jwt.sign({ name: "diego" }, config.jwt.access_token, { expiresIn: "30s" });
+        res.cookie("jwt", jwt_token, { httpOnly: true });
+        res.send("token saved");
+    });
+    /** ------ */
+    
+    router.get("/", function (req, res) {
+        res.send("Home page");
+    });
+
+    /** PING */
+    router.get("/ping", (req, res) => res.status(200).json({ message: "pong" }));
+    /** ---- */
+
+    router.use((req, res, next) => {
+        const error = new Error('not found');
+        log.error(error);
+        return res.status(404).json({message: error.message});
+    })
+
+    // const server = http.createServer(router);
+    http.createServer(router).listen(config.server.port, () => {
+        // console.log(`Server running on ${chalk.blue('http://localhost:' + config.server.port + '/')}`);
+        log.warn(`Server running on http://localhost:${config.server.port}/`);
+    });
+}
