@@ -1,4 +1,3 @@
-import fs = require("fs");
 import http = require("http");
 import https = require("https");
 
@@ -10,11 +9,12 @@ import cors from "cors";
 import passport = require("passport");
 import passportHTTP = require("passport-http");
 
-import chalk from "chalk";
 import log from "./libraries/Logger";
 import { config } from "./config/config";
 
 import UserRoutes from './routes/User'
+import MenuRoutes from './routes/Menu'
+import TableRoutes from './routes/Table'
 
 const jwt = require("jsonwebtoken");
 
@@ -69,6 +69,8 @@ const startServer = () => {
     // });
 
     router.use('/users', UserRoutes);
+    router.use('/menu', MenuRoutes);
+    router.use('/tables', TableRoutes);
     /** ------ */
 
     /** PING */

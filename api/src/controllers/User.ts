@@ -2,13 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import User from "../models/User";
 
-// const template = (req: Request, res: Response, next: NextFunction) => {}
-
 const CreateUser = (req: Request, res: Response, next: NextFunction) => {
-    const { username } = req.body;
+    const { username, firstName, lastName, roles } = req.body;
+    // console.log(username, firstName, lastName, roles);
     const user = new User({
         _id: new mongoose.Types.ObjectId(),
-        username
+        username, firstName, lastName, roles
     });
     return user
         .save()
@@ -37,7 +36,7 @@ const updateUser = (req: Request, res: Response, next: NextFunction) => {
                 user.set(req.body);
                 return user
                     .save()
-                    .then(user => {res.status(200).json({user})})
+                    .then(user => res.status(200).json({user}))
                     .catch(err => res.status(500).json({err}));
             }else{
                 res.status(404).json({message: "Not found"});
