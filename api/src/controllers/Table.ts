@@ -12,7 +12,7 @@ const CreateTable = (req: Request, res: Response, next: NextFunction) => {
     });
     return table
         .save()
-        .then(table => {res.status(200).json({table, message: "Item added"})})
+        .then(table => {res.status(201).json({table, message: "Item added"})})
         .catch(err => res.status(500).json({err}));
 }
 

@@ -15,6 +15,8 @@ import { config } from "./config/config";
 import UserRoutes from './routes/User'
 import MenuRoutes from './routes/Menu'
 import TableRoutes from './routes/Table'
+import verifyJWT from "./middleware/verifyJWT";
+import AuthController from "./controllers/AuthController";
 
 const jwt = require("jsonwebtoken");
 
@@ -60,22 +62,21 @@ const startServer = () => {
         }
         next();
     });
+    
+    /** PING */
+    router.get("/ping", (req, res) => res.status(200).json({ message: "pong" }));
+    /** ---- */
 
     /** ROUTES */
-    // router.post("/login", function (req, res) {
-    //     const jwt_token = jwt.sign({ name: "diego" }, config.jwt.access_token, { expiresIn: "30s" });
-    //     res.cookie("jwt", jwt_token, { httpOnly: true });
-    //     res.send("token saved");
-    // });
+    router.post('/login', AuthController.login);
+    router.post('/register', AuthController.register);
 
+    router.use(verifyJWT);
     router.use('/users', UserRoutes);
     router.use('/menu', MenuRoutes);
     router.use('/tables', TableRoutes);
     /** ------ */
 
-    /** PING */
-    router.get("/ping", (req, res) => res.status(200).json({ message: "pong" }));
-    /** ---- */
 
     router.use((req, res, next) => {
         const error = new Error('not found');
@@ -85,7 +86,6 @@ const startServer = () => {
 
     // const server = http.createServer(router);
     http.createServer(router).listen(config.server.port, () => {
-        // console.log(`Server running on ${chalk.blue('http://localhost:' + config.server.port + '/')}`);
         log.success(`Server running on http://localhost:${config.server.port}/`);
     });
 }

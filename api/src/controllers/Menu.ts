@@ -3,14 +3,14 @@ import mongoose from "mongoose";
 import Menu from "../models/Menu";
 
 const CreateMenu = (req: Request, res: Response, next: NextFunction) => {
-    const { name, price, ing, portion, prep, totalOrders, type } = req.body;
+    const { name, price, ingredients, portionSize, preparationTime, type } = req.body;
     const menu = new Menu({
         _id: new mongoose.Types.ObjectId(),
-        name, price, ing, portion, prep, totalOrders, type 
+        name, price, ingredients, portionSize, preparationTime, type
     });
     return menu
         .save()
-        .then(menu => {res.status(200).json({menu, message: "Item added"})})
+        .then(menu => {res.status(201).json({menu, message: "Item added"})})
         .catch(err => res.status(500).json({err}));
 }
 

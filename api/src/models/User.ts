@@ -1,19 +1,31 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+export enum UserRole{
+    Admin = 'admin',
+    Cashier = 'cashier',
+    Bartender = 'bartender',
+    Cook = 'cook',
+    Waiter = 'waiter'
+}
+
 export interface IUser {
-    username: string;
-    firstName: string;
-    lastName: string;
-    roles: string[];
+    username: string,
+    firstName: string,
+    lastName: string,
+    roles: UserRole[],
+    email: string,
+    password: string
 }
 
 export interface IUserModel extends IUser, Document {};
 
 const UserSchema: Schema = new Schema({
-    username: { type: String, required: true},
+    username: { type: String, unique: true, required: true},
     firstName: { type: String, required: true},
     lastName: { type: String, required: true},
     roles: { type: [String], required: true},
+    email: { type: String, unique: true, required: true},
+    password: { type: String, required: true},
 }, { versionKey: false });
 
 export default mongoose.model<IUserModel>('User', UserSchema);

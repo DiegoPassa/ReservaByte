@@ -1,14 +1,14 @@
 import Joi, {ObjectSchema} from "joi";
 import { Request, Response, NextFunction } from "express";
 import log from "../libraries/Logger";
-import { IUser } from "../models/User";
-import { IMenu } from "../models/Menu";
+import { IUser, UserRole } from "../models/User";
+import { IMenu, MenuType } from "../models/Menu";
 import { ITable } from "../models/Table";
 
 export const ValidateSchema = (schema: ObjectSchema) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            await schema.validateAsync(req.body);
+            await schema.validateAsync(req.body, {convert: false});
             next();
         } catch (error) {
             log.error(error);
@@ -23,7 +23,9 @@ export const Schemas = {
             username: Joi.string().required(),
             firstName: Joi.string().required(),
             lastName: Joi.string().required(),
-            roles: Joi.array().required()
+            roles: Joi.array().items(Joi.string().valid(UserRole.Admin, UserRole.Bartender, UserRole.Cashier, UserRole.Cook, UserRole.Waiter)).required(),
+            email: Joi.string().email().required(),
+            password: Joi.string().required()
         }),
         update: Joi.object<IUser>({
             username: Joi.string().required()
@@ -32,12 +34,12 @@ export const Schemas = {
     menu: {
         create: Joi.object<IMenu>({
             name: Joi.string().required(),
-            price: Joi.number().min(0).required(),
+            price: Joi.number().precision(2).min(0).required(),
             ingredients: Joi.array().items(Joi.string()).required(),
             portionSize: Joi.number().min(0).required(),
             preparationTime: Joi.number().min(0),
-            totalOrders: Joi.number().equal(0).required(),
-            type: Joi.string().valid('dish', 'drink').required()
+            totalOrders: Joi.number().equal(0),
+            type: Joi.string().valid(MenuType.Dish, MenuType.Drink).required()
         })
     },
     table: {

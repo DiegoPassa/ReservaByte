@@ -13,7 +13,7 @@ export const config = {
         port: SERVER_PORT
     },
     jwt: {
-        access_token: ACCESS_TOKEN_SECRET,
+        access_token: ACCESS_TOKEN_SECRET || '',
         refresh_token: REFRESH_TOKEN_SECRET
     }
 }
