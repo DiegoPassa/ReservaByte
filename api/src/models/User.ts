@@ -14,7 +14,8 @@ export interface IUser {
     lastName: string,
     roles: UserRole[],
     email: string,
-    password: string
+    password: string,
+    refreshToken?: string
 }
 
 export interface IUserModel extends IUser, Document {};
@@ -26,6 +27,7 @@ const UserSchema: Schema = new Schema({
     roles: { type: [String], required: true},
     email: { type: String, unique: true, required: true},
     password: { type: String, required: true},
+    refreshToken: { type: String, required: false},
 }, { versionKey: false });
 
 export default mongoose.model<IUserModel>('User', UserSchema);

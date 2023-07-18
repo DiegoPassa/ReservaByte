@@ -20,14 +20,14 @@ const CreateUser = async (req: Request, res: Response, next: NextFunction) => {
 
 const readAll = (req: Request, res: Response, next: NextFunction) => {
     return User.find()
-        .select("-password")
+        .select("-password").select("-refreshToken")
         .then((users) => res.status(200).json({users}))
         .catch(err => res.status(500).json({err}));
 }
 
 const readUser = (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.userId;
-    return User.findById(userId)
+    return User.findById(userId).select("-password").select("-refreshToken")
         .then((user) => user ? res.status(200).json({user}) : res.status(404).json({message: "Not found"}))
         .catch(err => res.status(500).json({err}));
 }

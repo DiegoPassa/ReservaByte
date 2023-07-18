@@ -10,6 +10,6 @@ router.post('/', ValidateSchema(Schemas.user.create), controller.CreateUser);
 router.get('/', controller.readAll);
 router.get('/:userId', controller.readUser);
 router.patch('/:userId', ValidateSchema(Schemas.user.update), controller.updateUser);
-router.delete('/:userId', verifyRoles(UserRole.Admin), controller.deleteUser);
+router.delete('/:userId', verifyRoles(), controller.deleteUser);
 
 export = router;
