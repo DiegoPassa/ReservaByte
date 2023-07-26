@@ -1,35 +1,38 @@
 import { Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
 import User from "../models/User";
-import bcryptjs from 'bcryptjs'
+import bcrypt from 'bcrypt'
 
-const CreateUser = async (req: Request, res: Response, next: NextFunction) => {
+const createUser = (req: Request, res: Response, next: NextFunction) => {
     const { username, firstName, lastName, roles , email, password} = req.body;
-    await bcryptjs.hash(password, 10, (hashError, hash) => {
-        if (hashError) return res.status(500).json({message: hashError.message, error: hashError});
+    bcrypt.hash(password, 10, (err, hash) => {
+        if (err) return res.status(500).json({ message: err.message, error: err });
         const user = new User({
-            _id: new mongoose.Types.ObjectId(),
             username, firstName, lastName, roles, email, password: hash
         });
         return user
             .save()
-            .then(user => {res.status(201).json({user})})
-            .catch(err => res.status(500).json({err}));
+            .then(user => { res.status(201).json({ user }); })
+            .catch(err => res.status(500).json({ err }));
     });
 }
 
-const readAll = (req: Request, res: Response, next: NextFunction) => {
-    return User.find()
-        .select("-password").select("-refreshToken")
-        .then((users) => res.status(200).json({users}))
-        .catch(err => res.status(500).json({err}));
+const readAll = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const users = await User.find({}, '-password -refreshToken');
+        return res.status(200).json({users})
+    } catch (error) {
+        return res.status(500).json({error});
+    }
 }
 
-const readUser = (req: Request, res: Response, next: NextFunction) => {
+const readUser = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.userId;
-    return User.findById(userId).select("-password").select("-refreshToken")
-        .then((user) => user ? res.status(200).json({user}) : res.status(404).json({message: "Not found"}))
-        .catch(err => res.status(500).json({err}));
+    try {
+        const user = await User.findById(userId).select("-password").select("-refreshToken");
+        return user ? res.status(200).json({ user }) : res.status(404).json({ message: "Not found" });
+    } catch (err) {
+        return res.status(500).json({ err });
+    }
 }
 
 const updateUser = (req: Request, res: Response, next: NextFunction) => {
@@ -56,4 +59,4 @@ const deleteUser = (req: Request, res: Response, next: NextFunction) => {
         .catch(err => res.status(500).json({err}));
 }
 
-export default { CreateUser, readAll, readUser, updateUser, deleteUser};
+export default { createUser, readAll, readUser, updateUser, deleteUser};

@@ -7,7 +7,7 @@ const SERVER_PORT = process.env.SERVER_PORT;
 
 export const config = {
     mongo: {
-        url: "mongodb://mean_mongo:27017"
+        url: "mongodb://mean_mongo:27017/ReservaByte"
     },
     server: {
         port: SERVER_PORT

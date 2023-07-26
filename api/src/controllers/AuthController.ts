@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
 import User, { IUser, IUserModel } from "../models/User";
 import log from "../libraries/Logger";
-import bcryptjs from 'bcryptjs'
+import bcrypt from 'bcrypt'
 import { config } from "../config/config";
 
 const signJWT = (user: IUserModel, refresh?: boolean): string => {
@@ -18,7 +18,7 @@ const signJWT = (user: IUserModel, refresh?: boolean): string => {
         {
             issuer: "reservaBytes",
             algorithm: 'HS256',
-            expiresIn: (!refresh) ? '30s' : '5m'
+            expiresIn: (!refresh) ? '10m' : '30m'
         }
     );
 };
@@ -27,30 +27,30 @@ const signJWT = (user: IUserModel, refresh?: boolean): string => {
 const login = (req: Request, res: Response, next: NextFunction) => {
     let { username, password } = req.body;
     if (!username || ! password ) return res.sendStatus(400);
-    User.findOne({username}).select("username").select("password").select("roles").then( user => {
+    User.findOne({username}).select("username").select("password").select("roles").then(user => {
         if(!user){
             log.error("Wrong credentials");
             return res.sendStatus(404);
         }
-        bcryptjs.compare(password, user?.password, (error, success) => {
-            if(error){
+        bcrypt.compare(password, user?.password, (error, result) => {
+            if (error) {
                 log.error(error);
                 return res.sendStatus(401);
             }
-            if(success){
+            if (result) {
                 const accessToken = signJWT(user, false);
                 const refreshToken = signJWT(user);
 
                 user.refreshToken = refreshToken;
-                
+
                 return user
                     .save()
                     .then(user => {
-                        res.cookie('jwt', refreshToken, {httpOnly: true, maxAge: 5 * 60 * 1000})
-                        res.status(200).json({accessToken: accessToken });
+                        res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 5 * 60 * 1000 });
+                        res.status(200).json({ accessToken: accessToken });
                     })
-                    .catch(err => res.status(500).json({err}));
-            }else{
+                    .catch(err => res.status(500).json({ err }));
+            } else {
                 log.error("Wrong credentials");
                 return res.sendStatus(401);
             }
@@ -95,7 +95,8 @@ const logout = (req: Request, res: Response, next: NextFunction) => {
             user.save().catch(err => res.status(500).json({err}));
         }
         res.clearCookie('jwt');
-        return res.sendStatus(204);
+        console.log(user);
+        return res.status(204).json({message: "refreshToken cleared"});
     }).catch(err => res.status(500).json({error: err}));
 }
 

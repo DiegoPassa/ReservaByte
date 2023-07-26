@@ -7,7 +7,7 @@ const verifyRoles = (...allowedRoles: UserRole[]) => {
         const isAdmin:boolean = res.locals.jwtRoles.includes(UserRole.Admin, UserRole.Cashier);
         if (!isAdmin){
             const rolesArray:UserRole[] = [...allowedRoles];
-            const authorized:boolean = res.locals.jwtRoles.map((role:UserRole) => rolesArray.includes(role)).find((val:Boolean) => val === true);
+            const authorized:boolean = res.locals.jwtRoles.map((role: UserRole) => rolesArray.includes(role)).find((val:Boolean) => val === true);
             if (!authorized) return res.sendStatus(401);
         }
         next();

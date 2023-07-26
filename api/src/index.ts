@@ -13,13 +13,24 @@ import { config } from "./config/config";
 import UserRoutes from './routes/User'
 import MenuRoutes from './routes/Menu'
 import TableRoutes from './routes/Table'
+import OrderRoutes from './routes/Order'
+import ReceiptRoutes from './routes/Receipt'
 import verifyAccessToken from "./middleware/verifyJWT";
 import AuthRoutes from "./routes/Auth";
 
 mongoose.connect(config.mongo.url)
     .then(() => {
         console.log("");
-        console.log("--------------------------------------");
+        console.log(
+        "ooooooooo.                                                               oooooooooo.                  .             \n",
+        "`888   `Y88.                                                             `888'   `Y8b               .o8             \n",
+        " 888   .d88'  .ooooo.   .oooo.o  .ooooo.  oooo d8b oooo    ooo  .oooo.    888     888 oooo    ooo .o888oo  .ooooo.  \n",
+        " 888ooo88P'  d88' `88b d88(  \"8 d88' `88b `888\"\"8P  `88.  .8'  `P  )88b   888oooo888'  `88.  .8'    888   d88' `88b \n",
+        " 888`88b.    888ooo888 `\"Y88b.  888ooo888  888       `88..8'    .oP\"888   888    `88b   `88..8'     888   888ooo888 \n",
+        " 888  `88b.  888    .o o.  )88b 888    .o  888        `888'    d8(  888   888    .88P    `888'      888 . 888    .o \n",
+        "o888o  o888o `Y8bod8P' 8\"\"888P' `Y8bod8P' d888b        `8'     `Y888\"\"8o o888bood8P'      .8'       \"888\" `Y8bod8P' \n",
+        "                                                                                    .o..P'                        \n",
+        "                                                                                    `Y8P'                         \n");
         log.success("Connected to mongoDB");
         startServer();
     })
@@ -67,6 +78,8 @@ const startServer = () => {
     router.use('/users', UserRoutes);
     router.use('/menu', MenuRoutes);
     router.use('/tables', TableRoutes);
+    router.use('/orders', OrderRoutes);
+    router.use('/receipt', ReceiptRoutes);
     /** ------ */
 
 
