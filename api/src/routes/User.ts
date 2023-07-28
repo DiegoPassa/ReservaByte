@@ -6,7 +6,7 @@ import { UserRole } from '../models/User';
 
 const router = express.Router();
 
-router.post('/', ValidateSchema(Schemas.user.create), controller.createUser);
+router.post('/', verifyRoles(), ValidateSchema(Schemas.user.create), controller.createUser);
 router.get('/', controller.readAll);
 router.get('/:userId', controller.readUser);
 router.patch('/:userId', ValidateSchema(Schemas.user.update), controller.updateUser);

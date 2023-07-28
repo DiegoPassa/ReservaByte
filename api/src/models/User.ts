@@ -42,7 +42,7 @@ const UserSchema: Schema = new Schema({
     roles: { type: [String], required: true},
     email: { type: String, unique: true, lowercase: true, required: true},
     password: { type: String, min: 8, required: true},
-    // statistics: { type: SchemaTypes.ObjectId },
+    // statistics: { type: SchemaTypes.Mixed },
     refreshToken: { type: String, required: false},
 }, { versionKey: false });
 

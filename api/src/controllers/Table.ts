@@ -20,7 +20,14 @@ const createTable = (req: Request, res: Response, next: NextFunction) => {
 
 const readAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const tables = await Table.find();
+        const tables = await Table.find()//.populate({path: 'queue'});
+        // tables.forEach((e) => {
+        //     console.log(`- Table number: ${e.tableNumber}`);
+        //     if (e.queue?.length === 0) console.log(" no orders ");
+        //     e.queue?.forEach(m => {
+        //         console.log(`|-- ${m.menu.name} - ${m.estimatedCompletation.toLocaleString()} - ${m.completed}`);
+        //     })
+        // });
         return res.status(200).json({ tables });
     } catch (err) {
         return res.status(500).json({ err });
@@ -60,21 +67,24 @@ const deleteTable = (req: Request, res: Response, next: NextFunction) => {
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     const { menuId, tableId } = req.params;
-    const menu = await Menu.findById(menuId)
-    const table = await Table.findById(tableId);
-    if(!menu || !table) return res.sendStatus(404);
     const order = new Order({
-        _id: new mongoose.Types.ObjectId(),
         menu: menuId,
         table: tableId
     });
-    order.estimatedCompletation = new Date(order.timestamp.getTime() + menu.preparationTime*60000);
-    menu.totalOrders++;
+    await order.populate({path: 'menu'});
+    order.estimatedCompletation = new Date(order.timestamp.getTime() + order.menu.preparationTime*60000);
     try {
-        await menu.save();
+        await Menu.findByIdAndUpdate({_id: menuId}, {
+            $inc: {
+                totalOrders: 1
+            }
+        });
+        await Table.findByIdAndUpdate({_id: tableId}, {
+            $push: {
+                queue: order._id
+            }
+        });
         await order.save();
-        table.queue?.push(order.id);
-        await table.save();
         res.status(201).json({ order });
     } catch (err) {
         return res.status(500).json({ err });
