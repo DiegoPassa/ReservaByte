@@ -15,23 +15,23 @@ export interface IUser {
     roles: UserRole[],
     email: string,
     password: string,
-    // statistics?: ICook | IWaiter | IBartender | ICashier,
+    stats?: ICookStats | IWaiterStats | IBartenderStats | ICashierStats,
     refreshToken?: string
 }
 
-// export interface ICook extends IUser {
-//     dishesPrepared: number
-// }
-// export interface IWaiter extends IUser {
-//     tablesServed: number,
-//     customersServed: number
-// }
-// export interface IBartender extends IUser {
-//     drinksServed: number
-// }
-// export interface ICashier extends IUser {
-//     billsPrepared: number
-// }
+export interface ICookStats {
+    dishesPrepared: number
+}
+interface IWaiterStats {
+    tablesServed: number,
+    customersServed: number
+}
+interface IBartenderStats {
+    drinksServed: number
+}
+interface ICashierStats {
+    billsPrepared: number
+}
 
 export interface IUserModel extends IUser, Document {};
 
@@ -42,7 +42,7 @@ const UserSchema: Schema = new Schema({
     roles: { type: [String], required: true},
     email: { type: String, unique: true, lowercase: true, required: true},
     password: { type: String, min: 8, required: true},
-    // statistics: { type: SchemaTypes.Mixed },
+    stats: { type: SchemaTypes.Mixed },
     refreshToken: { type: String, required: false},
 }, { versionKey: false });
 

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
-import User, { IUser, IUserModel } from "../models/User";
+import User, { IUserModel } from "../models/User";
 import log from "../libraries/Logger";
 import bcrypt from 'bcrypt'
 import { config } from "../config/config";
@@ -24,80 +24,60 @@ const signJWT = (user: IUserModel, refresh?: boolean): string => {
 };
 
 
-const login = (req: Request, res: Response, next: NextFunction) => {
+const login = async (req: Request, res: Response, next: NextFunction) => {
     let { username, password } = req.body;
-    if (!username || ! password ) return res.sendStatus(400);
-    User.findOne({username}).select("username").select("password").select("roles").then(user => {
-        if(!user){
-            log.error("Wrong credentials");
-            return res.sendStatus(404);
-        }
-        bcrypt.compare(password, user?.password, (error, result) => {
-            if (error) {
-                log.error(error);
-                return res.sendStatus(401);
-            }
-            if (result) {
-                const accessToken = signJWT(user, false);
-                const refreshToken = signJWT(user);
-
-                user.refreshToken = refreshToken;
-
-                return user
-                    .save()
-                    .then(user => {
-                        res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 5 * 60 * 1000 });
-                        res.status(200).json({ accessToken: accessToken });
-                    })
-                    .catch(err => res.status(500).json({ err }));
-            } else {
-                log.error("Wrong credentials");
-                return res.sendStatus(401);
-            }
-        })
-    }).catch(err => res.status(500).json({error: err}));
+    if (!username || !password ) return res.sendStatus(400);
+    try {
+        const user = await User.findOne({username}, 'username password roles');
+        if (!user) return res.sendStatus(404);
+        const result = await bcrypt.compare(password, user.password);
+        if (!result) return res.sendStatus(401); 
+        const accessToken = signJWT(user, false);
+        const refreshToken = signJWT(user);
+        user.refreshToken = refreshToken;
+        await user.save();
+        res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 3 * 60 * 60 * 1000 });
+        return res.status(200).json({ accessToken: accessToken });
+    } catch (error) {
+        return res.status(500).json({ error });
+    }
 }
 
 const register = (req: Request, res: Response, next: NextFunction) => { 
     
 }
 
-const handleRefresh = (req: Request, res: Response, next: NextFunction) => {
+const handleRefresh = async (req: Request, res: Response, next: NextFunction) => {
     const cookies = req.cookies;
-    if (!cookies?.jwt) return res.sendStatus(401);
-    console.log(cookies.jwt);
+    if (!cookies.jwt) return res.sendStatus(401);
     const refreshToken = cookies.jwt;
-
-    User.findOne({refreshToken}).select("_id").select("username").select("refreshToken").then( user => {
+    try {
+        const user = await User.findOne({refreshToken}, 'username refreshToken');
         if(!user) return res.sendStatus(404);
-        jwt.verify(
-            refreshToken,
-            config.jwt.refresh_token,
-            (err: any, decoded: any) => {
-                if(err || user.username !== decoded.username) return res.sendStatus(403);
-                const newAccessToken = signJWT(user, false);
-                res.status(200).json({ accessToken: newAccessToken });
-            }
-        )
-    }).catch(err => res.status(500).json({error: err}));
+        const jwtDecoded = jwt.verify(refreshToken, config.jwt.refresh_token);
+        const newAccessToken = signJWT(user, false);
+        return res.status(200).json({ data: jwtDecoded, accessToken: newAccessToken });
+    } catch (error) {
+        return res.status(500).json({ error: error })
+    }
 }
 
-const logout = (req: Request, res: Response, next: NextFunction) => {
+const logout = async (req: Request, res: Response, next: NextFunction) => {
     //* On client, also delete the accessToken
 
     const cookies = req.cookies;
-    if (!cookies?.jwt) return res.sendStatus(204);
-
+    if (!cookies.jwt) return res.sendStatus(204);
     const refreshToken = cookies.jwt;
-    User.findOne({refreshToken}).select("refreshToken").then( user => {
-        if(user){
-            user.refreshToken = undefined;
-            user.save().catch(err => res.status(500).json({err}));
-        }
+    try {
+        await User.findOneAndUpdate({refreshToken}, {
+            $unset: { refreshToken }
+        });
         res.clearCookie('jwt');
-        console.log(user);
-        return res.status(204).json({message: "refreshToken cleared"});
-    }).catch(err => res.status(500).json({error: err}));
+        return res.sendStatus(204);
+    } catch (error) {
+        return res.status(500).json({error: error});
+    }
+    
 }
 
 export default { login, register, handleRefresh, logout };

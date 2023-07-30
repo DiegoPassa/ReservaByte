@@ -15,10 +15,10 @@ export interface IMenu{
     type: MenuType
 };
 
-export interface IMenuModel extends IMenu, Document {};
+interface IMenuModel extends IMenu, Document {};
 
-const MenuSchema: Schema = new Schema({
-    name: { type: String, unique: true, lowercase: true, required: true},
+export const MenuSchema: Schema = new Schema({
+    name: { type: String, lowercase: true, required: true},
     price: { type: Number,  required: true},
     ingredients: { type: [String], lowercase: true, required: true},
     portionSize: { type: Number, required: true},

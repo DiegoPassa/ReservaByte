@@ -28,7 +28,8 @@ export const Schemas = {
             password: Joi.string().required()
         }),
         update: Joi.object<IUser>({
-            username: Joi.string().required()
+            username: Joi.string(),
+            roles: Joi.array().items(Joi.string().valid(UserRole.Admin, UserRole.Bartender, UserRole.Cashier, UserRole.Cook, UserRole.Waiter))
         })
     },
     menu: {
@@ -45,9 +46,9 @@ export const Schemas = {
     table: {
         create: Joi.object<ITable>({
             maxSeats: Joi.number().min(1).required(),
-            reserved: Joi.boolean().required(),
             seatsOccupied: Joi.number().equal(0),
-            tableNumber: Joi.number().required()
+            tableNumber: Joi.number().required(),
+            cover: Joi.boolean().required()
         })
     }
 }

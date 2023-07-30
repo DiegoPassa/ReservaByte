@@ -24,10 +24,7 @@ const readOrder = async (req: Request, res: Response, next: NextFunction) => {
 const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
     const orderId = req.params.orderId;
     try {
-        const order = await Order.findById(orderId);
-        if (!order) return res.sendStatus(404);
-        order.set(req.body);
-        await order.save();
+        const order = await Order.findByIdAndUpdate(orderId, req.body, {new: true});
         return res.status(200).json({order});
     } catch (error) {
         return res.status(500).json({error});

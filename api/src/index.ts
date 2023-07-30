@@ -79,7 +79,7 @@ const startServer = () => {
     router.use('/menu', MenuRoutes);
     router.use('/tables', TableRoutes);
     router.use('/orders', OrderRoutes);
-    router.use('/receipt', ReceiptRoutes);
+    router.use('/receipts', ReceiptRoutes);
     /** ------ */
 
 

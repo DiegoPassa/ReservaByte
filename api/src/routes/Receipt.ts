@@ -3,7 +3,7 @@ import controller from "../controllers/Receipt";
 
 const router = express.Router();
 
-router.post("/", controller.createReceipt);
+router.post("/:tableId", controller.createReceipt);
 router.get("/", controller.readAll);
 router.get("/:receiptId", controller.readReceipt);
 router.patch("/:receiptId", controller.updateReceipt);
