@@ -17,7 +17,7 @@ export interface IMenu{
 
 interface IMenuModel extends IMenu, Document {};
 
-export const MenuSchema: Schema = new Schema({
+export const MenuSchema: Schema = new Schema<IMenu>({
     name: { type: String, lowercase: true, required: true},
     price: { type: Number,  required: true},
     ingredients: { type: [String], lowercase: true, required: true},

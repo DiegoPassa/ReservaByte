@@ -1,16 +1,16 @@
 import { Request, Response, NextFunction } from "express";
-import User from "../models/User";
+import { Bartender, Cashier, Cook, User, UserRole, Waiter } from "../models/User";
 import bcrypt from 'bcrypt'
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
-    const { username, firstName, lastName, roles , email, password} = req.body;
+    const { username, firstName, lastName, role , email, password} = req.body;
     try {
         const hash = await bcrypt.hash(password, 10);
         const user = new User({
             username, 
             firstName, 
             lastName, 
-            roles, 
+            role, 
             email, 
             password: hash
         });
@@ -43,9 +43,14 @@ const readUser = async (req: Request, res: Response, next: NextFunction) => {
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.userId;
     try {
-        const user = await User.findByIdAndUpdate({_id: userId}, req.body, {new: true});
-        return res.status(200).json({user});
+        const user = await User.findById(userId);
+        if(user){
+            await user.set(req.body).save();
+            return res.status(200).json({user});
+        }
+        return res.status(404).json({ message: "Not found" });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({error});
     }
 }
@@ -61,3 +66,14 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 export default { createUser, readAll, readUser, updateUser, deleteUser};
+
+// [POST] /messages?type=ATTACHMENT
+
+// const MessageTypeModels = {
+//     'ATTACHMENT': AttachmentMessage,
+//     'LIST': ListMessage,
+//   };
+  
+//   function updateMessage(id, type, data) {
+//     MessageTypeModels[type].findOneAndUpdate({ _id: id }, data);
+//   }

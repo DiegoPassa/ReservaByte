@@ -16,5 +16,4 @@ router.post("/:tableId/queue/:menuId", verifyRoles(UserRole.Waiter), controller.
 router.get("/:tableId/queue", verifyRoles(UserRole.Waiter)); // get queue from a table by tableId
 router.delete("/:tableId/queue/:orderId", verifyRoles(UserRole.Waiter)); // delete an order from table's order queue
 
-
 export = router;

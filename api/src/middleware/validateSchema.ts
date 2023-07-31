@@ -1,7 +1,7 @@
 import Joi, {ObjectSchema} from "joi";
 import { Request, Response, NextFunction } from "express";
 import log from "../libraries/Logger";
-import { IUser, UserRole } from "../models/User";
+import { IBartender, ICashier, ICook, IUser, IWaiter, UserRole } from "../models/User";
 import { IMenu, MenuType } from "../models/Menu";
 import { ITable } from "../models/Table";
 
@@ -23,13 +23,26 @@ export const Schemas = {
             username: Joi.string().required(),
             firstName: Joi.string().required(),
             lastName: Joi.string().required(),
-            roles: Joi.array().items(Joi.string().valid(UserRole.Admin, UserRole.Bartender, UserRole.Cashier, UserRole.Cook, UserRole.Waiter)).required(),
+            // roles: Joi.array().items(Joi.string().valid(UserRole.Admin, UserRole.Bartender, UserRole.Cashier, UserRole.Cook, UserRole.Waiter)).required(),
+            role: Joi.string().required(),
             email: Joi.string().email().required(),
-            password: Joi.string().required()
+            password: Joi.string().min(8).required()
         }),
-        update: Joi.object<IUser>({
+        update: Joi.object<IUser & ICashier & ICook & IWaiter & IBartender>({
             username: Joi.string(),
-            roles: Joi.array().items(Joi.string().valid(UserRole.Admin, UserRole.Bartender, UserRole.Cashier, UserRole.Cook, UserRole.Waiter))
+            // role: Joi.string().valid(UserRole.Admin, UserRole.Bartender, UserRole.Cashier, UserRole.Cook, UserRole.Waiter),
+            email: Joi.string().email(),
+            firstName: Joi.string(),
+            lastName: Joi.string(),
+            password: Joi.string(),
+            refreshToken: Joi.string(),
+
+            billsPrepared: Joi.number(),
+            customersServed: Joi.number(),
+            dishesPrepared: Joi.number(),
+            drinksServed: Joi.number(),
+            tablesServed: Joi.number()
+            // role: Joi.array().items(Joi.string().valid(UserRole.Admin, UserRole.Bartender, UserRole.Cashier, UserRole.Cook, UserRole.Waiter))
         })
     },
     menu: {

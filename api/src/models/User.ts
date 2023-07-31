@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, SchemaTypes } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
 export enum UserRole{
     Admin = 'admin',
@@ -12,46 +12,70 @@ export interface IUser {
     username: string,
     firstName: string,
     lastName: string,
-    roles: UserRole[],
+    role: UserRole,
     email: string,
     password: string,
-    stats?: ICookStats | IWaiterStats | IBartenderStats | ICashierStats,
     refreshToken?: string
 }
 
-export interface ICookStats {
+export interface ICook extends IUser{
     dishesPrepared: number
 }
-interface IWaiterStats {
+export interface IWaiter extends IUser{
     tablesServed: number,
     customersServed: number
 }
-interface IBartenderStats {
+export interface IBartender extends IUser {
     drinksServed: number
 }
-interface ICashierStats {
+export interface ICashier extends IUser{
     billsPrepared: number
 }
 
+/** MONGO MODEL */
+
 export interface IUserModel extends IUser, Document {};
 
-const UserSchema: Schema = new Schema({
+const UserSchema: Schema = new Schema<IUser>({
     username: { type: String, unique: true, required: true},
     firstName: { type: String, required: true},
     lastName: { type: String, required: true},
-    roles: { type: [String], required: true},
+    role: { type: String, enum: UserRole, required: true},
     email: { type: String, unique: true, lowercase: true, required: true},
     password: { type: String, min: 8, required: true},
-    stats: { type: SchemaTypes.Mixed },
     refreshToken: { type: String, required: false},
-}, { versionKey: false });
+}, { 
+    versionKey: false,
+    discriminatorKey: 'role'
+});
 
-export default mongoose.model<IUserModel>('User', UserSchema);
+export const User = mongoose.model<IUserModel>('User', UserSchema);
 
-// export const UserModel = mongoose.model('User', UserSchema);
+export const Cook = User.discriminator(
+    UserRole.Cook,
+    new Schema<ICook>({
+        dishesPrepared: {type: Number, default: 0, required: true},
+    })
+);
 
-// export const GetUsers = () => UserModel.find();
-// export const GetUsersByUsername = (username: String) => UserModel.findOne({ username });
-// export const createUser = (values: Record<string, any> ) => new UserModel(values).save().then((user) => user.toObject());
-// export const DeleteUserById = (id: String) => UserModel.findByIdAndDelete({_id: id});
-// export const UpdateUserById = (id: String, values: Record<string, any>) => UserModel.findByIdAndUpdate(id, values);
+export const Waiter = User.discriminator(
+    UserRole.Waiter,
+    new Schema<IWaiter>({
+        tablesServed: {type: Number, default: 0, required: true},
+        customersServed: {type: Number, default: 0, required: true}
+    })
+);
+
+export const Bartender = User.discriminator(
+    UserRole.Bartender,
+    new Schema<IBartender>({
+        drinksServed: {type: Number, default: 0, required: true},
+    })
+);
+
+export const Cashier = User.discriminator(
+    UserRole.Cashier,
+    new Schema<ICashier>({
+        billsPrepared: {type: Number, default: 0, required: true},
+    })
+);

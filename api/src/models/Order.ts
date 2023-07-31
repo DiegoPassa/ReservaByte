@@ -12,7 +12,7 @@ export interface IOrder{
 
 export interface IOrderModel extends IOrder, Document {};
 
-const OrderSchema: Schema = new Schema({
+const OrderSchema: Schema = new Schema<IOrder>({
     menu: { type: SchemaTypes.ObjectId, ref: 'Menu', required: true },
     table: { type: SchemaTypes.ObjectId, ref: 'Table', required: true },
     timestamp: { type: Date, default: new Date(), required: true },

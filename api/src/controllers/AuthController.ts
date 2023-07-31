@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
-import User, { IUserModel } from "../models/User";
+import { IUserModel, User } from "../models/User";
 import log from "../libraries/Logger";
 import bcrypt from 'bcrypt'
 import { config } from "../config/config";
@@ -12,7 +12,7 @@ const signJWT = (user: IUserModel, refresh?: boolean): string => {
         {
             _id: user._id,
             username: user.username,
-            roles: user.roles
+            role: user.role
         },
         (!refresh) ? config.jwt.access_token : config.jwt.refresh_token,
         {
@@ -28,7 +28,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     let { username, password } = req.body;
     if (!username || !password ) return res.sendStatus(400);
     try {
-        const user = await User.findOne({username}, 'username password roles');
+        const user = await User.findOne({username}, 'username password role');
         if (!user) return res.sendStatus(404);
         const result = await bcrypt.compare(password, user.password);
         if (!result) return res.sendStatus(401); 
@@ -52,7 +52,7 @@ const handleRefresh = async (req: Request, res: Response, next: NextFunction) =>
     if (!cookies.jwt) return res.sendStatus(401);
     const refreshToken = cookies.jwt;
     try {
-        const user = await User.findOne({refreshToken}, 'username refreshToken');
+        const user = await User.findOne({refreshToken}, 'username refreshToken role');
         if(!user) return res.sendStatus(404);
         const jwtDecoded = jwt.verify(refreshToken, config.jwt.refresh_token);
         const newAccessToken = signJWT(user, false);

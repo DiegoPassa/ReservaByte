@@ -14,7 +14,7 @@ export interface ITable{
 
 export interface ITableModel extends ITable, Document {};
 
-const TableSchema: Schema = new Schema({
+const TableSchema: Schema = new Schema<ITable>({
     maxSeats: { type: Number, required: true },
     reserved: { status: {type: Boolean, default: false, required: true}, reservedTime: {type: Date}, reservedBy: {type: String} },
     cover: { type: Boolean, required: true },

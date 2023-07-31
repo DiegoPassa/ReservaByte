@@ -18,7 +18,7 @@ function verifyAccessToken(req: Request, res: Response, next: NextFunction){
                     });
                 }else{
                     log.success(`${decoded.username} succesfully authorized`);
-                    res.locals.jwtRoles = decoded.roles;
+                    res.locals.jwtRole = decoded.role;
                     next();
                 }
         })
