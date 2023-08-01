@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import Order from "../models/Order";
-import Table from "../models/Table";
 
 const readAll = async (req: Request, res: Response, next: NextFunction) => {
+    // TODO Add query string to filter
+
     try {
         const orders = await Order.find();
         return res.status(200).json({ orders });
@@ -35,12 +36,7 @@ const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
     const orderId = req.params.orderId;
     try {
         const order = await Order.findByIdAndDelete(orderId);
-        const table = await Table.findOneAndUpdate({queue: orderId}, {
-            $pull: {
-                queue: orderId
-            }
-        });
-        return (order && table) ? res.status(200).json({ message: "Deleted" }) : res.status(404).json({ message: "Not found" });
+        return order ? res.status(200).json({ message: "Deleted" }) : res.status(404).json({ message: "Not found" });
     } catch (err) {
         return res.status(500).json({ err });
     }

@@ -51,6 +51,8 @@ const UserSchema: Schema = new Schema<IUser>({
 
 export const User = mongoose.model<IUserModel>('User', UserSchema);
 
+// TODO Add some other data to role stats
+
 export const Cook = User.discriminator(
     UserRole.Cook,
     new Schema<ICook>({

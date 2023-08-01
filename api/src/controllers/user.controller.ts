@@ -22,6 +22,8 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const readAll = async (req: Request, res: Response, next: NextFunction) => {
+    // TODO Add query string to filter
+
     try {
         const users = await User.find({}, '-password -refreshToken');
         return res.status(200).json({users})

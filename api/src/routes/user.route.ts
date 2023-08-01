@@ -1,5 +1,5 @@
 import express from 'express';
-import controller from '../controllers/User';
+import controller from '../controllers/user.controller';
 import { Schemas, ValidateSchema } from '../middleware/validateSchema';
 import verifyRoles from '../middleware/verifyRole';
 import { UserRole } from '../models/User';

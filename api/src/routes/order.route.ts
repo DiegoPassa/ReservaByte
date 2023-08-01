@@ -1,5 +1,5 @@
 import express from "express";
-import controller from "../controllers/Order";
+import controller from "../controllers/order.controller";
 import verifyRoles from "../middleware/verifyRole";
 import { UserRole } from "../models/User";
 

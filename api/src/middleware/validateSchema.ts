@@ -17,6 +17,7 @@ export const ValidateSchema = (schema: ObjectSchema) => {
     };
 };
 
+// TODO Finish to implement schema validators
 export const Schemas = {
     user: {
         create: Joi.object<IUser>({

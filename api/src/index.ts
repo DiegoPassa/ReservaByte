@@ -10,13 +10,15 @@ import cookieParser from 'cookie-parser';
 import log from "./libraries/Logger";
 import { config } from "./config/config";
 
-import UserRoutes from './routes/User'
-import MenuRoutes from './routes/Menu'
-import TableRoutes from './routes/Table'
-import OrderRoutes from './routes/Order'
-import ReceiptRoutes from './routes/Receipt'
+import UserRoutes from './routes/user.route'
+import MenuRoutes from './routes/menu.route'
+import TableRoutes from './routes/table.route'
+import OrderRoutes from './routes/order.route'
+import ReceiptRoutes from './routes/receipt.route'
 import verifyAccessToken from "./middleware/verifyJWT";
-import AuthRoutes from "./routes/Auth";
+import AuthRoutes from "./routes/auth.route";
+
+// TODO Implements HTTPS
 
 mongoose.connect(config.mongo.url)
     .then(() => {

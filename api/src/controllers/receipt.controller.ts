@@ -1,23 +1,37 @@
 import { Request, Response, NextFunction } from "express";
 import Receipt from "../models/Receipt";
 import Table from "../models/Table";
+import Order from "../models/Order";
 
 const createReceipt = async (req: Request, res: Response, next: NextFunction) => {
     const tableId = req.params.tableId;
+
+    // Create new bill entity
     const receipt = new Receipt({
         table: tableId
     });
+
     try {
+        // populate receipt object with the necessary informations
         await receipt.populate({path: 'table', select: 'queue cover seatsOccupied'});
-        await receipt.populate({path: 'table.queue', select: 'menu'});
+        await receipt.populate({path: 'table.queue', select: 'menu _id'});
         await receipt.populate({path: 'table.queue.menu', select: 'name price'});
-        receipt.table.queue?.forEach( e => {
-            receipt.items.push({name: e.menu.name, price: e.menu.price});
-        });
+
+        // add cover if present
         if (receipt.table.cover) receipt.items.push({name: 'cover', price: 2*receipt.table.seatsOccupied });
-        receipt.items.forEach( e => { receipt.total += e.price});
+
+        // populate receipt items[], totalPrice and lastly delete order from collection
+        receipt.table.queue?.forEach( async (e: any) => {
+            receipt.items.push({name: e.menu.name, price: e.menu.price});
+            await Order.findByIdAndDelete(e._id);
+        });
+
+        // calculate final price
+        receipt.items.forEach( e => receipt.total += e.price);
+
+        // clean Table
         await Table.findByIdAndUpdate(tableId, {
-            $unset: { queue: [], reserved: '' },
+            $unset: { reserved: '' },
             $set: { seatsOccupied: 0 }
         })
         await receipt.save();
@@ -28,6 +42,8 @@ const createReceipt = async (req: Request, res: Response, next: NextFunction) =>
 }
 
 const readAll = async (req: Request, res: Response, next: NextFunction) => {
+    // TODO Add query string to filter
+
     try {
         const receipts = await Receipt.find();
         return res.status(200).json({ receipts });

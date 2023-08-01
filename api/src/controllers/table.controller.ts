@@ -84,7 +84,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
         table: tableId
     });
     await order.populate({path: 'menu'});
-    order.estimatedCompletation = new Date(order.timestamp.getTime() + order.menu.preparationTime*60000);
+    order.estimatedCompletation = new Date(order.createdAt.getTime() + order.menu.preparationTime*60000);
     try {
         await Menu.findByIdAndUpdate({_id: menuId}, {
             $inc: {
