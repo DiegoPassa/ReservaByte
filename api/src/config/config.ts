@@ -12,7 +12,11 @@ export const config = {
         url: "mongodb://mean_mongo:27017/ReservaByte"
     },
     server: {
-        port: SERVER_PORT
+        port: SERVER_PORT,
+        https: {
+            cert: process.env.HTTPS_CERT,
+            key: process.env.HTTPS_KEY
+        }
     },
     jwt: {
         access_token: ACCESS_TOKEN_SECRET,

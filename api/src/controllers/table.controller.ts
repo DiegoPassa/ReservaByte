@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import Table from "../models/Table";
 import Order from "../models/Order";
-import Menu from "../models/Menu";
+import { Menu } from "../models/Menu";
 import { parseQuerySort } from "../libraries/parseQuerySort";
 
 const createTable = async (req: Request, res: Response, next: NextFunction) => {
@@ -79,13 +79,12 @@ const deleteTable = async (req: Request, res: Response, next: NextFunction) => {
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     const { menuId, tableId } = req.params;
-    const order = new Order({
-        menu: menuId,
-        table: tableId
-    });
-    await order.populate({path: 'menu'});
-    order.estimatedCompletation = new Date(order.createdAt.getTime() + order.menu.preparationTime*60000);
     try {
+        const order = new Order({
+            menu: await Menu.findById(menuId),
+            table: tableId
+        });
+        order.estimatedCompletation = new Date(order.createdAt.getTime() + order.menu.preparationTime*60000);
         await Menu.findByIdAndUpdate({_id: menuId}, {
             $inc: {
                 totalOrders: 1

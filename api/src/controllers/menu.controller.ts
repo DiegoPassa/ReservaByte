@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import Menu from "../models/Menu";
+import { Menu } from "../models/Menu";
 import { parseQuerySort } from "../libraries/parseQuerySort";
 
 const createMenu = async (req: Request, res: Response, next: NextFunction) => {

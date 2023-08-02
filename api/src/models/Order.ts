@@ -1,9 +1,9 @@
 import mongoose, { Document, Schema, SchemaTypes } from "mongoose"
-import { IMenu } from "./Menu";
+import { IDish, IDrink, IMenu, MenuSchema } from "./Menu";
 import { ITable } from "./Table";
 
 export interface IOrder{
-    menu: IMenu,
+    menu: IDish | IDrink | IMenu,
     table: ITable,
     createdAt: Date,
     estimatedCompletation: Date,
@@ -13,7 +13,7 @@ export interface IOrder{
 export interface IOrderModel extends IOrder, Document {};
 
 const OrderSchema: Schema = new Schema<IOrder>({
-    menu: { type: SchemaTypes.ObjectId, ref: 'Menu', required: true },
+    menu: { type: MenuSchema, immutable: true, required: true },
     table: { type: SchemaTypes.ObjectId, ref: 'Table', required: true },
     createdAt: { type: Date, default: new Date(), required: true },
     estimatedCompletation: { type: Date, required: true },

@@ -18,8 +18,6 @@ import ReceiptRoutes from './routes/receipt.route'
 import verifyAccessToken from "./middleware/verifyJWT";
 import AuthRoutes from "./routes/auth.route";
 
-// TODO Implements HTTPS
-
 mongoose.connect(config.mongo.url)
     .then(() => {
         console.log("");
@@ -84,7 +82,6 @@ const startServer = () => {
     router.use('/receipts', ReceiptRoutes);
     /** ------ */
 
-
     router.use((req, res, next) => {
         const error = new Error('not found');
         log.error(error);
@@ -92,7 +89,17 @@ const startServer = () => {
     })
 
     // const server = http.createServer(router);
+    //* HTTP server
     http.createServer(router).listen(config.server.port, () => {
         log.success(`Server running on http://localhost:${config.server.port}/`);
     });
+
+    //* HTTPS server
+    // https.createServer({
+    //     key: config.server.https.key,
+    //     cert: config.server.https.cert},
+    // router)
+    // .listen('8484', () => {
+    //     log.success(`Secure server running on https://localhost:8484/`);
+    // });
 }

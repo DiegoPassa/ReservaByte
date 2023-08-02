@@ -15,6 +15,9 @@ export interface IMenu{
     type: MenuType
 };
 
+export interface IDish extends IMenu {};
+export interface IDrink extends IMenu {};
+
 interface IMenuModel extends IMenu, Document {};
 
 export const MenuSchema: Schema = new Schema<IMenu>({
@@ -25,6 +28,16 @@ export const MenuSchema: Schema = new Schema<IMenu>({
     preparationTime: { type: Number, required: true},
     totalOrders: { type: Number, default: 0, required: true},
     type: { type: String, enum: MenuType, required: true},
-}, { versionKey: false });
+}, { versionKey: false, discriminatorKey: 'type' });
 
-export default mongoose.model<IMenuModel>('Menu', MenuSchema);
+export const Menu = mongoose.model<IMenuModel>('Menu', MenuSchema);
+
+export const Dish = Menu.discriminator(
+    MenuType.Dish,
+    new Schema<IMenu>({})
+);
+    
+export const Drink = Menu.discriminator(
+    MenuType.Drink,
+    new Schema<IMenu>({})
+);
