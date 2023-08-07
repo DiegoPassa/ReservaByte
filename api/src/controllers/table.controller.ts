@@ -41,7 +41,7 @@ const readAll = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const tables = await Table.find({$and: [filter]}).skip(skip).limit(limit).sort(sortObj).populate({path: 'queue', select: '-table', populate: { path: 'menu' }}).populate({path: 'waiters'});
-        return res.status(200).json({ tables });
+        return res.status(200).send(tables);
     } catch (err) {
         return res.status(500).json({ err });
     }

@@ -21,7 +21,7 @@ const readAll = async (req: Request, res: Response, next: NextFunction) => {
                 orders = await Order.find();
                 break;
         }
-        return res.status(200).json({ orders });
+        return res.status(200).send(orders);
     } catch (err) {
         return res.status(500).json({ err });
     }
