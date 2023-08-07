@@ -1,0 +1,35 @@
+<mat-grid-list cols=4>
+    <ng-container *ngFor="let table of tables; let i = index">
+        <ng-container *ngIf="table.queue?.length !== 0">
+            <mat-grid-tile cdkDrag>
+                <mat-card class="example-card" [style.z-index]="{i}">
+                    <mat-card-header>
+                        <div mat-card-avatar class="example-header-image"></div>
+                        <mat-card-title>Shiba Inu</mat-card-title>
+                        <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+                    </mat-card-header>
+                    <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+                        alt="Photo of a Shiba Inu">
+                    <mat-card-content>
+                        <ul>
+                            <div *ngFor="let order of table.queue">
+                                <li>{{order.menu.name}} - {{order.completed}}</li>
+                            </div>
+                        </ul>
+                    </mat-card-content>
+                    <mat-card-actions>
+                        <button mat-button>LIKE</button>
+                        <button mat-button>SHARE</button>
+                    </mat-card-actions>
+                </mat-card>
+            </mat-grid-tile>
+        </ng-container>
+    </ng-container>
+</mat-grid-list>
+
+<!-- <mat-grid-list cols="2" rowHeight="2:1">
+    <mat-grid-tile>1</mat-grid-tile>
+    <mat-grid-tile>2</mat-grid-tile>
+    <mat-grid-tile>3</mat-grid-tile>
+    <mat-grid-tile>4</mat-grid-tile>
+</mat-grid-list> -->
