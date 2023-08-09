@@ -10,13 +10,11 @@ const signJWT = (user: IUserModel, refresh?: boolean): string => {
     log.warn(`Attempting signing ${!(refresh) ? 'access' : 'refresh'} token for ${user.username}...`);
     return jwt.sign(
         {
-            _id: user._id,
-            username: user.username,
             role: user.role
         },
         (!refresh) ? config.jwt.access_token : config.jwt.refresh_token,
         {
-            issuer: "reservaBytes",
+            issuer: "reservaByte",
             algorithm: 'HS256',
             expiresIn: (!refresh) ? '30m' : '3h'
         }
@@ -28,7 +26,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     let { username, password } = req.body;
     if (!username || !password ) return res.sendStatus(400);
     try {
-        const user = await User.findOne({username}, 'username password role');
+        const user = await User.findOne({username});
         if (!user) return res.sendStatus(404);
         const result = await bcrypt.compare(password, user.password);
         if (!result) return res.sendStatus(401); 
@@ -37,7 +35,8 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         user.refreshToken = refreshToken;
         await user.save();
         res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 3 * 60 * 60 * 1000 });
-        return res.status(200).json({ accessToken: accessToken });
+        const response = {accessToken, user: {username: user.username, firstName: user.firstName, lastName: user.lastName, email: user.email }}
+        return res.status(200).send(response);
     } catch (error) {
         return res.status(500).json({ error });
     }

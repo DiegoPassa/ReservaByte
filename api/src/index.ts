@@ -1,4 +1,5 @@
 import https = require("https");
+import http = require("http");
 
 import mongoose from "mongoose";
 import express from "express";
@@ -16,7 +17,7 @@ import OrderRoutes from './routes/order.route'
 import ReceiptRoutes from './routes/receipt.route'
 import verifyAccessToken from "./middleware/verifyJWT";
 import AuthRoutes from "./routes/auth.route";
-import { Server } from "socket.io";
+import { SocketIOService } from "./libraries/socket.io";
 
 mongoose.connect(config.mongo.url)
     .then(() => {
@@ -43,7 +44,7 @@ const startServer = () => {
 
     const router = express();
 
-    router.use(cors({credentials: true}));
+    router.use(cors());
 
     router.use((req, res, next) => {
         console.log("");
@@ -59,11 +60,11 @@ const startServer = () => {
     router.use(cookieParser())
 
     router.use((req, res, next) => {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
         if (req.method === 'OPTIONS') {
-            res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-            return res.status(200).json({});
+            res.setHeader('Access-Control-Allow-Methods', 'POST, PATCH, DELETE, GET');
+            return res.sendStatus(200);
         }
         next();
     });
@@ -89,25 +90,32 @@ const startServer = () => {
     })
 
     //* HTTPS server
-    const server = https.createServer({
-        key: config.server.https.key,
-        cert: config.server.https.cert
-    }, router);
+    // const server = https.createServer({
+    //     key: config.server.https.key,
+    //     cert: config.server.https.cert
+    // }, router);
 
-    //* Socket.io init
-    const io = new Server(server);
+    const server = http.createServer(router);
 
-    io.on('connection', socket => {
-        console.log('a user has connected');
+    //* SOCKET.IO server
+    const socket = SocketIOService.instance().initialize(
+        server, { 
+            cors: {
+                origin: '*' //["http://localhost:4200"]
+            },
+            serveClient: false
+        });
 
+    socket.on('connection', (socket) => {
+        console.log(`socket ${socket.id} has connected`);
+  
         socket.on('disconnect', () => {
-            console.log('a user has disconnected');
+              console.log('a user has disconnected');
         })
     })
 
+    //* Running server
     server.listen(config.server.port, () => {
         log.success(`Secure server running on https://localhost:${config.server.port}/`);
     });
-
-
 }
