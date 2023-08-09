@@ -11,7 +11,7 @@ export class HttpServiceService {
   constructor(private http: HttpClient) {}
 
   getTables(){
-    return this.http.get<ITable[]>('https://localhost:3080/tables').pipe(
+    return this.http.get<ITable[]>('http://localhost:3080/tables').pipe(
       tap((_) => console.log('fetched tables')),
       catchError(this.handleError<ITable[]>('getTables', []))
     );

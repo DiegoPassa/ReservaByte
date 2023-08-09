@@ -1,3 +1,5 @@
+import { IToken } from "./DecodedJWT"
+
 export enum UserRole{
     Admin = 'admin',
     Cashier = 'cashier',
@@ -9,10 +11,11 @@ export enum UserRole{
 export interface IUser {
     username: string,
     firstName: string,
-    lastName: string,
-    role: UserRole,
-    email: string,
-    password: string
+    lastName: string
+    email: string
+    _accessToken: string
+
+    getAccessToken(): string | null;
 }
 
 export interface ICook extends IUser{
@@ -27,4 +30,25 @@ export interface IBartender extends IUser {
 }
 export interface ICashier extends IUser{
     billsPrepared: number
+}
+
+export class User{
+
+    user: IUser
+    tokenDecoded: IToken
+
+    constructor(user: IUser, tokenDecoded: IToken, accessToken: string){
+        this.user = user;
+        this.tokenDecoded = tokenDecoded;
+        this.user._accessToken = accessToken;
+    }
+
+    getAccessToken() {
+        if(new Date().getTime() > this.tokenDecoded.exp){
+            return null
+        }else{
+            return this.user._accessToken;
+        }
+    }
+
 }

@@ -1,13 +1,27 @@
 <mat-toolbar>
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+    <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
         <mat-icon>menu</mat-icon>
-    </button>
-    <span><b>{{appName}}</b></span>
+    </button> -->
+    <span routerLink="/home" style="cursor: pointer;" [style.color]="(authService.isAuthenticated$ | async) ? 'green' : 'red'" ><b>{{appName}}</b></span>
+    <a *ngFor="let item of routes" routerLink="/{{item.route}}">
+        {{ item.name }}
+    </a>
+    <ng-container *ngIf="authService.isAuthenticated$ | async">
+    </ng-container>
     <span class="example-spacer"></span>
-    <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+    <ng-container *ngIf="authService.isAuthenticated$ | async;else notLogged">
+        <span><b>{{authService.getUser()?.firstName}} {{authService.getUser()?.lastName}}</b> - {{authService.getUserRole()}}</span>
+        <button mat-icon-button color="warn" (click)="authService.logout()">
+            <mat-icon>logout</mat-icon>
+        </button>
+    </ng-container>
+    <ng-template #notLogged>
+        <button mat-raised-button color="primary" type="button" routerLink="/login" [disabled]="this.router.url === '/login'">Login</button>
+    </ng-template>
+    <!-- <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
         <mat-icon>favorite</mat-icon>
     </button>
     <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
         <mat-icon>share</mat-icon>
-    </button>
+    </button> -->
 </mat-toolbar>

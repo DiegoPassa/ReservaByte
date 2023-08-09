@@ -6,36 +6,47 @@ import { HttpServiceService } from 'src/app/services/http-service.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { WebSocketService } from 'src/app/services/web-socket.service';
+
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+import { SocketIoService } from 'src/app/services/socket-io.service';
 
 @Component({
-  selector: 'app-table',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.css'],
-  standalone: true,
-  imports: [
-    CdkDrag,
-    CommonModule,
-    MatCardModule,
-    MatButtonModule,
-    MatGridListModule,
-  ],
+    selector: 'app-table',
+    templateUrl: './table.component.html',
+    styleUrls: ['./table.component.css'],
+    standalone: true,
+    imports: [
+        CdkDrag,
+        CommonModule,
+        MatCardModule,
+        MatButtonModule,
+        MatGridListModule,
+        MatSnackBarModule,
+    ]
 })
 export class TableComponent implements OnInit {
-  panelOpenState = false;
-  tables: ITable[] = [];
+    panelOpenState = false;
+    tables: ITable[] = [];
 
-  constructor(
-    private httpService: HttpServiceService
-  ) {}
+    constructor(private httpService: HttpServiceService, private _snackBar: MatSnackBar, private socket: SocketIoService) { }
 
-  ngOnInit(): void {
-    // this.webSocket.connect().subscribe((data) => {
-    //   console.log(data);
-    // });
-    this.httpService
-      .getTables()
-      .subscribe((res: ITable[]) => (this.tables = res));
-  }
+    ngOnInit(): void {
+        // this.webSocket.connect().subscribe((data) => {
+        //   console.log(data);
+        // });
+        this.httpService
+            .getTables()
+            .subscribe((res: ITable[]) => (this.tables = res));
+            
+        this.socket.listen('test').subscribe( (data: any) => this.openSnackBar(data))
+    }
 
+    openSnackBar(message: string, action: string = 'OK') {
+        this._snackBar.open(message, action, {
+            duration: 3 * 1000,
+            horizontalPosition: 'right',
+            verticalPosition: 'bottom'
+        });
+    }
 }

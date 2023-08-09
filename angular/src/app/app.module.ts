@@ -11,12 +11,15 @@ import { OrdersQueueComponent } from './components/orders-queue/orders-queue.com
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { HttpClientModule } from '@angular/common/http';
+import { LoginComponent } from './components/login/login.component';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     OrdersQueueComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
@@ -25,7 +28,8 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule,
     NavBarComponent,
     TestComponent,
-    TableComponent
+    TableComponent,
+    LoginComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

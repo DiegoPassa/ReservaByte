@@ -3,22 +3,15 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const router: Router = inject(Router);
 
-  // const tokenStorage: TokenStorageService = inject(TokenStorageService);
+  let canAccess!: boolean;
 
-  // if (tokenStorage.isTokenExpired()) {
-  //   return router.navigate(['forbidden']);    
-  // }
-  // else {
-  //   const roles = route.data['permittedRoles'] as Array<string>;
-  //   const userRole = tokenStorage.getUserToken().role;
+  inject(AuthService).isAuthenticated$.subscribe(
+    (val: boolean) => {
+      canAccess = val;
+    }
+  )
 
-  //   if (roles && !roles.includes(userRole)) {
-  //     return router.navigate(['login']);
-  //   }
-  //   else
-  //     return true;
-  // }
-  return true;
+  if (!canAccess) inject(Router).navigate(['login'])
+  return canAccess
 };

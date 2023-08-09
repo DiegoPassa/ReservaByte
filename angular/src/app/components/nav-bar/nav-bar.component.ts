@@ -1,17 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatToolbarModule} from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.css'],
   standalone: true,
-  imports: [MatToolbarModule, MatButtonModule, MatIconModule, CommonModule],
+  imports: [MatToolbarModule, MatButtonModule, MatIconModule, CommonModule, RouterModule],
 })
-export class NavBarComponent {
+export class NavBarComponent{
   appName = "ReservaByte";
+  routes = [{name: 'Tavoli', route: '/tables'}];
+
+  constructor(public authService: AuthService, public router: Router) {}
 }
