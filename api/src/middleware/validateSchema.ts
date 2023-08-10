@@ -36,7 +36,6 @@ export const Schemas = {
             firstName: Joi.string(),
             lastName: Joi.string(),
             password: Joi.string(),
-            refreshToken: Joi.string(),
 
             billsPrepared: Joi.number(),
             customersServed: Joi.number(),

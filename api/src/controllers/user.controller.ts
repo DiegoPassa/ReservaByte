@@ -25,7 +25,7 @@ const readAll = async (req: Request, res: Response, next: NextFunction) => {
     // TODO Add query string to filter
 
     try {
-        const users = await User.find({}, '-password -refreshToken');
+        const users = await User.find({}, '-password');
         return res.status(200).json({users})
     } catch (error) {
         return res.status(500).json({error});
@@ -35,8 +35,8 @@ const readAll = async (req: Request, res: Response, next: NextFunction) => {
 const readUser = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.userId;
     try {
-        const user = await User.findById(userId).select("-password").select("-refreshToken");
-        return user ? res.status(200).json({ user }) : res.status(404).json({ message: "Not found" });
+        const user = await User.findById(userId).select("-password");
+        return user ? res.status(200).send(user) : res.status(404).json({ message: "Not found" });
     } catch (err) {
         return res.status(500).json({ err });
     }

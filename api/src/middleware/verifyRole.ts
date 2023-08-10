@@ -16,13 +16,13 @@ import { Request, NextFunction, Response } from "express";
 
 const verifyRoles = (...allowedRoles: UserRole[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
-        if (!res.locals?.jwtRole) return res.sendStatus(401);
+        if (!res.locals?.jwtRole) return res.sendStatus(403);
         const isAdmin: boolean = res.locals.jwtRole === UserRole.Admin || res.locals.jwtRole === UserRole.Cashier;
         if (!isAdmin){
             const rolesArray: UserRole[] = [...allowedRoles];
             const authorized: boolean = rolesArray.includes(res.locals.jwtRole);
             // const authorized:boolean = res.locals.jwtRoles.map((role: UserRole) => rolesArray.includes(role)).find((val:Boolean) => val === true);
-            if (!authorized) return res.sendStatus(401);
+            if (!authorized) return res.sendStatus(403);
         }
         next();
     }

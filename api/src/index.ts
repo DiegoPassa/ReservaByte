@@ -44,7 +44,12 @@ const startServer = () => {
 
     const router = express();
 
-    router.use(cors());
+    router.use(cookieParser())
+
+    router.use(cors({
+        origin: ['http://localhost:4200'],
+        credentials: true
+    }));
 
     router.use((req, res, next) => {
         console.log("");
@@ -57,10 +62,9 @@ const startServer = () => {
 
     router.use(express.urlencoded({ extended: true }));
     router.use(express.json());
-    router.use(cookieParser())
 
     router.use((req, res, next) => {
-        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
         res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
         if (req.method === 'OPTIONS') {
             res.setHeader('Access-Control-Allow-Methods', 'POST, PATCH, DELETE, GET');
@@ -75,7 +79,7 @@ const startServer = () => {
 
     /** ROUTES */
     router.use('/', AuthRoutes)
-    // router.use(verifyAccessToken);
+    router.use(verifyAccessToken);
     router.use('/users', UserRoutes);
     router.use('/menu', MenuRoutes);
     router.use('/tables', TableRoutes);

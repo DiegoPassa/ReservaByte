@@ -15,7 +15,6 @@ export interface IUser {
     role: UserRole,
     email: string,
     password: string,
-    refreshToken?: string
 }
 
 export interface ICook extends IUser{
@@ -42,8 +41,7 @@ const UserSchema: Schema = new Schema<IUser>({
     lastName: { type: String, required: true},
     role: { type: String, enum: UserRole, required: true},
     email: { type: String, unique: true, lowercase: true, required: true},
-    password: { type: String, min: 8, required: true},
-    refreshToken: { type: String, required: false},
+    password: { type: String, min: 8, required: true}
 }, { 
     versionKey: false,
     discriminatorKey: 'role'
