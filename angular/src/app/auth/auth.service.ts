@@ -1,55 +1,40 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, OnInit, inject } from '@angular/core';
-import { User, UserRole } from '../models/User';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { User } from '../models/User';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
+import { StorageService } from './storage.service';
+
+const backendURL = 'http://localhost:3080';
+
+// const httpOptions = {
+//   headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+// };
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  backendURL = 'http://localhost:3080'
-  user?: User
+  constructor(private http: HttpClient, private storage: StorageService, private router: Router) {}
 
-  private _isAuthenticated$ = new BehaviorSubject<boolean>(false);
-  isAuthenticated$ = this._isAuthenticated$.asObservable();
-
-  constructor(private http: HttpClient, private router: Router) {
-    if (localStorage.getItem('user')) {
-      this.createUser(JSON.parse(localStorage.getItem('user')!));
-    }
+  login(body: { username: string; password: string }): Observable<any> {
+    return this.http.post(`${backendURL}/login`, body, { withCredentials: true });
   }
 
-  // isAuthenticated(): boolean{
-  //   return this.user ? true : false;
-  // }
-
-  getUserRole() {
-    return this.user?.tokenDecoded.role;
+  refreshToken() {
+    return this.http.get(`${backendURL}/refresh`, { withCredentials: true });
   }
 
-  getUser() {
-    return this.user?.user
-  }
-
-  createUser(user: User) {
-    this.user = user;
-    this._isAuthenticated$.next(true);
-    return user;
-  }
-
-  loginUser(body: { username: string, password: string }) {
-    return this.http.post(`${this.backendURL}/login`, body).pipe(
-      tap((res: any) => {
-        console.log(res);
-      })
-    );
-  }
-
-  logout() {
-    this.user = undefined;
-    localStorage.removeItem('user');
-    this._isAuthenticated$.next(false);
-    this.router.navigate(['home']);
+  logout(){
+    this.http.get(`${backendURL}/logout`, { withCredentials: true }).subscribe({
+      next: res => {
+        this.storage.clean();
+        this.router.navigate(['home']);
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
 }

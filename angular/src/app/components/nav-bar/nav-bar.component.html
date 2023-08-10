@@ -2,16 +2,16 @@
     <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
         <mat-icon>menu</mat-icon>
     </button> -->
-    <span routerLink="/home" style="cursor: pointer;" [style.color]="(authService.isAuthenticated$ | async) ? 'green' : 'red'" ><b>{{appName}}</b></span>
+    <span routerLink="/home" style="cursor: pointer;" [style.color]="(storage.isLoggedIn()) ? 'green' : 'red'" ><b>{{appName}}</b></span>
     <a *ngFor="let item of routes" routerLink="/{{item.route}}">
         {{ item.name }}
     </a>
-    <ng-container *ngIf="authService.isAuthenticated$ | async">
+    <ng-container *ngIf="storage.isLoggedIn()">
     </ng-container>
     <span class="example-spacer"></span>
-    <ng-container *ngIf="authService.isAuthenticated$ | async;else notLogged">
-        <span><b>{{authService.getUser()?.firstName}} {{authService.getUser()?.lastName}}</b> - {{authService.getUserRole()}}</span>
-        <button mat-icon-button color="warn" (click)="authService.logout()">
+    <ng-container *ngIf="storage.isLoggedIn();else notLogged">
+        <span><b>{{storage.getUser().firstName}} {{storage.getUser().lastName}}</b> - {{storage.getUser().role}}</span>
+        <button mat-icon-button color="warn" (click)="auth.logout()">
             <mat-icon>logout</mat-icon>
         </button>
     </ng-container>

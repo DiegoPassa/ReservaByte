@@ -6,6 +6,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
+import { StorageService } from 'src/app/auth/storage.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -16,7 +17,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 })
 export class NavBarComponent{
   appName = "ReservaByte";
-  routes = [{name: 'Tavoli', route: '/tables'}];
+  routes = [{name: 'Tavoli', route: '/tables'}, {name: 'Profilo', route: '/profile'}];
 
-  constructor(public authService: AuthService, public router: Router) {}
+  constructor(public auth: AuthService, public storage: StorageService, public router: Router) {}
 }
