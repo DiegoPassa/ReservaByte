@@ -14,8 +14,8 @@ import { StorageService } from 'src/app/auth/storage.service';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, MatSelectModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatIconModule],
+  // standalone: true,
+  // imports: [MatFormFieldModule, MatInputModule, MatSelectModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatIconModule],
 })
 export class LoginComponent {
 

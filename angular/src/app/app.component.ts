@@ -7,4 +7,6 @@ import { StorageService } from './auth/storage.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent { }
+export class AppComponent { 
+  title = 'ReservaByte'
+}

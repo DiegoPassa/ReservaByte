@@ -15,6 +15,8 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { AuthProvider } from './utils/auth.interceptor';
+import { TablesComponent } from './components/tables/tables.component';
+import { MaterialModule } from 'src/material.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import { AuthProvider } from './utils/auth.interceptor';
     NotFoundComponent,
     HomeComponent,
     ProfileComponent,
+    TablesComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -32,9 +36,9 @@ import { AuthProvider } from './utils/auth.interceptor';
     NavBarComponent,
     TestComponent,
     TableComponent,
-    LoginComponent
+    MaterialModule
   ],
   providers: [AuthProvider],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

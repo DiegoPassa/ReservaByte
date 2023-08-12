@@ -1,0 +1,21 @@
+<div class="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-6">
+    <ng-container *ngFor="let table of tables">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Tavolo <b>{{table.tableNumber}}</b></mat-card-title>
+            </mat-card-header>
+            <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+                alt="Photo of a Shiba Inu">
+            <mat-card-content>
+                <p class="text-3xl font-bold underline">Riservato: {{table.reserved?.status}}</p>
+                <p>Posti occupati: {{table.seatsOccupied}}/{{table.maxSeats}}</p>
+                <p>Coperto: <span [style.color]="(table.cover) ? 'green' : 'red'">{{table.cover}}</span></p>
+            </mat-card-content>
+        </mat-card>
+    </ng-container>
+</div>
+
+
+
+
+<!-- Cards with media area -->
