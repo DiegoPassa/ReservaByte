@@ -1,18 +1,33 @@
-<div class="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-6">
+<div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6 content-stretch">
     <ng-container *ngFor="let table of tables">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>Tavolo <b>{{table.tableNumber}}</b></mat-card-title>
-            </mat-card-header>
-            <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"
-                alt="Photo of a Shiba Inu">
-            <mat-card-content>
-                <p class="text-3xl font-bold underline">Riservato: {{table.reserved?.status}}</p>
-                <p>Posti occupati: {{table.seatsOccupied}}/{{table.maxSeats}}</p>
-                <p>Coperto: <span [style.color]="(table.cover) ? 'green' : 'red'">{{table.cover}}</span></p>
-            </mat-card-content>
-        </mat-card>
-    </ng-container>
+        <!-- <div [ngClass]="{'bg-orange-950': !table.reserved?.status}"> -->
+        <mat-card class="h-fit">
+                <mat-card-header class="flex justify-between">
+                    <mat-card-title class="text-xl">Tavolo <span class="font-bold">{{table.tableNumber}}</span></mat-card-title>
+                    <ng-container *ngIf="table.reserved?.status">
+                        <div class=" flex items-center">
+                            <span class="pr-1 font-light">{{table.reserved?.reservedTime | date}}</span><mat-icon>lock_clock</mat-icon>
+                        </div>
+                        </ng-container>
+                </mat-card-header>
+                <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+                <mat-card-content>
+                    <div class="flex flex-wrap justify-start py-2">
+                        <ng-container *ngFor="let isOccupied of table.seats">
+                            <mat-icon
+                                [ngClass]="{'text-green-700': !isOccupied, 'text-red-700': isOccupied}">circle</mat-icon>
+                        </ng-container>
+                    </div>
+                    <p>Posti occupati: {{table.seatsOccupied}}/{{table.maxSeats}}</p>
+                    <p>Riservato: {{table.reserved?.status}}</p>
+                    <p>Coperto: <span [style.color]="(table.cover) ? 'green' : 'red'">{{table.cover}}</span></p>
+                </mat-card-content>
+                <mat-card-actions class="flex flex-row-reverse">
+                    <button mat-raised-button color="primary">Vedi</button>
+                </mat-card-actions>
+            </mat-card>
+            <!-- </div> -->
+        </ng-container>
 </div>
 
 

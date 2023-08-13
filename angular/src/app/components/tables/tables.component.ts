@@ -16,6 +16,12 @@ export class TablesComponent implements OnInit {
     this.tablesService.getTables().subscribe({
       next: (data) => {
         this.tables = data;
+        this.tables.forEach(e => {
+          const occupied = Array(e.seatsOccupied).fill(true);
+          const remaining = Array(e.maxSeats! - e.seatsOccupied!).fill(false);
+          e.seats = occupied.concat(remaining);
+          console.log(e.seats);
+        })
       },
       error: (err) => {
         console.error(err);

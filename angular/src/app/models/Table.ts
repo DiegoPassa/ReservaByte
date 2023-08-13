@@ -9,4 +9,5 @@ export interface ITable{
     tableNumber?: number,
     waiters?: IUser[],
     queue?: IOrder[]
+    seats?: boolean[]
 };

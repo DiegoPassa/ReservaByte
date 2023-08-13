@@ -16,6 +16,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard]},
   { path: 'tables', component: TablesComponent, canActivate: [authGuard, roleGuard], data: {roles: [UserRole.Waiter]}},
+  { path: 'table', component: TableComponent, canActivate: [authGuard, roleGuard], data: {roles: [UserRole.Cook, UserRole.Bartender]}},
   { path: '**', component: NotFoundComponent}
 ];
 
