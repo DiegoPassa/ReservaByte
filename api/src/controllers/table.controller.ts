@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import Table from "../models/Table";
 import Order from "../models/Order";
-import { Menu } from "../models/Menu";
+import { Menu, MenuType } from "../models/Menu";
 import { parseQuerySort } from "../libraries/parseQuerySort";
 import { SocketIOService } from "../libraries/socket.io";
+import { UserRole } from "../models/User";
 
 const createTable = async (req: Request, res: Response, next: NextFunction) => {
     const { maxSeats, reserved, tableNumber, cover } = req.body;
@@ -13,9 +14,14 @@ const createTable = async (req: Request, res: Response, next: NextFunction) => {
         tableNumber: tableNumber,
         cover: cover
     });
+    // const queue = new Queue({
+    //     table: table._id
+    // })
     try {
         await table.save();
-        res.status(201).json({ table, message: "Item added" });
+        // await queue.save();
+        SocketIOService.instance().emitAll('table:new', table);
+        return res.status(201).json({ table, message: "Item added" });
     } catch (err) {
         return res.status(500).json({ err });
     }
@@ -52,7 +58,7 @@ const readTable = async (req: Request, res: Response, next: NextFunction) => {
     const tableId = req.params.tableId;
     try {
         const table = await Table.findById(tableId);
-        SocketIOService.instance().emitAll('test', 'This is a test!');
+        // SocketIOService.instance().emitAll('test', 'This is a test!');
         return table ? res.status(200).json({ table }) : res.status(404).json({ message: "Not found" });
     } catch (err) {
         return res.status(500).json({ err });
@@ -63,7 +69,8 @@ const updateTable = async (req: Request, res: Response, next: NextFunction) => {
     const tableId = req.params.tableId;
     try {
         const table = await Table.findByIdAndUpdate({_id: tableId}, req.body, {new: true});
-        return res.status(200).json({table});
+        SocketIOService.instance().emitAll('table:update', table);
+        return res.status(200).send(table);
     } catch (error) {
         return res.status(500).json({error});
     }
@@ -73,7 +80,11 @@ const deleteTable = async (req: Request, res: Response, next: NextFunction) => {
     const tableId = req.params.tableId;
     try {
         const table = await Table.findByIdAndDelete(tableId);
-        return table ? res.status(200).json({ message: "Deleted" }) : res.status(404).json({ message: "Not found" });
+        if(table){
+            SocketIOService.instance().getServer().emit('table:delete', tableId);
+            return res.status(200).json({ message: "Deleted" })
+        }
+        return res.status(404).json({ message: "Not found" });
     } catch (err) {
         return res.status(500).json({ err });
     }
@@ -98,10 +109,42 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
             }
         });
         await order.save();
-        res.status(201).json({ order });
+        SocketIOService.instance().getServer().emit('order:new', {order: order, role: order.menu.type === MenuType.Dish ? UserRole.Cook : UserRole.Bartender});
+        res.status(201).send(order);
     } catch (err) {
         return res.status(500).json({ err });
     }
 }
+
+// const createOrder = async (req: Request, res: Response, next: NextFunction) => {
+//     const { menuId, tableId } = req.params;
+//     try {
+//         const tableQueue = await Queue.find({table: tableId});
+//         const newOrder: IOrder = {
+//             menu: await Menu.findById(menuId)
+//         }
+        
+//         const order = new Order({
+//             menu: await Menu.findById(menuId),
+//             table: tableId
+//         });
+
+//         order.estimatedCompletation = new Date(order.createdAt.getTime() + order.menu.preparationTime*60000);
+//         await Menu.findByIdAndUpdate({_id: menuId}, {
+//             $inc: {
+//                 totalOrders: 1
+//             }
+//         });
+//         await Table.findByIdAndUpdate({_id: tableId}, {
+//             $push: {
+//                 queue: order._id
+//             }
+//         });
+//         await order.save();
+//         res.status(201).json({ order });
+//     } catch (err) {
+//         return res.status(500).json({ err });
+//     }
+// }
 
 export default { createTable, readAll, readTable, updateTable, deleteTable, createOrder };

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Order from "../models/Order";
 import { UserRole } from "../models/User";
 import { MenuType } from "../models/Menu";
+import { SocketIOService } from "../libraries/socket.io";
 
 const readAll = async (req: Request, res: Response, next: NextFunction) => {
     // TODO Add query string to filter
@@ -10,15 +11,25 @@ const readAll = async (req: Request, res: Response, next: NextFunction) => {
         switch (res.locals.jwtRole) {
 
             case UserRole.Cook:
-                orders = await Order.find({'menu.type': MenuType.Dish});
+                orders = await Order.aggregate([
+                    {$match: {'menu.type': MenuType.Dish}},
+                    {$group: {_id: '$table', 'orders': {$push: '$$ROOT'}}},
+                ]);
                 break;
 
             case UserRole.Bartender:
-                orders = await Order.find({'menu.type': MenuType.Drink});
+                orders = await Order.aggregate([
+                    {$match: {'menu.type': MenuType.Drink}},
+                    {$group: {_id: '$table', 'orders': {$push: '$$ROOT'}}},
+                ]);
+                console.log(orders);
                 break;
         
             default:
-                orders = await Order.find();
+                orders = await Order.aggregate([
+                    {$group: {_id: '$table', 'orders': {$push: '$$ROOT'}}}
+                ]);
+                console.log(orders);
                 break;
         }
         return res.status(200).send(orders);
@@ -69,6 +80,7 @@ const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
                 order = await Order.findByIdAndUpdate(orderId, req.body, {new: true});
                 break;
         }
+        SocketIOService.instance().emitAll('order:update', order);
         return res.status(200).json({order});
     } catch (error) {
         return res.status(500).json({error});
@@ -79,7 +91,11 @@ const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
     const orderId = req.params.orderId;
     try {
         const order = await Order.findByIdAndDelete(orderId);
-        return order ? res.status(200).json({ message: "Deleted" }) : res.status(404).json({ message: "Not found" });
+        if(order){
+            SocketIOService.instance().emitAll('order:delete', orderId);
+            return res.status(200).json({ message: "Deleted" })
+        }
+        return res.status(404).json({ message: "Not found" });
     } catch (err) {
         return res.status(500).json({ err });
     }

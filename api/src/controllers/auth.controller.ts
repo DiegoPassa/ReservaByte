@@ -16,7 +16,7 @@ const signJWT = (user: IUserModel, refresh: boolean = true): string => {
         {
             issuer: "reservaByte",
             algorithm: 'HS256',
-            expiresIn: (!refresh) ? '30s' : '10h'
+            expiresIn: (!refresh) ? '30m' : '10h'
         }
     );
 };

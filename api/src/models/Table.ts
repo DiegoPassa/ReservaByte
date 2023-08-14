@@ -10,6 +10,7 @@ export interface ITable{
     tableNumber: number,
     waiters?: IUser[],
     queue?: IOrder[]
+    // queue?: IQueue
 };
 
 export interface ITableModel extends ITable, Document {};
@@ -22,6 +23,7 @@ const TableSchema: Schema = new Schema<ITable>({
     tableNumber: { type: Number, unique: true, required: true },
     waiters: { type: [SchemaTypes.ObjectId], ref: 'User' },
     queue: { type: [SchemaTypes.ObjectId], ref: 'Order' }
+    // queue: { type: SchemaTypes.ObjectId, ref: 'Queue' }
 }, { versionKey: false });
 
 export default mongoose.model<ITableModel>('Table', TableSchema);

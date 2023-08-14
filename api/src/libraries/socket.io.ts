@@ -40,7 +40,7 @@ export class SocketIOService {
     this.getServer().to(roomId).emit(key, message)
   }
 
-  emitAll(key: string, message: string) {
+  emitAll(key: string, message: any) {
     this.getServer().emit(key, message)
   }
 
