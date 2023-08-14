@@ -95,7 +95,8 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const order = new Order({
             menu: await Menu.findById(menuId),
-            table: tableId
+            table: tableId,
+            createdAt: new Date()
         });
         order.estimatedCompletation = new Date(order.createdAt.getTime() + order.menu.preparationTime*60000);
         await Menu.findByIdAndUpdate({_id: menuId}, {

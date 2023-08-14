@@ -39,7 +39,6 @@ export class OrdersQueueComponent implements OnInit {
 
     this.socket.listen('order:delete').subscribe((orderId: any) => {
       let index = this.findIndexByOrderId(orderId);
-      console.log(index);
       if (index !== -1) {
         this.queues[index.i].orders.splice(index.j, 1);
         if (this.queues[index.i].orders.length === 0) this.queues.splice(index.i, 1);
@@ -79,6 +78,10 @@ export class OrdersQueueComponent implements OnInit {
       }
     }
     return -1;
+  }
+
+  canRemove(index: number): boolean{
+    return this.queues[index].orders.every(e => !e.completed)
   }
 
 }

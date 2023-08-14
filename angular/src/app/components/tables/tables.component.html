@@ -23,14 +23,16 @@
                     <p>Coperto: <span [style.color]="(table.cover) ? 'green' : 'red'">{{table.cover}}</span></p>
                 </mat-card-content>
                 <mat-card-actions class="flex justify-end pr-3 pb-3">
-                    <button mat-raised-button color="primary">Vedi</button>
+                    <ng-container *ngIf="table.seatsOccupied! === 0;else elseBranch">
+                        <button mat-raised-button color="primary" [disabled]="table.reserved?.status" (click)="openDialog(table)">Occupa</button>
+                    </ng-container>
+                    <ng-template #elseBranch>
+                        <button mat-raised-button color="warn">Prendi ordine</button>
+                    </ng-template>
                 </mat-card-actions>
             </mat-card>
             <!-- </div> -->
         </ng-container>
 </div>
-
-
-
 
 <!-- Cards with media area -->

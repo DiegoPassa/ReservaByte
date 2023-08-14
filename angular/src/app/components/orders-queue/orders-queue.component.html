@@ -11,6 +11,7 @@
                     <mat-card-title>Tavolo N. {{queue._id}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
+                    <mat-divider class="m-2"></mat-divider>
                     <ng-container *ngFor="let order of queue.orders">
                         <div class="flex items-center">
                             <mat-checkbox [checked]="order.completed" color="accent"
@@ -20,11 +21,13 @@
                                 </p>
                             </mat-checkbox>
                         </div>
-                        <mat-divider class="m-2"></mat-divider>
+                        <mat-divider class="my-2"></mat-divider>
                     </ng-container>
                 </mat-card-content>
                 <mat-card-actions>
-                    <button mat-stroked-button color="warn" (click)="removeCompleted(i)">Rimuovi</button>
+                    <div class="pb-2 pl-2">
+                        <button mat-stroked-button color="warn" [disabled]="canRemove(i)" (click)="removeCompleted(i)">Rimuovi</button>
+                    </div>
                 </mat-card-actions>
             </mat-card>
         </ng-container>

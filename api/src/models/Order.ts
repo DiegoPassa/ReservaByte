@@ -15,7 +15,7 @@ export interface IOrderModel extends IOrder, Document {};
 const OrderSchema: Schema = new Schema<IOrder>({
     menu: { type: MenuSchema, immutable: true, required: true },
     table: { type: SchemaTypes.ObjectId, ref: 'Table', required: true },
-    createdAt: { type: Date, default: new Date(), required: true },
+    createdAt: { type: Date, required: true },
     estimatedCompletation: { type: Date, required: true },
     completed: { type: Boolean, default: false, required: true }
 }, { versionKey: false });

@@ -17,6 +17,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { AuthProvider } from './utils/auth.interceptor';
 import { TablesComponent } from './components/tables/tables.component';
 import { MaterialModule } from 'src/material.module';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,7 @@ import { MaterialModule } from 'src/material.module';
     HomeComponent,
     ProfileComponent,
     TablesComponent,
-    LoginComponent
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -36,9 +37,10 @@ import { MaterialModule } from 'src/material.module';
     NavBarComponent,
     TestComponent,
     TableComponent,
-    MaterialModule
+    MaterialModule,
+    MatDialogModule,
   ],
   providers: [AuthProvider],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

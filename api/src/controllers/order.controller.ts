@@ -14,6 +14,7 @@ const readAll = async (req: Request, res: Response, next: NextFunction) => {
                 orders = await Order.aggregate([
                     {$match: {'menu.type': MenuType.Dish}},
                     {$group: {_id: '$table', 'orders': {$push: '$$ROOT'}}},
+                    {$sort: {'orders.createdAt': 1}}
                 ]);
                 break;
 
@@ -21,13 +22,15 @@ const readAll = async (req: Request, res: Response, next: NextFunction) => {
                 orders = await Order.aggregate([
                     {$match: {'menu.type': MenuType.Drink}},
                     {$group: {_id: '$table', 'orders': {$push: '$$ROOT'}}},
+                    {$sort: {'orders.createdAt': 1}}
                 ]);
                 console.log(orders);
                 break;
         
             default:
                 orders = await Order.aggregate([
-                    {$group: {_id: '$table', 'orders': {$push: '$$ROOT'}}}
+                    {$group: {_id: '$table', 'orders': {$push: '$$ROOT'}}},
+                    {$sort: {'orders.createdAt': 1}}
                 ]);
                 console.log(orders);
                 break;
