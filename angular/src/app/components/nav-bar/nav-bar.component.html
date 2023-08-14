@@ -2,7 +2,7 @@
     <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
         <mat-icon>menu</mat-icon>
     </button> -->
-    <span routerLink="/home" style="cursor: pointer;" [style.color]="(storage.isLoggedIn()) ? 'green' : 'red'" ><b>{{appName}}</b></span>
+    <span routerLink="/home" class="cursor-pointer" [style.color]="(storage.isLoggedIn()) ? 'green' : 'red'" ><b>{{appName}}</b></span>
     <a *ngFor="let item of routes" routerLink="/{{item.route}}">
         {{ item.name }}
     </a>
@@ -10,7 +10,7 @@
     </ng-container>
     <span class="example-spacer"></span>
     <ng-container *ngIf="storage.isLoggedIn();else notLogged">
-        <span><b>{{storage.getUser().firstName}} {{storage.getUser().lastName}}</b> - {{storage.getUser().role}}</span>
+        <span><b>{{storage.getUser().firstName}} {{storage.getUser().lastName}}</b> - <span class="">{{storage.getUser().role}}</span></span>
         <button mat-icon-button color="warn" (click)="auth.logout()">
             <mat-icon>logout</mat-icon>
         </button>

@@ -8,6 +8,7 @@ export interface ITable{
     seatsOccupied?: number | 0,
     tableNumber?: number,
     waiters?: IUser[],
-    queue?: IOrder[]
-    seats?: boolean[]
+    queue?: IOrder[],
+    seats?: boolean[],
+    _id?: string,
 };

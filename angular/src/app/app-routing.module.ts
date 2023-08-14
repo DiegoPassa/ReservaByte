@@ -9,6 +9,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { roleGuard } from './auth/role.guard';
 import { UserRole } from './models/User';
 import { TablesComponent } from './components/tables/tables.component';
+import { OrdersQueueComponent } from './components/orders-queue/orders-queue.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home'},
@@ -16,7 +17,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard]},
   { path: 'tables', component: TablesComponent, canActivate: [authGuard, roleGuard], data: {roles: [UserRole.Waiter]}},
-  { path: 'table', component: TableComponent, canActivate: [authGuard, roleGuard], data: {roles: [UserRole.Cook, UserRole.Bartender]}},
+  // { path: 'table', component: TableComponent, canActivate: [authGuard, roleGuard], data: {roles: [UserRole.Cook, UserRole.Bartender]}},
+  { path: 'orders', component: OrdersQueueComponent, canActivate: [authGuard, roleGuard], data: {roles: [UserRole.Cook, UserRole.Bartender]}},
   { path: '**', component: NotFoundComponent}
 ];
 

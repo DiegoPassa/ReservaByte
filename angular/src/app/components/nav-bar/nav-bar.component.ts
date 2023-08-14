@@ -17,7 +17,7 @@ import { StorageService } from 'src/app/auth/storage.service';
 })
 export class NavBarComponent{
   appName = "ReservaByte";
-  routes = [{name: 'Tavoli', route: '/tables'}, {name: 'Profilo', route: '/profile'}];
+  routes = [{name: 'Tavoli', route: '/tables'}, {name: 'Ordini', route:'/orders'}, {name: 'Profilo', route: '/profile'}];
 
   constructor(public auth: AuthService, public storage: StorageService, public router: Router) {}
 }
