@@ -2,37 +2,43 @@
     <ng-container *ngFor="let table of tables">
         <!-- <div [ngClass]="{'bg-orange-950': !table.reserved?.status}"> -->
         <mat-card class="h-fit">
-                <mat-card-header class="flex justify-between">
-                    <mat-card-title class="text-xl">Tavolo <span class="font-bold">{{table.tableNumber}}</span></mat-card-title>
-                    <ng-container *ngIf="table.reserved?.status">
-                        <div class=" flex items-center" matTooltip="Riservato da: {{table.reserved?.reservedBy}}">
-                            <span class="pr-1 font-light">{{table.reserved?.reservedTime | date}}</span><mat-icon>lock_clock</mat-icon>
-                        </div>
-                        </ng-container>
-                </mat-card-header>
-                <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
-                <mat-card-content>
-                    <div class="flex flex-wrap justify-start py-2">
-                        <ng-container *ngFor="let isOccupied of table.seats">
-                            <mat-icon
-                                [ngClass]="{'text-green-700': !isOccupied, 'text-red-700': isOccupied}">circle</mat-icon>
-                        </ng-container>
+            <mat-card-header class="flex justify-between">
+                <mat-card-title class="text-xl">Tavolo <span
+                        class="font-bold">{{table.tableNumber}}</span></mat-card-title>
+                <ng-container *ngIf="table.reserved?.status">
+                    <div class=" flex items-center" matTooltip="Riservato da: {{table.reserved?.reservedBy}}">
+                        <span class="pr-1 font-light">{{table.reserved?.reservedTime |
+                            date}}</span><mat-icon>lock_clock</mat-icon>
                     </div>
-                    <p>Posti occupati: {{table.seatsOccupied}}/{{table.maxSeats}}</p>
-                    <p>Riservato: {{table.reserved?.status}}</p>
-                    <p>Coperto: <span [style.color]="(table.cover) ? 'green' : 'red'">{{table.cover}}</span></p>
-                </mat-card-content>
-                <mat-card-actions class="flex justify-end pr-3 pb-3">
-                    <ng-container *ngIf="table.seatsOccupied! === 0;else elseBranch">
-                        <button mat-raised-button color="primary" [disabled]="table.reserved?.status" (click)="openDialog(table)">Occupa</button>
+                </ng-container>
+            </mat-card-header>
+            <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+            <mat-card-content>
+                <div class="flex flex-wrap justify-start py-2">
+                    <ng-container *ngFor="let isOccupied of table.seats">
+                        <mat-icon
+                            [ngClass]="{'text-green-700': !isOccupied, 'text-red-700': isOccupied}">circle</mat-icon>
                     </ng-container>
-                    <ng-template #elseBranch>
-                        <button mat-raised-button color="warn">Prendi ordine</button>
-                    </ng-template>
-                </mat-card-actions>
-            </mat-card>
-            <!-- </div> -->
-        </ng-container>
+                </div>
+                <p>Posti occupati: {{table.seatsOccupied}}/{{table.maxSeats}}</p>
+                <p>Riservato: {{table.reserved?.status}}</p>
+                <p>Coperto: <span [style.color]="(table.cover) ? 'green' : 'red'">{{table.cover}}</span></p>
+                <p><span class="font-bold">{{table.queue?.length}}</span> piatti in coda</p>
+            </mat-card-content>
+            <mat-card-actions class="flex justify-between px-4 pb-3">
+                <button mat-stroked-button color="primary"><mat-icon>question_mark</mat-icon>Info</button>
+                <ng-container *ngIf="table.seatsOccupied! === 0;else elseBranch">
+                    <button mat-flat-button color="primary" [disabled]="table.reserved?.status"
+                        (click)="openSeatsDialog(table)">Occupa</button>
+                </ng-container>
+                <ng-template #elseBranch>
+                    <button mat-flat-button color="warn" (click)="openNewOrderDialog(table._id!)">Nuovo
+                        ordine</button>
+                </ng-template>
+            </mat-card-actions>
+        </mat-card>
+        <!-- </div> -->
+    </ng-container>
 </div>
 
 <!-- Cards with media area -->

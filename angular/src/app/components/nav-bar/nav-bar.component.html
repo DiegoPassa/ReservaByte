@@ -2,8 +2,8 @@
     <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
         <mat-icon>menu</mat-icon>
     </button> -->
-    <span routerLink="/home" class="cursor-pointer" [style.color]="(storage.isLoggedIn()) ? 'green' : 'red'" ><b>{{appName}}</b></span>
-    <a *ngFor="let item of routes" routerLink="/{{item.route}}">
+    <span routerLink="/home" class="cursor-pointer mr-3" [style.color]="(storage.isLoggedIn()) ? 'green' : 'red'" ><b>{{appName}}</b></span>
+    <a mat-button routerLinkActive="bg-slate-300" class="px-2"  *ngFor="let item of routes" routerLink="/{{item.route}}">
         {{ item.name }}
     </a>
     <ng-container *ngIf="storage.isLoggedIn()">

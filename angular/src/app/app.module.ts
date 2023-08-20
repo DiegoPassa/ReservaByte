@@ -15,9 +15,11 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { AuthProvider } from './utils/auth.interceptor';
-import { TablesComponent } from './components/tables/tables.component';
+import { AddOrderDialog, SeatsDialog, TablesComponent } from './components/tables/tables.component';
+import { FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/material.module';
-import { MatDialogModule } from '@angular/material/dialog';
+import { TableInfoComponent } from './components/table-info/table-info.component';
+
 
 @NgModule({
   declarations: [
@@ -28,6 +30,10 @@ import { MatDialogModule } from '@angular/material/dialog';
     ProfileComponent,
     TablesComponent,
     LoginComponent,
+    TableComponent,
+    SeatsDialog,
+    AddOrderDialog,
+    TableInfoComponent
   ],
   imports: [
     BrowserModule,
@@ -36,9 +42,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     HttpClientModule,
     NavBarComponent,
     TestComponent,
-    TableComponent,
-    MaterialModule,
-    MatDialogModule,
+    FormsModule,
+    MaterialModule
   ],
   providers: [AuthProvider],
   bootstrap: [AppComponent],

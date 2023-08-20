@@ -4,6 +4,7 @@ export enum MenuType{
 }
 
 export interface IMenu{
+    _id: string
     name: string,
     price: number,
     ingredients: string[],

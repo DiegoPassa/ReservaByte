@@ -11,6 +11,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   exports: [
@@ -26,6 +30,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatSnackBarModule,
     DragDropModule,
     MatCheckboxModule,
+    MatAutocompleteModule,
+    MatSliderModule,
+    MatSelectModule,
+    MatDialogModule,
   ],
 })
 export class MaterialModule {}

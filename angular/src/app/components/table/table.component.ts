@@ -15,15 +15,6 @@ import { SocketIoService } from 'src/app/services/socket-io.service';
     selector: 'app-table',
     templateUrl: './table.component.html',
     styleUrls: ['./table.component.css'],
-    standalone: true,
-    imports: [
-        CdkDrag,
-        CommonModule,
-        MatCardModule,
-        MatButtonModule,
-        MatGridListModule,
-        MatSnackBarModule,
-    ]
 })
 export class TableComponent implements OnInit {
     panelOpenState = false;
