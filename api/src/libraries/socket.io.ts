@@ -21,6 +21,14 @@ export class SocketIOService {
   initialize(httpsServer: HttpsServer | HttpServer, opts?: Partial<ServerOptions>) {
     SocketIOService.server = new Server(httpsServer, opts);
 
+    SocketIOService.server.on('connection', (socket) => {
+      console.log(`socket ${socket.id} has connected`);
+
+      socket.on('disconnect', () => {
+            console.log('a user has disconnected');
+      })
+  })
+
     return SocketIOService.server;
   }
 

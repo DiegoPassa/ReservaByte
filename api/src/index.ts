@@ -102,21 +102,14 @@ const startServer = () => {
     const server = http.createServer(router);
 
     //* SOCKET.IO server
-    const socket = SocketIOService.instance().initialize(
+    SocketIOService.instance().initialize(
         server, { 
             cors: {
                 origin: '*' //["http://localhost:4200"]
             },
             serveClient: false
-        });
-
-    socket.on('connection', (socket) => {
-        console.log(`socket ${socket.id} has connected`);
-  
-        socket.on('disconnect', () => {
-              console.log('a user has disconnected');
-        })
-    })
+        }
+    );
 
     //* Running server
     server.listen(config.server.port, () => {

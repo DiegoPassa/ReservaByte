@@ -40,7 +40,7 @@ const readAll = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const menus = await Menu.find({$and: [filter]}).skip(skip).limit(limit).sort(sortObj);
-        return res.status(200).json({ menus });
+        return res.status(200).send(menus);
     } catch (err) {
         return res.status(500).json({ err });
     }
@@ -50,7 +50,7 @@ const readMenu = async (req: Request, res: Response, next: NextFunction) => {
     const menuId = req.params.menuId;
     try {
         const menu = await Menu.findById(menuId);
-        return menu ? res.status(200).json({ menu }) : res.status(404).json({ message: "Not found" });
+        return menu ? res.status(200).send(menu) : res.status(404).json({ message: "Not found" });
     } catch (err) {
         return res.status(500).json({ err });
     }
