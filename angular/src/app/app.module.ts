@@ -5,8 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { TestComponent } from './components/test/test.component';
-import { TableComponent } from './components/table/table.component';
 import { OrdersQueueComponent } from './components/orders-queue/orders-queue.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
@@ -19,6 +17,11 @@ import { AddOrderDialog, SeatsDialog, TablesComponent } from './components/table
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/material.module';
 import { TableInfoComponent } from './components/table-info/table-info.component';
+import { DashboardComponent } from './components/admin/dashboard/dashboard.component';
+import { LoadingComponent } from './components/loading/loading.component';
+import { TablesDashboardComponent } from './components/admin/tables-dashboard/tables-dashboard.component';
+import { MenusDashboardComponent } from './components/admin/menus-dashboard/menus-dashboard.component';
+import { UsersDashboardComponent } from './components/admin/users-dashboard/users-dashboard.component';
 
 
 @NgModule({
@@ -30,18 +33,21 @@ import { TableInfoComponent } from './components/table-info/table-info.component
     ProfileComponent,
     TablesComponent,
     LoginComponent,
-    TableComponent,
     SeatsDialog,
     AddOrderDialog,
-    TableInfoComponent
+    TableInfoComponent,
+    DashboardComponent,
+    LoadingComponent,
+    NavBarComponent,
+    TablesDashboardComponent,
+    MenusDashboardComponent,
+    UsersDashboardComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    NavBarComponent,
-    TestComponent,
     FormsModule,
     MaterialModule
   ],

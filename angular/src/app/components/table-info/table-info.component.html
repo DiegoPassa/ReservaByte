@@ -1,1 +1,25 @@
-<p>table-info works!</p>
+<div>
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title class="text-xl">
+                Tavolo <span class="font-bold">{{table.tableNumber}}</span>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div>
+                <h2>Camerieri coinvolti:</h2>
+                <ng-container *ngFor="let waiter of table.waiters">
+                    <p>{{waiter.firstName}} {{waiter.lastName}}</p>
+                </ng-container>
+            </div>
+            <div>
+                <h2>Coda corrente:</h2>
+                <ng-container *ngFor="let menu of table.queue">
+                    <h3>Menu:</h3>
+                    <p>{{menu.menu.name}} - {{menu.completed}}</p>
+                    <p>{{menu.createdAt | date}}</p>
+                </ng-container>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

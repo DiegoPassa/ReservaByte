@@ -3,6 +3,7 @@ import { StorageService } from 'src/app/auth/storage.service';
 import { IOrder } from 'src/app/models/Order';
 import { IQueue } from 'src/app/models/Queue';
 import { UserRole } from 'src/app/models/User';
+import { LoadingService } from 'src/app/services/loading.service';
 import { OrdersService } from 'src/app/services/orders.service';
 import { SocketIoService } from 'src/app/services/socket-io.service';
 
@@ -17,10 +18,14 @@ export class OrdersQueueComponent implements OnInit {
   constructor(
     private ordersService: OrdersService,
     private socket: SocketIoService,
-    private storage: StorageService
+    private storage: StorageService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit(): void {
+
+    this.loadingService.loadingOn()
+
     this.fetchData();
 
     this.socket.listen('order:new').subscribe((newOrder: any) => {
@@ -54,6 +59,7 @@ export class OrdersQueueComponent implements OnInit {
     this.ordersService.getOrders().subscribe({
       next: (data) => {
         this.queues = data;
+        this.loadingService.loadingOff();
       },
       error: (err) => {
         console.error(err);

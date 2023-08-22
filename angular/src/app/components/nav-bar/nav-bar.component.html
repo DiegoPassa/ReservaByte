@@ -2,22 +2,28 @@
     <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
         <mat-icon>menu</mat-icon>
     </button> -->
-    <span routerLink="/home" class="cursor-pointer mr-3" [style.color]="(storage.isLoggedIn()) ? 'green' : 'red'" ><b>{{appName}}</b></span>
-    <a mat-button routerLinkActive="bg-slate-300" class="px-2"  *ngFor="let item of routes" routerLink="/{{item.route}}">
-        {{ item.name }}
-    </a>
-    <ng-container *ngIf="storage.isLoggedIn()">
-    </ng-container>
-    <span class="example-spacer"></span>
-    <ng-container *ngIf="storage.isLoggedIn();else notLogged">
-        <span><b>{{storage.getUser().firstName}} {{storage.getUser().lastName}}</b> - <span class="">{{storage.getUser().role}}</span></span>
-        <button mat-icon-button color="warn" (click)="auth.logout()">
-            <mat-icon>logout</mat-icon>
-        </button>
-    </ng-container>
-    <ng-template #notLogged>
-        <button mat-raised-button color="primary" type="button" routerLink="/login" [disabled]="this.router.url === '/login'">Login</button>
-    </ng-template>
+    <mat-toolbar-row>
+        <span routerLink="/home" class="cursor-pointer mr-3"
+            [style.color]="(storage.isLoggedIn()) ? 'green' : 'red'"><b>{{appName}}</b></span>
+        <ng-container *ngIf="storage.isLoggedIn()">
+            <ng-container *ngFor="let item of routes">
+                <ng-container *ngIf="item.roles.includes(storage.getUser().role)">
+                    <a mat-stroked-button routerLink="/{{item.route}}" routerLinkActive="bg-slate-300" class="mx-1">{{ item.name }}</a>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+        <span class="example-spacer"></span>
+        <ng-container *ngIf="storage.isLoggedIn();else notLogged">
+            <div class="flex items-center gap-1"> <mat-icon class="">account_circle</mat-icon> <b>{{storage.getUser().firstName}} {{storage.getUser().lastName}}</b> - <span>{{storage.getUser().role}}</span></div>
+            <button mat-icon-button color="warn" (click)="auth.logout()">
+                <mat-icon>logout</mat-icon>
+            </button>
+        </ng-container>
+        <ng-template #notLogged>
+            <button mat-raised-button color="primary" type="button" routerLink="/login"
+                [disabled]="this.router.url === '/login'">Login</button>
+        </ng-template>
+    </mat-toolbar-row>
     <!-- <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
         <mat-icon>favorite</mat-icon>
     </button>

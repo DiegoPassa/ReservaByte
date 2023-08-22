@@ -17,11 +17,14 @@ import {
 import { MenusService } from 'src/app/services/menus.service';
 import { IMenu } from 'src/app/models/Menu';
 import { Observable, map, startWith } from 'rxjs';
+import { StateService } from 'src/app/services/state.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tables',
   templateUrl: './tables.component.html',
   styleUrls: ['./tables.component.css'],
+  providers: [TablesService, MenusService, StateService]
 })
 export class TablesComponent implements OnInit {
   tables: ITable[] = [];
@@ -30,6 +33,8 @@ export class TablesComponent implements OnInit {
   constructor(
     private tablesService: TablesService,
     private menuService: MenusService,
+    private stateService: StateService,
+    private router: Router,
     private socket: SocketIoService,
     private _snackBar: MatSnackBar,
     private dialog: MatDialog
@@ -110,6 +115,11 @@ export class TablesComponent implements OnInit {
       data: { menus: this.menus, tableId },
       disableClose: true,
     });
+  }
+
+  goToChild(table: ITable){
+    this.stateService.data = table;
+    this.router.navigate([`/tables/${table.tableNumber}`])
   }
 }
 

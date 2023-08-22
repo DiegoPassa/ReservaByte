@@ -1,5 +1,5 @@
-<div class="grid place-items-center mx-4">
-    <h1 mat-dialog-title>Seleziona quantità:</h1>
+<!-- <div class="grid place-items-center mx-4"> -->
+    <div mat-dialog-title>Seleziona quantità:</div>
     <div mat-dialog-content>
         <mat-slider [max]="max" [min]="min" [step]="step" [discrete]="thumbLabel" [showTickMarks]="showTicks">
             <input matSliderThumb [(ngModel)]="value" #slider>
@@ -10,4 +10,4 @@
         <button mat-button mat-dialog-close>Annulla</button>
         <button mat-stroked-button color="primary" mat-dialog-close (click)="occupySeats(value)">Conferma</button>
     </div>
-</div>
+<!-- </div> -->

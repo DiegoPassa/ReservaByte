@@ -6,7 +6,7 @@
 <ng-template #queuesNotEmpty>
     <div class="flex flex-row flex-wrap gap-4">
         <ng-container *ngFor="let queue of queues; let i = index">
-            <mat-card class="z-{{i}} h-fit w-56" cdkDrag>
+            <mat-card class="z-{{i}} h-fit w-64" cdkDrag>
                 <mat-card-header>
                     <mat-card-title>Tavolo N. {{queue._id}}</mat-card-title>
                 </mat-card-header>
@@ -17,7 +17,8 @@
                             <mat-checkbox [checked]="order.completed" color="accent"
                                 (change)="checkboxOnClick(order._id, $event.checked)">
                                 <p class="font-medium">{{order.menu.name}}</p>
-                                <p class="font-light text-xs text-start">ordinazione: {{order.createdAt| date:'HH:mm'}}
+                                <p class="font-light text-xs text-start">ordinazione: {{order.createdAt|
+                                    date:'HH:mm'}}
                                 </p>
                             </mat-checkbox>
                         </div>
@@ -26,7 +27,8 @@
                 </mat-card-content>
                 <mat-card-actions>
                     <div class="pb-2 pl-2">
-                        <button mat-stroked-button color="warn" [disabled]="canRemove(i)" (click)="removeCompleted(i)">Rimuovi</button>
+                        <button mat-stroked-button color="warn" [disabled]="canRemove(i)"
+                            (click)="removeCompleted(i)">Rimuovi</button>
                     </div>
                 </mat-card-actions>
             </mat-card>

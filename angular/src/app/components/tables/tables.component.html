@@ -6,7 +6,7 @@
                 <mat-card-title class="text-xl">Tavolo <span
                         class="font-bold">{{table.tableNumber}}</span></mat-card-title>
                 <ng-container *ngIf="table.reserved?.status">
-                    <div class=" flex items-center" matTooltip="Riservato da: {{table.reserved?.reservedBy}}">
+                    <div class="flex items-center" matTooltip="Riservato da: {{table.reserved?.reservedBy}}">
                         <span class="pr-1 font-light">{{table.reserved?.reservedTime |
                             date}}</span><mat-icon>lock_clock</mat-icon>
                     </div>
@@ -26,7 +26,8 @@
                 <p><span class="font-bold">{{table.queue?.length}}</span> piatti in coda</p>
             </mat-card-content>
             <mat-card-actions class="flex justify-between px-4 pb-3">
-                <button mat-stroked-button color="primary"><mat-icon>question_mark</mat-icon>Info</button>
+                <button (click)="goToChild(table)" mat-stroked-button
+                    color="primary"><mat-icon>question_mark</mat-icon>Info</button>
                 <ng-container *ngIf="table.seatsOccupied! === 0;else elseBranch">
                     <button mat-flat-button color="primary" [disabled]="table.reserved?.status"
                         (click)="openSeatsDialog(table)">Occupa</button>
@@ -40,5 +41,4 @@
         <!-- </div> -->
     </ng-container>
 </div>
-
 <!-- Cards with media area -->

@@ -1,0 +1,136 @@
+<!-- <mat-sidenav-container autosize>
+  <mat-sidenav opened mode="side">
+    <mat-nav-list>
+      <a mat-list-item>Utenti</a>
+      <a mat-list-item>Tavoli</a>
+    </mat-nav-list>
+    <mat-sidenav-content>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa laborum iusto quae quibusdam, nesciunt itaque quaerat, veritatis ex quia nihil expedita iure incidunt perferendis sequi quidem corrupti officia beatae cumque.</p>
+    </mat-sidenav-content>
+  </mat-sidenav>
+</mat-sidenav-container> -->
+<mat-card>
+  <mat-drawer-container autosize class="bg-transparent">
+    <mat-drawer #drawer opened mode="side" class="text-center">
+      <mat-nav-list class="py-0">
+        <mat-divider></mat-divider>
+        <ng-container *ngFor="let route of routes">
+          <a mat-list-item class="px-8 py-2" [routerLink]="[route.path]"
+            routerLinkActive="bg-slate-300">{{route.name}}</a>
+          <mat-divider></mat-divider>
+        </ng-container>
+      </mat-nav-list>
+    </mat-drawer>
+
+    <div>
+      <ng-container [ngSwitch]="opened">
+        <span *ngSwitchCase="true">
+          <button type="button" mat-button (click)="drawer.toggle(); opened = !opened">
+            Chiudi sidebar
+            <mat-icon>keyboard_double_arrow_left</mat-icon>
+          </button>
+        </span>
+        <span *ngSwitchCase="false">
+          <button type="button" mat-button (click)="drawer.toggle(); opened = !opened">
+            Apri sidebar
+            <mat-icon>keyboard_double_arrow_right</mat-icon>
+          </button>
+        </span>
+      </ng-container>
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-container>
+</mat-card>
+<!-- <mat-accordion>
+  <mat-expansion-panel>
+
+    <mat-expansion-panel-header>
+      <mat-panel-title>Tavoli</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
+      <ng-container matColumnDef="tableNumber">
+        <th mat-header-cell *matHeaderCellDef>Numero</th>
+        <td mat-cell *matCellDef="let element">{{element.tableNumber}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="maxSeats">
+        <th mat-header-cell *matHeaderCellDef>Posti</th>
+        <td mat-cell *matCellDef="let element">{{element.maxSeats}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="onUse">
+        <th mat-header-cell *matHeaderCellDef>In uso</th>
+        <td mat-cell *matCellDef="let element">{{element.seats > 0}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="cover">
+        <th mat-header-cell *matHeaderCellDef>Coperto</th>
+        <td mat-cell *matCellDef="let element">{{element.cover}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="reserved">
+        <th mat-header-cell *matHeaderCellDef>Riservato</th>
+        <td mat-cell *matCellDef="let element">{{element.reserved.status}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+    <div class="demo-button-container">
+      <button mat-raised-button (click)="addData()" class="demo-button">
+        Add data
+      </button>
+      <button mat-raised-button [disabled]="!dataSource.length" (click)="removeData()" class="demo-button">
+        Remove data
+      </button>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+
+    <mat-expansion-panel-header>
+      <mat-panel-title>Tavoli</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
+      <ng-container matColumnDef="tableNumber">
+        <th mat-header-cell *matHeaderCellDef>Numero</th>
+        <td mat-cell *matCellDef="let element">{{element.tableNumber}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="maxSeats">
+        <th mat-header-cell *matHeaderCellDef>Posti</th>
+        <td mat-cell *matCellDef="let element">{{element.maxSeats}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="onUse">
+        <th mat-header-cell *matHeaderCellDef>In uso</th>
+        <td mat-cell *matCellDef="let element">{{element.seats > 0}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="cover">
+        <th mat-header-cell *matHeaderCellDef>Coperto</th>
+        <td mat-cell *matCellDef="let element">{{element.cover}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="reserved">
+        <th mat-header-cell *matHeaderCellDef>Riservato</th>
+        <td mat-cell *matCellDef="let element">{{element.reserved.status}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+    <div class="demo-button-container">
+      <button mat-raised-button (click)="addData()" class="demo-button">
+        Add data
+      </button>
+      <button mat-raised-button [disabled]="!dataSource.length" (click)="removeData()" class="demo-button">
+        Remove data
+      </button>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion> -->

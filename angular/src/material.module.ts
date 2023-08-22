@@ -15,6 +15,12 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   exports: [
@@ -34,6 +40,12 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatSliderModule,
     MatSelectModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatExpansionModule,
+    MatSidenavModule,
+    MatListModule,
+    MatToolbarModule,
   ],
 })
 export class MaterialModule {}

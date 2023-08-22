@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ITable } from '../models/Table';
 import { config } from '../config/config';
@@ -11,7 +11,13 @@ const url = `${config.backendUrl}/tables`
 })
 export class TablesService {
 
-  constructor(private httpClient: HttpClient) { }
+  // tables: Observable<ITable[]> = new Observable;
+
+  constructor(private httpClient: HttpClient) {}
+
+  // ngOnInit(): void {
+  //   this.tables = this.getTables();
+  // }
 
   newTable(body: {}): Observable<ITable>{
     return this.httpClient.post<ITable>(`${url}`, body);
