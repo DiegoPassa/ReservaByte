@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Bartender, Cashier, Cook, User, UserRole, Waiter } from "../models/User";
 import bcrypt from 'bcrypt'
+import { SocketIOService } from "../libraries/socket.io";
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
     const { username, firstName, lastName, role , email, password} = req.body;
@@ -15,7 +16,8 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
             password: hash
         });
         await user.save();
-        res.status(201).json({ user });
+        SocketIOService.instance().emitAll('user:new', user);
+        res.status(201).send(user);
     } catch (error) {
         res.status(500).json({ error });
     }
@@ -23,10 +25,9 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 
 const readAll = async (req: Request, res: Response, next: NextFunction) => {
     // TODO Add query string to filter
-
     try {
         const users = await User.find({}, '-password');
-        return res.status(200).json({users})
+        return res.status(200).send(users);
     } catch (error) {
         return res.status(500).json({error});
     }
@@ -48,6 +49,7 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
         const user = await User.findById(userId);
         if(user){
             await user.set(req.body).save();
+            SocketIOService.instance().emitAll('user:update', user);
             return res.status(200).json({user});
         }
         return res.status(404).json({ message: "Not found" });
@@ -61,7 +63,11 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.userId;
     try {
         const user = await User.findByIdAndDelete(userId);
-        return user ? res.status(200).json({ message: "Deleted" }) : res.status(404).json({ message: "Not found" });
+        if(user){
+            SocketIOService.instance().emitAll('user:delete', userId);
+            return res.status(200).json({ message: "Deleted" })
+        }
+        return res.status(404).json({ message: "Not found" });
     } catch (err) {
         return res.status(500).json({ err });
     }

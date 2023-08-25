@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Menu } from "../models/Menu";
 import { parseQuerySort } from "../libraries/parseQuerySort";
+import { SocketIOService } from "../libraries/socket.io";
 
 const createMenu = async (req: Request, res: Response, next: NextFunction) => {
     const { name, price, ingredients, portionSize, preparationTime, type } = req.body;
@@ -14,6 +15,7 @@ const createMenu = async (req: Request, res: Response, next: NextFunction) => {
     });
     try {
         await menu.save();
+        SocketIOService.instance().emitAll('menu:new', menu);
         res.status(201).json({ menu, message: "Item added" });
     } catch (err) {
         return res.status(500).json({ err });
@@ -60,7 +62,8 @@ const updateMenu = async (req: Request, res: Response, next: NextFunction) => {
         const menuId = req.params.menuId;
         try {
             const menu = await Menu.findByIdAndUpdate(menuId, req.body, {new: true});
-            return res.status(200).json({menu});
+            SocketIOService.instance().emitAll('menu:update', menu);
+            return res.status(200).send(menu);
         } catch (error) {
             return res.status(500).json({error});
         }
@@ -70,7 +73,11 @@ const deleteMenu = async (req: Request, res: Response, next: NextFunction) => {
     const menuId = req.params.menuId;
     try {
         const menu = await Menu.findByIdAndDelete(menuId);
-        return menu ? res.status(200).json({ message: "Deleted" }) : res.status(404).json({ message: "Not found" });
+        if (menu){
+            SocketIOService.instance().getServer().emit('menu:delete', menuId);
+            return res.status(200).json({ message: "Deleted" });
+        }
+        return res.status(404).json({ message: "Not found" });
     } catch (err) {
         return res.status(500).json({ err });
     }

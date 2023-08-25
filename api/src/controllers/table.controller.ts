@@ -58,7 +58,6 @@ const readTable = async (req: Request, res: Response, next: NextFunction) => {
     const tableId = req.params.tableId;
     try {
         const table = await Table.findById(tableId);
-        // SocketIOService.instance().emitAll('test', 'This is a test!');
         return table ? res.status(200).json({ table }) : res.status(404).json({ message: "Not found" });
     } catch (err) {
         return res.status(500).json({ err });
