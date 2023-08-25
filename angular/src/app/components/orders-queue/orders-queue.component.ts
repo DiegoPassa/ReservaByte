@@ -23,9 +23,6 @@ export class OrdersQueueComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
-    this.loadingService.loadingOn()
-
     this.fetchData();
 
     this.socket.listen('order:new').subscribe((newOrder: any) => {
@@ -56,6 +53,7 @@ export class OrdersQueueComponent implements OnInit {
   }
 
   fetchData() {
+    this.loadingService.loadingOn()
     this.ordersService.getOrders().subscribe({
       next: (data) => {
         this.queues = data;

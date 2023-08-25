@@ -1,0 +1,38 @@
+<div matDialogTitle class="font-bold text-xl">Modifica menù: <span class="">{{data.name}}</span></div>
+<form [formGroup]="editMenuForm" (ngSubmit)="onSubmit()">
+    <div matDialogContent class="p-4">
+        <div class="flex gap-3 items-center">
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Prezzo</mat-label>
+                <input matInput type="number" step=".01" placeholder="1" formControlName="price">
+                <mat-icon matSuffix>euro</mat-icon>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Porzione</mat-label>
+                <input matInput type="number" placeholder="1" formControlName="portionSize">
+                <span matTextSuffix>
+                    <div [ngSwitch]="data.type">
+                        <div *ngSwitchCase="'dish'">g</div>
+                        <div *ngSwitchCase="'drink'">cl</div>
+                    </div>
+                </span>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Tempo di preparazione</mat-label>
+                <input matInput type="number" placeholder="1" formControlName="preparationTime">
+                <p matTextSuffix>minuti</p>
+            </mat-form-field>
+        </div>
+        <div class="flex gap-3">
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Lista degli ingredienti</mat-label>
+                <textarea placeholder="ex. pomodoro, origano, ..." matInput formControlName="ingredients" rows="3"></textarea>
+            </mat-form-field>
+        </div>
+    </div>
+    <div mat-dialog-actions class="px-4 pb-4 py-0">
+        <button mat-flat-button matDialogClose color="warn">Annulla</button>
+        <button mat-stroked-button matDialogClose type="submit" [disabled]="!editMenuForm.valid"
+            color="primary">Conferma</button>
+    </div>
+</form>

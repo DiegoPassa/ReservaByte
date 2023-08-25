@@ -1,0 +1,32 @@
+<div matDialogTitle class="font-bold text-xl">Modifica utente: {{data.username}}</div>
+<form [formGroup]="editUserForm" (ngSubmit)="onSubmit()">
+    <div matDialogContent class="p-4">
+        <div class="flex gap-3 items-center">
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Nome</mat-label>
+                <input matInput type="text" placeholder="ex. Mario" formControlName="firstName">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Cognome</mat-label>
+                <input matInput type="text"  placeholder="ex. Rossi" formControlName="lastName">
+            </mat-form-field>
+        </div>
+        <div class="flex gap-3">
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" formControlName="email">
+            </mat-form-field>
+        </div>
+        <div class="flex gap-3">
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Username</mat-label>
+                <input matInput type="text" formControlName="username">
+            </mat-form-field>
+        </div>
+    </div>
+    <div mat-dialog-actions class="px-4 pb-4 py-0">
+        <button mat-flat-button matDialogClose color="warn">Annulla</button>
+        <button mat-stroked-button matDialogClose type="submit" [disabled]="!editUserForm.valid"
+            color="primary">Conferma</button>
+    </div>
+</form>

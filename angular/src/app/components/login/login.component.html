@@ -1,17 +1,17 @@
-<div class="flex flex-col items-center">
-    <mat-card layout-fill>
+<div class="flex flex-col justify-center h-full -mt-12">
+    <mat-card class="p-4 m-auto">
+        <mat-card-header>
+            <span class="text-xl font-bold">
+                Accedi
+            </span>
+        </mat-card-header>
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-            <mat-card-header>
-                <h1 class="text-xl font-bold first-letter:text-blue-900">
-                    Login
-                </h1>
-            </mat-card-header>
             <mat-card-content>
-                <mat-form-field>
+                <mat-form-field class="flex">
                     <mat-label>username</mat-label>
                     <input matInput type="text" name="username" formControlName="username">
                 </mat-form-field>
-                <mat-form-field>
+                <mat-form-field class="flex">
                     <mat-label>password</mat-label>
                     <input matInput [type]="hide ? 'password' : 'text'" name="password" formControlName="password">
                     <button type="button" mat-icon-button matSuffix (click)="hide = !hide"
@@ -20,12 +20,13 @@
                     </button>
                 </mat-form-field>
             </mat-card-content>
-            <mat-card-actions>
+            <mat-card-actions class="px-4 pb-4">
                 <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">Login</button>
             </mat-card-actions>
         </form>
     </mat-card>
 </div>
+
 <!-- <section class="bg-gray-50 dark:bg-gray-900">
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">

@@ -16,7 +16,12 @@
     
     <ng-container matColumnDef="portionSize">
         <th mat-header-cell *matHeaderCellDef>Porzione</th>
-        <td mat-cell *matCellDef="let element">{{element.portionSize}}</td>
+        <td mat-cell *matCellDef="let element">{{element.portionSize}}
+            <span [ngSwitch]="element.type">
+                <span *ngSwitchCase="'dish'">g</span>
+                <span *ngSwitchCase="'drink'">cl</span>
+            </span>
+        </td>
     </ng-container>
     
     <ng-container matColumnDef="preparationTime">
@@ -34,7 +39,7 @@
         <td mat-cell *matCellDef="let element">
             <div [ngSwitch]="element.type">
                 <div *ngSwitchCase="'dish'"> <mat-icon>fastfood</mat-icon> </div>
-                <div *ngSwitchCase="'drink'"><mat-icon>wine_bar</mat-icon></div>
+                <div *ngSwitchCase="'drink'"><mat-icon>local_bar</mat-icon></div>
             </div>
         </td>
     
@@ -43,8 +48,8 @@
     <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Azioni</th>
         <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="primary" class="mr-2"><mat-icon>edit</mat-icon></button>
-            <button mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
+            <button mat-icon-button color="primary" class="mr-2" (click)="editData(element)"><mat-icon>edit</mat-icon></button>
+            <button mat-icon-button color="warn" (click)="removeData(element._id, element.name)"><mat-icon>delete</mat-icon></button>
         </td>
     </ng-container>
 
@@ -53,5 +58,5 @@
 
 </table>
 <div class="flex flex-col justify-center m-3">
-    <button mat-flat-button color="accent">Nuovo menu <mat-icon>add</mat-icon> </button>
+    <button mat-flat-button color="accent" (click)="addData()">Nuovo menu <mat-icon>add</mat-icon> </button>
 </div>

@@ -16,8 +16,8 @@ export class DashboardComponent implements OnInit {
 
   routes: routeInterface[] = [
     { name: 'Tavoli', path: 'tables' },
+    { name: 'Menù', path: 'menus' },
     { name: 'Utenti', path: 'users' },
-    { name: 'Menu', path: 'menus' },
   ];
 
   ngOnInit(): void {}

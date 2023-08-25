@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -26,7 +26,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./tables.component.css'],
   providers: [TablesService, MenusService, StateService]
 })
-export class TablesComponent implements OnInit {
+export class TablesComponent implements OnInit, OnDestroy {
   tables: ITable[] = [];
   menus: IMenu[] = [];
 
@@ -64,6 +64,12 @@ export class TablesComponent implements OnInit {
       this.buildSeats(this.tables[i]);
       this.openSnackBar(`Table ${this.tables[i].tableNumber} updated`);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.socket.socket.off('table:new');
+    this.socket.socket.off('table:delete');
+    this.socket.socket.off('table:update');
   }
 
   fetchData() {

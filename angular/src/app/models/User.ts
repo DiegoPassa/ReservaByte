@@ -7,10 +7,12 @@ export enum UserRole{
 }
 
 export interface IUser {
+    _id: string,
     username: string,
     firstName: string,
     lastName: string
     email: string
+    role: UserRole
 }
 
 export interface ICook extends IUser{
@@ -25,19 +27,4 @@ export interface IBartender extends IUser {
 }
 export interface ICashier extends IUser{
     billsPrepared: number
-}
-
-export class User implements IUser{
-    username: string
-    firstName: string
-    lastName: string
-    email: string
-
-    constructor(username: string, firstName: string, lastName: string, email: string){
-        this.username = username
-        this.firstName = firstName
-        this.lastName = lastName
-        this.email = email
-    }
-
 }

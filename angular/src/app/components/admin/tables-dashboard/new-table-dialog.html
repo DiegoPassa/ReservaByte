@@ -1,0 +1,22 @@
+<div matDialogTitle class="font-bold text-xl">Nuovo tavolo</div>
+<form [formGroup]="newTableForm" (ngSubmit)="onSubmit()" >
+    <div matDialogContent class="p-4">
+        <div class="flex gap-3 items-center">
+            <mat-form-field appearance="outline">
+                <mat-label>Tavolo N°</mat-label>
+                <input matInput type="number" placeholder="N." formControlName="tableNumber">
+            </mat-form-field>
+            <mat-checkbox labelPosition="before" color="primary" class="pb-6" formControlName="isCovered">Coperto</mat-checkbox>
+        </div>
+        <div class="flex gap-3">
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Posti a sedere</mat-label>
+                <input matInput type="number" placeholder="1" formControlName="maxSeats">
+            </mat-form-field>
+        </div>
+    </div>
+    <div mat-dialog-actions class="px-4 pb-4 py-0">
+        <button mat-flat-button matDialogClose color="warn">Annulla</button>
+        <button mat-stroked-button matDialogClose type="submit" [disabled]="!newTableForm.valid" color="primary">Conferma</button>
+    </div>
+</form>

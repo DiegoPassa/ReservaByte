@@ -3,8 +3,8 @@
         <mat-icon>menu</mat-icon>
     </button> -->
     <mat-toolbar-row>
-        <span routerLink="/home" class="cursor-pointer mr-3"
-            [style.color]="(storage.isLoggedIn()) ? 'green' : 'red'"><b>{{appName}}</b></span>
+        <span routerLink="/home" class="cursor-pointer mr-3 font-bold text-lg"
+            [style.color]="(storage.isLoggedIn()) ? 'green' : 'red'">{{appName}}</span>
         <ng-container *ngIf="storage.isLoggedIn()">
             <ng-container *ngFor="let item of routes">
                 <ng-container *ngIf="item.roles.includes(storage.getUser().role)">

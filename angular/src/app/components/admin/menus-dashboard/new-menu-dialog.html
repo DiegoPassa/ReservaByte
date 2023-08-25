@@ -1,0 +1,50 @@
+<div matDialogTitle class="font-bold text-xl">Nuovo menù</div>
+<form [formGroup]="newMenuForm" (ngSubmit)="onSubmit()">
+    <div matDialogContent class="p-4">
+        <div class="flex gap-3 items-center">
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Nome menu</mat-label>
+                <input matInput type="text" placeholder="ex. amatriciana" formControlName="name">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Prezzo</mat-label>
+                <input matInput type="number" step=".01" placeholder="1" formControlName="price">
+                <mat-icon matSuffix>euro</mat-icon>
+            </mat-form-field>
+            <mat-radio-group formControlName="type" class="flex flex-row mb-4">
+                <mat-radio-button *ngFor="let menu of menuTypes" [value]="menu.value">
+                    {{menu.name}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <div class="flex gap-3">
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Porzione</mat-label>
+                <input matInput type="number" placeholder="1" formControlName="portionSize">
+                <span matTextSuffix>
+                    <div [ngSwitch]="newMenuForm.value.type">
+                        <div *ngSwitchCase="'dish'">g</div>
+                        <div *ngSwitchCase="'drink'">cl</div>
+                    </div>
+                </span>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Tempo di preparazione</mat-label>
+                <input matInput type="number" placeholder="1" formControlName="preparationTime">
+                <p matTextSuffix>minuti</p>
+            </mat-form-field>
+        </div>
+        <div class="flex gap-3">
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Lista degli ingredienti</mat-label>
+                <textarea placeholder="ex. pomodoro, origano, ..." matInput formControlName="ingredients" rows="3"></textarea>
+                <!-- <input matInput type="text" placeholder="1" formControlName="ingredients"> -->
+            </mat-form-field>
+        </div>
+    </div>
+    <div mat-dialog-actions class="px-4 pb-4 py-0">
+        <button mat-flat-button matDialogClose color="warn">Annulla</button>
+        <button mat-stroked-button matDialogClose type="submit" [disabled]="!newMenuForm.valid"
+            color="primary">Conferma</button>
+    </div>
+</form>

@@ -19,9 +19,9 @@ import { MaterialModule } from 'src/material.module';
 import { TableInfoComponent } from './components/table-info/table-info.component';
 import { DashboardComponent } from './components/admin/dashboard/dashboard.component';
 import { LoadingComponent } from './components/loading/loading.component';
-import { TablesDashboardComponent } from './components/admin/tables-dashboard/tables-dashboard.component';
-import { MenusDashboardComponent } from './components/admin/menus-dashboard/menus-dashboard.component';
-import { UsersDashboardComponent } from './components/admin/users-dashboard/users-dashboard.component';
+import { DeleteTableDialog, EditTableDialog, NewTableDialog, TablesDashboardComponent } from './components/admin/tables-dashboard/tables-dashboard.component';
+import { MenusDashboardComponent, DeleteMenuDialog, NewMenuDialog, EditMenuDialog } from './components/admin/menus-dashboard/menus-dashboard.component';
+import { DeleteUserDialog, EditUserDialog, NewUserDialog, UsersDashboardComponent } from './components/admin/users-dashboard/users-dashboard.component';
 
 
 @NgModule({
@@ -35,6 +35,11 @@ import { UsersDashboardComponent } from './components/admin/users-dashboard/user
     LoginComponent,
     SeatsDialog,
     AddOrderDialog,
+    NewTableDialog,
+    EditTableDialog,
+    DeleteTableDialog,
+    DeleteMenuDialog,
+    NewMenuDialog,
     TableInfoComponent,
     DashboardComponent,
     LoadingComponent,
@@ -42,6 +47,10 @@ import { UsersDashboardComponent } from './components/admin/users-dashboard/user
     TablesDashboardComponent,
     MenusDashboardComponent,
     UsersDashboardComponent,
+    EditMenuDialog,
+    DeleteUserDialog,
+    NewUserDialog,
+    EditUserDialog,
   ],
   imports: [
     BrowserModule,
