@@ -6,9 +6,9 @@
 <ng-template #queuesNotEmpty>
     <div class="flex flex-row flex-wrap gap-4">
         <ng-container *ngFor="let queue of queues; let i = index">
-            <mat-card class="z-{{i}} h-fit w-64" cdkDrag>
+            <mat-card class="z-{{i}} h-fit w-64 min-w-fit" cdkDrag>
                 <mat-card-header>
-                    <mat-card-title>Tavolo N. {{queue._id}}</mat-card-title>
+                    <mat-card-title class="font-bold">Tavolo N. {{queue.table.tableNumber}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
                     <mat-divider class="m-2"></mat-divider>

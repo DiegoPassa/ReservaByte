@@ -16,7 +16,7 @@ import { MenusDashboardComponent } from './components/admin/menus-dashboard/menu
 import { UsersDashboardComponent } from './components/admin/users-dashboard/users-dashboard.component';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'home' },
+  { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'home', component: HomeComponent, title: 'ReservaByte' },
   { path: 'login', component: LoginComponent, title: 'Login' },
   {

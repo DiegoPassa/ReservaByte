@@ -21,16 +21,20 @@ export class UsersService {
     return this.httpClient.get<IUser[]>(`${url}${filter}`);
   }
 
-  getUserById(id: string): Observable<IUser>{
-    return this.httpClient.get<IUser>(`${url}/${id}`);
+  getUserById(userId: string): Observable<IUser>{
+    return this.httpClient.get<IUser>(`${url}/${userId}`);
   }
 
-  updateUserById(menuId: string, body: {}): Observable<IUser>{
-    return this.httpClient.patch<IUser>(`${url}/${menuId}`, body);
+  updateUserById(userId: string, body: {}): Observable<IUser>{
+    return this.httpClient.patch<IUser>(`${url}/${userId}`, body);
   }
 
-  deleteUserById(menuId: string): Observable<IUser>{
-    return this.httpClient.delete<IUser>(`${url}/${menuId}`);
+  deleteUserById(userId: string): Observable<IUser>{
+    return this.httpClient.delete<IUser>(`${url}/${userId}`);
+  }
+
+  updatePassword(userId: string, body: {oldPassword: string, newPassword: string}): Observable<IUser>{
+    return this.httpClient.patch<IUser>(`${url}/${userId}/password`, body);
   }
 
 }

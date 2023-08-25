@@ -1,6 +1,7 @@
 import { IOrder } from "./Order";
+import { ITable } from "./Table";
 
 export interface IQueue{
-    _id: string,
     orders: IOrder[]
+    table: ITable
 }

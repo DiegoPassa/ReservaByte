@@ -11,7 +11,7 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
-import { ProfileComponent } from './components/profile/profile.component';
+import { ChangePasswordDialog, ProfileComponent } from './components/profile/profile.component';
 import { AuthProvider } from './utils/auth.interceptor';
 import { AddOrderDialog, SeatsDialog, TablesComponent } from './components/tables/tables.component';
 import { FormsModule } from '@angular/forms';
@@ -51,6 +51,7 @@ import { DeleteUserDialog, EditUserDialog, NewUserDialog, UsersDashboardComponen
     DeleteUserDialog,
     NewUserDialog,
     EditUserDialog,
+    ChangePasswordDialog,
   ],
   imports: [
     BrowserModule,

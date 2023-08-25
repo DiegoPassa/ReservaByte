@@ -7,12 +7,12 @@ export enum UserRole{
 }
 
 export interface IUser {
-    _id: string,
-    username: string,
-    firstName: string,
-    lastName: string
-    email: string
-    role: UserRole
+    _id?: string,
+    username?: string,
+    firstName?: string,
+    lastName?: string
+    email?: string
+    role?: UserRole
 }
 
 export interface ICook extends IUser{

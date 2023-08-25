@@ -26,16 +26,17 @@ export class OrdersQueueComponent implements OnInit {
     this.fetchData();
 
     this.socket.listen('order:new').subscribe((newOrder: any) => {
-      let index = this.queues.findIndex( e => e._id === newOrder.order.table);
+      console.log(newOrder);
+      const index = this.queues.findIndex( e => e.table._id === newOrder.order.table._id);
       if (index !== -1){
         this.queues[index].orders.push(newOrder.order);
       }else if(this.storage.getUser().role === newOrder.role || this.storage.getUser().role === UserRole.Admin){
-        this.queues.push({_id: newOrder.order.table, orders: [newOrder.order]});
+        this.queues.push({orders: [newOrder.order], table: newOrder.order.table});
       }
     });
 
     this.socket.listen('order:update').subscribe((updated: any) => {
-      let index = this.findIndexByOrderId(updated._id);
+      const index = this.findIndexByOrderId(updated._id);
       if (index !== -1) this.queues[index.i].orders[index.j] = updated;
     })
 
@@ -56,6 +57,7 @@ export class OrdersQueueComponent implements OnInit {
     this.loadingService.loadingOn()
     this.ordersService.getOrders().subscribe({
       next: (data) => {
+        console.log(data);
         this.queues = data;
         this.loadingService.loadingOff();
       },

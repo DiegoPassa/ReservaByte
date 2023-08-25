@@ -100,7 +100,7 @@ export class EditUserDialog {
   onSubmit() {
     if (this.editUserForm.valid) {
       this.usersService
-        .updateUserById(this.data._id, {
+        .updateUserById(this.data._id!, {
           firstName: this.editUserForm.value.firstName,
           lastName: this.editUserForm.value.lastName,
           email: this.editUserForm.value.email,
