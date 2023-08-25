@@ -8,31 +8,117 @@ const readAll = async (req: Request, res: Response, next: NextFunction) => {
     // TODO Add query string to filter
     try {
         let orders;
+        console.log(res.locals.jwtRole);
         switch (res.locals.jwtRole) {
 
             case UserRole.Cook:
-                orders = await Order.aggregate([
-                    {$match: {'menu.type': MenuType.Dish}},
-                    {$group: {_id: '$table', 'orders': {$push: '$$ROOT'}}},
-                    {$sort: {'orders.createdAt': 1}}
-                ]);
+                orders = await Order.aggregate(
+                    [
+                        {$match: {'menu.type': MenuType.Dish}},
+                        {
+                          $group: {
+                            _id: '$table', 
+                            'orders': {
+                              $push: '$$ROOT'
+                            }
+                          }
+                        }, {
+                          $sort: {
+                            'orders.createdAt': 1
+                          }
+                        }, {
+                          $lookup: {
+                            from: 'tables', 
+                            localField: '_id', 
+                            foreignField: '_id', 
+                            as: 'tableArr'
+                          }
+                        }, {
+                          $project: {
+                            _id: 1, 
+                            orders: 1, 
+                            table: {
+                              $arrayElemAt: [
+                                '$tableArr', 0
+                              ]
+                            }
+                          }
+                        }
+                    ]
+                );
                 break;
 
             case UserRole.Bartender:
-                orders = await Order.aggregate([
-                    {$match: {'menu.type': MenuType.Drink}},
-                    {$group: {_id: '$table', 'orders': {$push: '$$ROOT'}}},
-                    {$sort: {'orders.createdAt': 1}}
-                ]);
-                console.log(orders);
+                orders = await Order.aggregate(
+                    [
+                        {$match: {'menu.type': MenuType.Drink}},
+                        {
+                          $group: {
+                            _id: '$table', 
+                            'orders': {
+                              $push: '$$ROOT'
+                            }
+                          }
+                        }, {
+                          $sort: {
+                            'orders.createdAt': 1
+                          }
+                        }, {
+                          $lookup: {
+                            from: 'tables', 
+                            localField: '_id', 
+                            foreignField: '_id', 
+                            as: 'tableArr'
+                          }
+                        }, {
+                          $project: {
+                            _id: 1, 
+                            orders: 1, 
+                            table: {
+                              $arrayElemAt: [
+                                '$tableArr', 0
+                              ]
+                            }
+                          }
+                        }
+                    ]
+                );
                 break;
-        
+                
             default:
-                orders = await Order.aggregate([
-                    {$group: {_id: '$table', 'orders': {$push: '$$ROOT'}}},
-                    {$sort: {'orders.createdAt': 1}}
-                ]);
-                console.log(orders);
+                orders = await Order.aggregate(
+                    [
+                        {
+                          $group: {
+                            _id: '$table', 
+                            'orders': {
+                              $push: '$$ROOT'
+                            }
+                          }
+                        }, {
+                          $sort: {
+                            'orders.createdAt': 1
+                          }
+                        }, {
+                          $lookup: {
+                            from: 'tables', 
+                            localField: '_id', 
+                            foreignField: '_id', 
+                            as: 'tableArr'
+                          }
+                        }, {
+                          $project: {
+                            _id: 1, 
+                            orders: 1, 
+                            table: {
+                              $arrayElemAt: [
+                                '$tableArr', 0
+                              ]
+                            }
+                          }
+                        }
+                    ]
+                );
                 break;
         }
         return res.status(200).send(orders);

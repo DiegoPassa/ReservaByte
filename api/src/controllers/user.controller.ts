@@ -43,6 +43,27 @@ const readUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const updatePassword = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.userId;
+    const { oldPassword, newPassword } = req.body;
+    try {
+        const user = await User.findById(userId).select('password');
+        if(user){
+            const result = await bcrypt.compare(oldPassword, user.password);
+            if (result){
+                const hash = await bcrypt.hash(newPassword, 10);
+                await user.set({password: hash}).save();
+                SocketIOService.instance().getServer().emit('userPassword:update');
+                return res.status(200).json();
+            }
+            return res.sendStatus(401); 
+        }
+        return res.status(404).json({ message: "Not found" });
+    } catch (err) {
+        return res.status(500).json({ err });
+    }
+}
+
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.userId;
     try {
@@ -73,7 +94,7 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-export default { createUser, readAll, readUser, updateUser, deleteUser};
+export default { createUser, readAll, readUser, updateUser, deleteUser, updatePassword };
 
 // [POST] /messages?type=ATTACHMENT
 

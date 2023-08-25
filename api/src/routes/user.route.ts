@@ -12,4 +12,6 @@ router.get('/:userId', controller.readUser);
 router.patch('/:userId', ValidateSchema(Schemas.user.update), controller.updateUser);
 router.delete('/:userId', verifyRoles(), controller.deleteUser);
 
+router.patch('/:userId/password', controller.updatePassword);
+
 export = router;

@@ -109,6 +109,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
             }
         });
         await order.save();
+        await order.populate({path: 'table'})
         SocketIOService.instance().getServer().emit('order:new', {order: order, role: order.menu.type === MenuType.Dish ? UserRole.Cook : UserRole.Bartender});
         res.status(201).send(order);
     } catch (err) {
