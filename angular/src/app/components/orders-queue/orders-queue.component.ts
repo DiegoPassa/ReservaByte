@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { StorageService } from 'src/app/auth/storage.service';
+import { Store } from '@ngxs/store';
 import { IOrder } from 'src/app/models/Order';
 import { IQueue } from 'src/app/models/Queue';
 import { UserRole } from 'src/app/models/User';
 import { LoadingService } from 'src/app/services/loading.service';
 import { OrdersService } from 'src/app/services/orders.service';
 import { SocketIoService } from 'src/app/services/socket-io.service';
+import { AuthSelectors } from 'src/shared/authState/auth-selectors';
 
 @Component({
   selector: 'app-orders-queue',
@@ -18,7 +19,7 @@ export class OrdersQueueComponent implements OnInit {
   constructor(
     private ordersService: OrdersService,
     private socket: SocketIoService,
-    private storage: StorageService,
+    private store: Store,
     private loadingService: LoadingService
   ) {}
 
@@ -26,11 +27,11 @@ export class OrdersQueueComponent implements OnInit {
     this.fetchData();
 
     this.socket.listen('order:new').subscribe((newOrder: any) => {
-      console.log(newOrder);
+      const userRole = this.store.selectSnapshot(AuthSelectors.getUser)?.role;
       const index = this.queues.findIndex( e => e.table._id === newOrder.order.table._id);
       if (index !== -1){
         this.queues[index].orders.push(newOrder.order);
-      }else if(this.storage.getUser().role === newOrder.role || this.storage.getUser().role === UserRole.Admin){
+      }else if(userRole === newOrder.role || userRole === UserRole.Admin){
         this.queues.push({orders: [newOrder.order], table: newOrder.order.table});
       }
     });

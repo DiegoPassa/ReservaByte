@@ -1,30 +1,22 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { StorageService } from 'src/app/auth/storage.service';
+import { Select } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { IUser } from 'src/app/models/User';
 import { UsersService } from 'src/app/services/users.service';
+import { AuthSelectors } from 'src/shared/authState/auth-selectors';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent{
+  
+  @Select(AuthSelectors.getUser) user$!: Observable<IUser>;
 
-  user: IUser = {};
-
-  constructor(private userService: UsersService, private storage: StorageService, private dialog: MatDialog) {}
-
-  ngOnInit(): void {
-    this.userService.getUserById(this.storage.getUser().id).subscribe(
-      {
-        next: (data: IUser) => {
-          this.user = data
-        },
-        error: (e) => console.error(e)
-      });
-  }
+  constructor(private dialog: MatDialog) {}
 
   changePassword(userId: string){
     this.dialog.open(ChangePasswordDialog, {

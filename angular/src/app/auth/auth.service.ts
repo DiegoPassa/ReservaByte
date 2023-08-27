@@ -2,8 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-
-import { StorageService } from './storage.service';
 import { config } from '../config/config';
 
 const url = config.backendUrl;
@@ -16,7 +14,7 @@ const url = config.backendUrl;
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient, private storage: StorageService, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   login(body: { username: string; password: string }): Observable<any> {
     return this.http.post(`${url}/login`, body, { withCredentials: true });
@@ -27,14 +25,6 @@ export class AuthService {
   }
 
   logout(){
-    this.http.get(`${url}/logout`, { withCredentials: true }).subscribe({
-      next: res => {
-        this.storage.clean();
-        this.router.navigate(['home']);
-      },
-      error: err => {
-        console.log(err);
-      }
-    });
+    return this.http.get(`${url}/logout`, { withCredentials: true });
   }
 }

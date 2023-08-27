@@ -8,46 +8,29 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, catchError, switchMap, throwError } from 'rxjs';
-import { StorageService } from '../auth/storage.service';
 import { AuthService } from '../auth/auth.service';
+import { AuthSelectors } from 'src/shared/authState/auth-selectors';
+import { Store } from '@ngxs/store';
+import { Refresh } from 'src/shared/authState/auth-actions';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   refreshed = false;
 
-  constructor(private storage: StorageService, private auth: AuthService) {}
+  constructor(private store: Store, private auth: AuthService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // if user has token
-    if (this.storage.isLoggedIn()) {
-
-      // const tokenExp = JSON.parse(atob(this.storage.getAccessToken().split('.')[1])).exp*1000;
-      // console.log('REFRESHED: ' + this.refreshed);
-      // if(new Date().getTime() > tokenExp && !this.refreshed){
-      //   this.refreshed = true;
-      //   console.log('!!token expired!!');
-      //   return this.auth.refreshToken().pipe(
-      //     switchMap((res: any) => {
-      //       this.storage.saveUser(res);
-      //       const authReq = this.setHeader(request)
-      //       this.refreshed = false;
-      //       return next.handle(authReq);
-      //     })
-      //   );
-      // }
-      // console.log('token not expired');
-      // const authReq = this.setHeader(request);
-      // return next.handle(authReq);
-      
-
-      const authReq = this.setHeader(request);
+    if (this.store.selectSnapshot(AuthSelectors.isAuthenticated)) {
+      const authReq = this.setBearer(request);
       return next.handle(authReq).pipe(catchError((err: HttpErrorResponse) => {
           if (err.status === 401 && !this.refreshed) {
             this.refreshed = true;
             return this.auth.refreshToken().pipe(
               switchMap((res: any) => {
-                this.storage.saveUser(res);
-                const newAuthReq = this.setHeader(request)
+                // this.storage.saveUser(res);
+                this.store.dispatch(new Refresh(res))
+                const newAuthReq = this.setBearer(request)
                 this.refreshed = false;
                 return next.handle(newAuthReq);
               })
@@ -60,7 +43,8 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(request);
   }
 
-  setHeader(request: HttpRequest<unknown>, token: string = this.storage.getAccessToken()): HttpRequest<unknown> {
+  setBearer(request: HttpRequest<unknown>): HttpRequest<unknown> {
+    const token = this.store.selectSnapshot(AuthSelectors.getToken);
     return request.clone({
       setHeaders: {
         Authorization: `bearer ${token}`

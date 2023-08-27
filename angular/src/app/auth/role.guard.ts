@@ -1,10 +1,11 @@
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
-import { StorageService } from './storage.service';
 import { UserRole } from '../models/User';
+import { State, Store } from '@ngxs/store';
+import { AuthSelectors } from 'src/shared/authState/auth-selectors';
 
 export const roleGuard: CanActivateFn = (route, state) => {
-  const userRole: UserRole = inject(StorageService).getUser().role;
+  const userRole: UserRole = inject(Store).selectSnapshot(AuthSelectors.getUser)?.role!;
   // TODO: remove admin permission
   if (userRole === UserRole.Admin) return true;
   const permitted: UserRole[] = route.data['roles'];

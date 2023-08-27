@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { Select, Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { StorageService } from 'src/app/auth/storage.service';
-import { UserRole } from 'src/app/models/User';
+import { IUser, UserRole } from 'src/app/models/User';
+import { Logout } from 'src/shared/authState/auth-actions';
+import { AuthSelectors } from 'src/shared/authState/auth-selectors';
 
 @Component({
   selector: 'app-nav-bar',
@@ -10,6 +13,10 @@ import { UserRole } from 'src/app/models/User';
   styleUrls: ['./nav-bar.component.css'],
 })
 export class NavBarComponent {
+
+  @Select(AuthSelectors.getUser) user$!: Observable<IUser>
+  @Select(AuthSelectors.isAuthenticated) isAuthenticated$!: Observable<boolean>
+
   appName = 'ReservaByte';
   routes = [
     { name: 'Tavoli', route: '/tables', roles: [UserRole.Admin, UserRole.Waiter] },
@@ -20,7 +27,11 @@ export class NavBarComponent {
 
   constructor(
     public auth: AuthService,
-    public storage: StorageService,
+    public store: Store,
     public router: Router
   ) {}
+
+  logout(){
+    this.store.dispatch(new Logout());
+  }
 }

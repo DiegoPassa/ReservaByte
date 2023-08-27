@@ -22,6 +22,9 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { DeleteTableDialog, EditTableDialog, NewTableDialog, TablesDashboardComponent } from './components/admin/tables-dashboard/tables-dashboard.component';
 import { MenusDashboardComponent, DeleteMenuDialog, NewMenuDialog, EditMenuDialog } from './components/admin/menus-dashboard/menus-dashboard.component';
 import { DeleteUserDialog, EditUserDialog, NewUserDialog, UsersDashboardComponent } from './components/admin/users-dashboard/users-dashboard.component';
+import { NgxsModule } from '@ngxs/store';
+import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+import { AuthState } from 'src/shared/authState/auth-state';
 
 
 @NgModule({
@@ -59,7 +62,11 @@ import { DeleteUserDialog, EditUserDialog, NewUserDialog, UsersDashboardComponen
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    MaterialModule
+    MaterialModule,
+    NgxsModule.forRoot([AuthState]),
+    NgxsStoragePluginModule.forRoot({
+      key: 'auth'
+    })
   ],
   providers: [AuthProvider],
   bootstrap: [AppComponent],

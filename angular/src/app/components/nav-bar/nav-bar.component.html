@@ -4,18 +4,18 @@
     </button> -->
     <mat-toolbar-row>
         <span routerLink="/home" class="cursor-pointer mr-3 font-bold text-lg"
-            [style.color]="(storage.isLoggedIn()) ? 'green' : 'red'">{{appName}}</span>
-        <ng-container *ngIf="storage.isLoggedIn()">
+            [style.color]="(isAuthenticated$ | async) ? 'green' : 'red'">{{appName}}</span>
+        <ng-container *ngIf="(isAuthenticated$ | async)">
             <ng-container *ngFor="let item of routes">
-                <ng-container *ngIf="item.roles.includes(storage.getUser().role)">
+                <ng-container *ngIf="item.roles.includes((user$ | async)?.role!)">
                     <a mat-stroked-button routerLink="/{{item.route}}" routerLinkActive="bg-slate-300" class="mx-1">{{ item.name }}</a>
                 </ng-container>
             </ng-container>
         </ng-container>
         <span class="example-spacer"></span>
-        <ng-container *ngIf="storage.isLoggedIn();else notLogged">
-            <div class="flex items-center gap-1"> <mat-icon class="">account_circle</mat-icon> <b>{{storage.getUser().firstName}} {{storage.getUser().lastName}}</b> - <span>{{storage.getUser().role}}</span></div>
-            <button mat-icon-button color="warn" (click)="auth.logout()">
+        <ng-container *ngIf="(isAuthenticated$ | async);else notLogged">
+            <div class="flex items-center gap-1"> <mat-icon class="">account_circle</mat-icon> <b>{{(user$|async)?.firstName}} {{(user$|async)?.lastName}}</b> - <span>{{(user$|async)?.role}}</span></div>
+            <button mat-icon-button color="warn" (click)="logout()">
                 <mat-icon>logout</mat-icon>
             </button>
         </ng-container>

@@ -1,17 +1,19 @@
 <mat-card class="p-4">
-    <mat-card-title>
-        <mat-card-header class="font-bold text-xl">
-            {{user.firstName}} {{user.lastName}}
-        </mat-card-header>
-    </mat-card-title>
-    <mat-card-content>
-        <br>
-        <p><span class="font-bold">username: </span> {{user.username}}</p>
-        <p><span class="font-bold">email: </span>{{user.email}}</p>
-        <br>
-        <p><span class="font-bold">ruolo: </span>{{user.role}}</p>
-    </mat-card-content>
-    <mat-card-actions>
-        <button mat-stroked-button color="warn" (click)="changePassword(user._id!)">Cambia password</button>
-    </mat-card-actions>
+    <ng-container *ngIf="user$ | async as user">
+        <mat-card-title>
+            <mat-card-header class="font-bold text-xl">
+                {{user.firstName}} {{user.lastName}}
+            </mat-card-header>
+        </mat-card-title>
+        <mat-card-content>
+            <br>
+            <p><span class="font-bold">username: </span> {{user.username}}</p>
+            <p><span class="font-bold">email: </span>{{user.email}}</p>
+            <br>
+            <p><span class="font-bold">ruolo: </span>{{user.role}}</p>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-stroked-button color="warn" (click)="changePassword(user._id!)">Cambia password</button>
+        </mat-card-actions>
+    </ng-container>
 </mat-card>
