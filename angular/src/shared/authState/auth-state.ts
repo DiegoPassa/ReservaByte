@@ -26,7 +26,7 @@ export class AuthState{
     @Action(Refresh)
     refresh({patchState}: StateContext<AuthStateModel>, {payload}: Refresh){
         patchState({
-            token: payload.accessToken
+            token: payload
         })
     }
 

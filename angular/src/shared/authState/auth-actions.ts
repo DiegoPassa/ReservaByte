@@ -12,7 +12,7 @@ import { IUser } from 'src/app/models/User';
 
 export class Refresh {
   static readonly type = '[Auth] Refresh';
-  constructor(public payload: { accessToken: string, user: IUser }) {}
+  constructor(public payload: string) {}
 }
 
 export class Login {
