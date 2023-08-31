@@ -1,8 +1,8 @@
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 import { UserRole } from '../models/User';
-import { State, Store } from '@ngxs/store';
-import { AuthSelectors } from 'src/shared/authState/auth-selectors';
+import { Store } from '@ngxs/store';
+import { AuthSelectors } from 'src/shared/auth-state';
 
 export const roleGuard: CanActivateFn = (route, state) => {
   const userRole: UserRole = inject(Store).selectSnapshot(AuthSelectors.getUser)?.role!;

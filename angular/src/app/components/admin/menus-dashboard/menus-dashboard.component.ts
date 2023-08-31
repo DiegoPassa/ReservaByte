@@ -2,18 +2,21 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
+import { Actions, Select, ofActionDispatched } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { IMenu, MenuType } from 'src/app/models/Menu';
-import { LoadingService } from 'src/app/services/loading.service';
 import { MenusService } from 'src/app/services/menus.service';
-import { SocketIoService } from 'src/app/services/socket-io.service';
+import { AddMenu, MenusSelectors, RemoveMenu, UpdateMenu } from 'src/shared/menus-state';
 
 @Component({
   selector: 'app-menus-dashboard',
   templateUrl: './menus-dashboard.component.html',
   styleUrls: ['./menus-dashboard.component.css'],
 })
-export class MenusDashboardComponent implements OnInit, OnDestroy{
-  dataSource!: IMenu[];
+export class MenusDashboardComponent implements OnInit{
+  
+  @Select(MenusSelectors.getMenus) menus$!: Observable<IMenu[]>
+
   displayedColumns: string[] = [
     'name',
     'price',
@@ -26,43 +29,23 @@ export class MenusDashboardComponent implements OnInit, OnDestroy{
   ];
 
   constructor(
-    private menusService: MenusService,
     private dialog: MatDialog,
-    private socket: SocketIoService,
-    private loading: LoadingService
+    private actions: Actions,
   ) {}
 
   @ViewChild(MatTable) table!: MatTable<IMenu>;
 
   ngOnInit(): void {
-    this.loading.loadingOn();
-    this.menusService.getMenus().subscribe((menus: IMenu[]) => {
-      this.dataSource = menus;
-      this.loading.loadingOff();
-    });
-
-    this.socket.listen('menu:new').subscribe((newMenu: any) => {
-      this.dataSource.push(newMenu);
-      this.table.renderRows();
-    });
     
-    this.socket.listen('menu:delete').subscribe((menuId: any) => {
-      const i = this.dataSource.findIndex((el) => el._id === menuId);
-      this.dataSource.splice(i, 1);
+    this.actions.pipe(ofActionDispatched(AddMenu)).subscribe(() => {
       this.table.renderRows();
     });
-    
-    this.socket.listen('menu:update').subscribe((updatedMenu: any) => {
-      const i = this.dataSource.findIndex((el) => el._id === updatedMenu?._id);
-      this.dataSource[i] = updatedMenu;
+    this.actions.pipe(ofActionDispatched(RemoveMenu)).subscribe(() => {
       this.table.renderRows();
     });
-  }
-
-  ngOnDestroy(): void {
-    this.socket.socket.off('menu:new');
-    this.socket.socket.off('menu:delete');
-    this.socket.socket.off('menu:update');
+    this.actions.pipe(ofActionDispatched(UpdateMenu)).subscribe(() => {
+      this.table.renderRows();
+    });
   }
 
   addData() {

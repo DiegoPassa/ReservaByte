@@ -9,9 +9,8 @@ import {
 } from '@angular/common/http';
 import { Observable, catchError, map, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
-import { AuthSelectors } from 'src/shared/authState/auth-selectors';
 import { Store } from '@ngxs/store';
-import { Logout, Refresh } from 'src/shared/authState/auth-actions';
+import { AuthSelectors, Refresh, Logout } from 'src/shared/auth-state';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -51,12 +50,14 @@ export class AuthInterceptor implements HttpInterceptor {
                       // session is expired, log out the user
                       this.store.dispatch(new Logout());
                     }
+                    alert(err);
                     return throwError(() => err);
                   })
               );
             })
           );
         }
+        alert(err);
         return throwError(() => err);
       })
     );

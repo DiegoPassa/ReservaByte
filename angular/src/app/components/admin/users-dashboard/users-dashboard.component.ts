@@ -2,21 +2,24 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
+import { Actions, Select, ofActionDispatched } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { IUser, UserRole } from 'src/app/models/User';
 import { LoadingService } from 'src/app/services/loading.service';
-import { SocketIoService } from 'src/app/services/socket-io.service';
 import { UsersService } from 'src/app/services/users.service';
+import { AddUser, RemoveUser, UpdateUser, UsersSelectors } from 'src/shared/users-state';
 
 @Component({
   selector: 'app-users-dashboard',
   templateUrl: './users-dashboard.component.html',
   styleUrls: ['./users-dashboard.component.css']
 })
-export class UsersDashboardComponent implements OnInit, OnDestroy{
+export class UsersDashboardComponent implements OnInit{
 
   userRoles = UserRole
 
-  dataSource!: IUser[];
+  @Select(UsersSelectors.getUsers) users$!: Observable<IUser[]>
+
   displayedColumns: string[] = [
     'name',
     'role',
@@ -25,39 +28,20 @@ export class UsersDashboardComponent implements OnInit, OnDestroy{
     'actions',
   ];
 
-  constructor(private usersService: UsersService, private dialog: MatDialog, private socket: SocketIoService, private loading: LoadingService) {}
+  constructor(private dialog: MatDialog, private loading: LoadingService, private actions: Actions) {}
 
   @ViewChild(MatTable) table!: MatTable<IUser>;
 
   ngOnInit(): void {
-    this.loading.loadingOn();
-    this.usersService.getUsers().subscribe((users: IUser[]) => {
-      this.dataSource = users;
-      this.loading.loadingOff();
-    });
-
-    this.socket.listen('user:new').subscribe((newUser: any) => {
-      this.dataSource.push(newUser);
+    this.actions.pipe(ofActionDispatched(AddUser)).subscribe(() => {
       this.table.renderRows();
     });
-    
-    this.socket.listen('user:delete').subscribe((userId: any) => {
-      const i = this.dataSource.findIndex((el) => el._id === userId);
-      this.dataSource.splice(i, 1);
+    this.actions.pipe(ofActionDispatched(RemoveUser)).subscribe(() => {
       this.table.renderRows();
     });
-    
-    this.socket.listen('user:update').subscribe((updatedUser: any) => {
-      const i = this.dataSource.findIndex((el) => el._id === updatedUser?._id);
-      this.dataSource[i] = updatedUser;
+    this.actions.pipe(ofActionDispatched(UpdateUser)).subscribe(() => {
       this.table.renderRows();
     });
-  }
-
-  ngOnDestroy(): void {
-    this.socket.socket.off('user:new');
-    this.socket.socket.off('user:delete');
-    this.socket.socket.off('user:update');
   }
 
   addData() {

@@ -8,19 +8,19 @@
         <ng-container *ngIf="(isAuthenticated$ | async)">
             <ng-container *ngFor="let item of routes">
                 <ng-container *ngIf="item.roles.includes((user$ | async)?.role!)">
-                    <a mat-stroked-button routerLink="/{{item.route}}" routerLinkActive="bg-slate-300" class="mx-1">{{ item.name }}</a>
+                    <a mat-flat-button routerLink="/{{item.route}}" routerLinkActive="bg-blue-200" class="mx-1 bg-slate-200">{{ item.name }}</a>
                 </ng-container>
             </ng-container>
         </ng-container>
         <span class="example-spacer"></span>
         <ng-container *ngIf="(isAuthenticated$ | async);else notLogged">
-            <div class="flex items-center gap-1"> <mat-icon class="">account_circle</mat-icon> <b>{{(user$|async)?.firstName}} {{(user$|async)?.lastName}}</b> - <span>{{(user$|async)?.role}}</span></div>
+            <div class="flex items-center gap-1"> <mat-icon class="">account_circle</mat-icon> <b>{{(user$|async)?.firstName}} {{(user$|async)?.lastName}}</b><mat-chip disableRipple>{{(user$|async)?.role}}</mat-chip></div>
             <button mat-icon-button color="warn" (click)="logout()">
                 <mat-icon>logout</mat-icon>
             </button>
         </ng-container>
         <ng-template #notLogged>
-            <button mat-raised-button color="primary" type="button" routerLink="/login"
+            <button mat-flat-button color="primary" type="button" routerLink="/login"
                 [disabled]="this.router.url === '/login'">Login</button>
         </ng-template>
     </mat-toolbar-row>

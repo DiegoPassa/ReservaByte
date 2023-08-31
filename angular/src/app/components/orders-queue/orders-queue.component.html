@@ -1,4 +1,39 @@
-<ng-container *ngIf="queues.length === 0; else queuesNotEmpty">
+
+<div class="flex flex-row flex-wrap gap-4">
+    <ng-container *ngFor="let queue of (tables$ | async); let i = index">
+        <ng-container *ngIf="!hide(i)">
+            <mat-card class="z-{{i}} h-fit w-64 min-w-fit" cdkDrag>
+                <mat-card-header>
+                    <mat-card-title class="font-bold">Tavolo N. {{queue.tableNumber}}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <mat-divider class="m-2"></mat-divider>
+                    <ng-container *ngFor="let order of queue.queue">
+                        <ng-container *ngIf="!order.completed">
+                            <div class="flex items-center">
+                                <mat-checkbox [checked]="order.completed" color="accent"
+                                    (change)="order.markCompleted = $event.checked">
+                                    <p class="font-medium">{{order.menu.name}}</p>
+                                    <p class="font-light text-xs text-start">ordinazione: {{order.createdAt | date:'HH:mm'}}
+                                    </p>
+                                </mat-checkbox>
+                            </div>
+                            <mat-divider class="my-2"></mat-divider>
+                        </ng-container>
+                    </ng-container>
+                </mat-card-content>
+                <mat-card-actions>
+                    <div class="pb-2 pl-2">
+                        <button mat-stroked-button color="warn" [disabled]="canRemove(i)"
+                            (click)="removeCompleted(i)">Rimuovi</button>
+                    </div>
+                </mat-card-actions>
+            </mat-card>
+        </ng-container>
+    </ng-container>
+</div>
+
+<!-- <ng-container *ngIf="queues.length === 0; else queuesNotEmpty">
     <p class="text-4xl text-center py-10 text-white">
         Nessun ordine...
     </p>
@@ -6,6 +41,9 @@
 <ng-template #queuesNotEmpty>
     <div class="flex flex-row flex-wrap gap-4">
         <ng-container *ngFor="let queue of queues; let i = index">
+            <ng-container *ngIf="">
+
+            </ng-container>
             <mat-card class="z-{{i}} h-fit w-64 min-w-fit" cdkDrag>
                 <mat-card-header>
                     <mat-card-title class="font-bold">Tavolo N. {{queue.table.tableNumber}}</mat-card-title>
@@ -13,16 +51,17 @@
                 <mat-card-content>
                     <mat-divider class="m-2"></mat-divider>
                     <ng-container *ngFor="let order of queue.orders">
-                        <div class="flex items-center">
-                            <mat-checkbox [checked]="order.completed" color="accent"
-                                (change)="checkboxOnClick(order._id, $event.checked)">
-                                <p class="font-medium">{{order.menu.name}}</p>
-                                <p class="font-light text-xs text-start">ordinazione: {{order.createdAt|
-                                    date:'HH:mm'}}
-                                </p>
-                            </mat-checkbox>
-                        </div>
-                        <mat-divider class="my-2"></mat-divider>
+                        <ng-container *ngIf="!order.completed">
+                            <div class="flex items-center">
+                                <mat-checkbox [checked]="order.completed" color="accent"
+                                    (change)="order.markCompleted = $event.checked">
+                                    <p class="font-medium">{{order.menu.name}}</p>
+                                    <p class="font-light text-xs text-start">ordinazione: {{order.createdAt | date:'HH:mm'}}
+                                    </p>
+                                </mat-checkbox>
+                            </div>
+                            <mat-divider class="my-2"></mat-divider>
+                        </ng-container>
                     </ng-container>
                 </mat-card-content>
                 <mat-card-actions>
@@ -34,4 +73,6 @@
             </mat-card>
         </ng-container>
     </div>
-</ng-template>
+</ng-template> -->
+
+<!-- checkboxOnClick(order, $event.checked) -->

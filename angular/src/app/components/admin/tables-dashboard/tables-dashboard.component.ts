@@ -2,25 +2,27 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
+import { Actions, Select, ofActionDispatched } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { ITable } from 'src/app/models/Table';
 import { LoadingService } from 'src/app/services/loading.service';
-import { SocketIoService } from 'src/app/services/socket-io.service';
 import { TablesService } from 'src/app/services/tables.service';
+import { AddTable, RemoveTable, TablesSelectors, UpdateTable } from 'src/shared/tables-state';
 
 @Component({
   selector: 'app-tables-dashboard',
   templateUrl: './tables-dashboard.component.html',
   styleUrls: ['./tables-dashboard.component.css'],
 })
-export class TablesDashboardComponent implements OnInit, OnDestroy {
+export class TablesDashboardComponent implements OnInit {
   constructor(
-    private tablesService: TablesService,
     private dialog: MatDialog,
-    private socket: SocketIoService,
     private loading: LoadingService,
+    private actions: Actions,
   ) {}
 
-  dataSource!: ITable[];
+  @Select(TablesSelectors.getTables) tables$!: Observable<ITable[]>
+
   displayedColumns: string[] = [
     'tableNumber',
     'onUse',
@@ -33,37 +35,15 @@ export class TablesDashboardComponent implements OnInit, OnDestroy {
   @ViewChild(MatTable) table!: MatTable<ITable>;
 
   ngOnInit(): void {
-    this.loading.loadingOn()
-    this.tablesService.getTables().subscribe((tables: ITable[]) => {
-      this.dataSource = tables;
-      this.loading.loadingOff()
-    });
-
-    this.socket.listen('table:new').subscribe((newTable: any) => {
-      this.dataSource.push(newTable);
-      this.dataSource.sort((t1: ITable, t2: ITable) =>
-        t1.tableNumber! > t2.tableNumber! ? 1 : -1
-      );
+    this.actions.pipe(ofActionDispatched(AddTable)).subscribe(() => {
       this.table.renderRows();
     });
-    
-    this.socket.listen('table:delete').subscribe((tableId: any) => {
-      const i = this.dataSource.findIndex((el) => el._id === tableId);
-      this.dataSource.splice(i, 1);
+    this.actions.pipe(ofActionDispatched(RemoveTable)).subscribe(() => {
       this.table.renderRows();
     });
-    
-    this.socket.listen('table:update').subscribe((updatedTable: any) => {
-      const i = this.dataSource.findIndex((el) => el._id === updatedTable?._id);
-      this.dataSource[i] = updatedTable;
+    this.actions.pipe(ofActionDispatched(UpdateTable)).subscribe(() => {
       this.table.renderRows();
     });
-  }
-
-  ngOnDestroy(): void {
-    this.socket.socket.off('table:new');
-    this.socket.socket.off('table:delete');
-    this.socket.socket.off('table:update');
   }
 
   addData() {

@@ -39,7 +39,7 @@ export class TablesService {
     return this.httpClient.delete<ITable>(`${url}/${tableId}`);
   }
 
-  addOrderToQueue(tableId: string, menuId: string): Observable<ITable>{
-    return this.httpClient.post<ITable>(`${url}/${tableId}/queue/${menuId}`, {});
+  addOrderToQueue(tableId: string, body: {userId: string, menuId: string}): Observable<ITable>{
+    return this.httpClient.post<ITable>(`${url}/${tableId}/queue`, body);
   }
 }

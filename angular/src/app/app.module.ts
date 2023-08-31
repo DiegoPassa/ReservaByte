@@ -13,7 +13,7 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { ChangePasswordDialog, ProfileComponent } from './components/profile/profile.component';
 import { AuthProvider } from './utils/auth.interceptor';
-import { AddOrderDialog, SeatsDialog, TablesComponent } from './components/tables/tables.component';
+import { AddOrderDialog, ReserveDialog, SeatsDialog, TablesComponent } from './components/tables/tables.component';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/material.module';
 import { TableInfoComponent } from './components/table-info/table-info.component';
@@ -23,9 +23,13 @@ import { DeleteTableDialog, EditTableDialog, NewTableDialog, TablesDashboardComp
 import { MenusDashboardComponent, DeleteMenuDialog, NewMenuDialog, EditMenuDialog } from './components/admin/menus-dashboard/menus-dashboard.component';
 import { DeleteUserDialog, EditUserDialog, NewUserDialog, UsersDashboardComponent } from './components/admin/users-dashboard/users-dashboard.component';
 import { NgxsModule } from '@ngxs/store';
-import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
-import { AuthState } from 'src/shared/authState/auth-state';
-
+import { NgxsStoragePluginModule, SESSION_STORAGE_ENGINE } from '@ngxs/storage-plugin';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+import { CashierComponent } from './components/cashier/cashier.component';
+import { AuthState } from 'src/shared/auth-state';
+import { TablesState } from 'src/shared/tables-state';
+import { MenusState } from 'src/shared/menus-state';
+import { UsersState } from 'src/shared/users-state';
 
 @NgModule({
   declarations: [
@@ -55,6 +59,8 @@ import { AuthState } from 'src/shared/authState/auth-state';
     NewUserDialog,
     EditUserDialog,
     ChangePasswordDialog,
+    CashierComponent,
+    ReserveDialog,
   ],
   imports: [
     BrowserModule,
@@ -63,9 +69,13 @@ import { AuthState } from 'src/shared/authState/auth-state';
     HttpClientModule,
     FormsModule,
     MaterialModule,
-    NgxsModule.forRoot([AuthState]),
+    NgxsModule.forRoot([AuthState, TablesState, MenusState, UsersState]),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxsStoragePluginModule.forRoot({
-      key: 'auth'
+      key: [{
+        key: 'auth',
+        engine: SESSION_STORAGE_ENGINE
+      }]
     })
   ],
   providers: [AuthProvider],

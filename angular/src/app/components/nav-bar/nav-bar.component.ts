@@ -4,8 +4,7 @@ import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { IUser, UserRole } from 'src/app/models/User';
-import { Logout } from 'src/shared/authState/auth-actions';
-import { AuthSelectors } from 'src/shared/authState/auth-selectors';
+import { AuthSelectors, Logout } from 'src/shared/auth-state';
 
 @Component({
   selector: 'app-nav-bar',
@@ -21,8 +20,9 @@ export class NavBarComponent {
   routes = [
     { name: 'Tavoli', route: '/tables', roles: [UserRole.Admin, UserRole.Waiter] },
     { name: 'Ordini', route: '/orders', roles: [UserRole.Admin, UserRole.Cook, UserRole.Bartender] },
-    { name: 'Profilo', route: '/profile', roles: [UserRole.Admin, UserRole.Cashier, UserRole.Waiter, UserRole.Bartender, UserRole.Cook] },
+    { name: 'Cassa', route: '/receipts', roles: [UserRole.Admin, UserRole.Cashier] },
     { name: 'Dashboard', route: '/admin', roles: [UserRole.Admin, UserRole.Cashier] },
+    { name: 'Profilo', route: '/profile', roles: [UserRole.Admin, UserRole.Cashier, UserRole.Waiter, UserRole.Bartender, UserRole.Cook] },
   ];
 
   constructor(

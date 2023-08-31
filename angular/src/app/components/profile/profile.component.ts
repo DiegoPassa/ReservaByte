@@ -5,7 +5,7 @@ import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { IUser } from 'src/app/models/User';
 import { UsersService } from 'src/app/services/users.service';
-import { AuthSelectors } from 'src/shared/authState/auth-selectors';
+import { AuthSelectors } from 'src/shared/auth-state';
 
 @Component({
   selector: 'app-profile',

@@ -14,6 +14,7 @@ import { DashboardComponent } from './components/admin/dashboard/dashboard.compo
 import { TablesDashboardComponent } from './components/admin/tables-dashboard/tables-dashboard.component';
 import { MenusDashboardComponent } from './components/admin/menus-dashboard/menus-dashboard.component';
 import { UsersDashboardComponent } from './components/admin/users-dashboard/users-dashboard.component';
+import { CashierComponent } from './components/cashier/cashier.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -41,6 +42,13 @@ const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { roles: [UserRole.Cook, UserRole.Bartender] },
     title: 'Ordini',
+  },
+  {
+    path: 'receipts',
+    component: CashierComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: [UserRole.Cashier] },
+    title: 'Cassa',
   },
   {
     path: 'admin',

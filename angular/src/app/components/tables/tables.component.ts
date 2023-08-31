@@ -12,13 +12,17 @@ import {
   FormArray,
   FormBuilder,
   FormControl,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 import { MenusService } from 'src/app/services/menus.service';
 import { IMenu } from 'src/app/models/Menu';
 import { Observable, map, startWith } from 'rxjs';
 import { StateService } from 'src/app/services/state.service';
-import { Router } from '@angular/router';
+import { Select, Store } from '@ngxs/store';
+import { AuthSelectors } from 'src/shared/auth-state';
+import { TablesSelectors } from 'src/shared/tables-state';
+import { MenusSelectors } from 'src/shared/menus-state';
 
 @Component({
   selector: 'app-tables',
@@ -26,72 +30,18 @@ import { Router } from '@angular/router';
   styleUrls: ['./tables.component.css'],
   providers: [TablesService, MenusService, StateService]
 })
-export class TablesComponent implements OnInit, OnDestroy {
-  tables: ITable[] = [];
-  menus: IMenu[] = [];
+export class TablesComponent implements OnInit {
+
+  @Select(TablesSelectors.getTables) tables$!: Observable<ITable[]>
 
   constructor(
-    private tablesService: TablesService,
-    private menuService: MenusService,
-    private stateService: StateService,
-    private router: Router,
     private socket: SocketIoService,
     private _snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.fetchData();
 
-    this.socket.listen('table:new').subscribe((newTable: any) => {
-      this.buildSeats(newTable);
-      this.tables.push(newTable);
-      this.tables.sort((t1: ITable, t2: ITable) =>
-        t1.tableNumber! > t2.tableNumber! ? 1 : -1
-      );
-      this.openSnackBar('New table added!');
-    });
-
-    this.socket.listen('table:delete').subscribe((tableId: any) => {
-      const i = this.tables.findIndex((el) => el._id === tableId);
-      this.tables.splice(i, 1);
-      this.openSnackBar('A table has been deleted!');
-    });
-
-    this.socket.listen('table:update').subscribe((updatedTable: any) => {
-      const i = this.tables.findIndex((el) => el._id === updatedTable?._id);
-      this.tables[i] = updatedTable;
-      this.buildSeats(this.tables[i]);
-      this.openSnackBar(`Table ${this.tables[i].tableNumber} updated`);
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.socket.socket.off('table:new');
-    this.socket.socket.off('table:delete');
-    this.socket.socket.off('table:update');
-  }
-
-  fetchData() {
-    this.tablesService.getTables('?sort=tableNumber').subscribe({
-      next: (tables: ITable[]) => {
-        this.tables = tables;
-        this.tables.forEach((e) => {
-          this.buildSeats(e);
-        });
-      },
-      error: (err) => {
-        console.error(err);
-      },
-    });
-    this.menuService.getMenus().subscribe({
-      next: (menus: IMenu[]) => {
-        this.menus = menus;
-      },
-      error: (err) => {
-        console.error(err);
-      },
-    });
   }
 
   buildSeats(table: ITable): void {
@@ -118,14 +68,20 @@ export class TablesComponent implements OnInit, OnDestroy {
 
   openNewOrderDialog(tableId: string): void {
     this.dialog.open(AddOrderDialog, {
-      data: { menus: this.menus, tableId },
+      data: { tableId },
       disableClose: true,
     });
   }
 
-  goToChild(table: ITable){
-    this.stateService.data = table;
-    this.router.navigate([`/tables/${table.tableNumber}`])
+  // goToChild(table: ITable){
+  //   this.stateService.data = table;
+  //   this.router.navigate([`/tables/${table.tableNumber}`])
+  // }
+  reserve(table: ITable): void{
+    this.dialog.open(ReserveDialog, {
+      data: table,
+      disableClose: true,
+    });
   }
 }
 
@@ -152,6 +108,27 @@ export class SeatsDialog {
   }
 }
 
+@Component({
+  templateUrl: 'reserve-dialog.html',
+})
+export class ReserveDialog {
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: ITable,
+    private tableService: TablesService,
+    private fb: FormBuilder,
+  ) {}
+  
+  reserveForm: FormGroup = this.fb.group({
+    status: [this.data.reserved?.status],
+    reservedBy: [{value: this.data.reserved?.reservedBy, disabled: !this.data.reserved?.status}, (this.data.reserved?.status) ? Validators.required : ''],
+    reservedTime: [{value: this.data.reserved?.reservedTime?.toLocaleString(), disabled: !this.data.reserved?.status}, (this.data.reserved?.status) ? Validators.required : '']
+  });
+
+  onSubmit(){
+
+  }
+}
+
 interface optionInterface {
   id: string;
   name: string;
@@ -163,10 +140,13 @@ interface optionInterface {
 export class AddOrderDialog implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<AddOrderDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: { menus: IMenu[]; tableId: string },
+    @Inject(MAT_DIALOG_DATA) public data: {tableId: string },
     private fb: FormBuilder,
-    private tablesService: TablesService
+    private tablesService: TablesService,
+    private store: Store,
   ) {}
+
+  @Select(MenusSelectors.getMenus) menus$!: Observable<IMenu[]>
 
   myControl = new FormControl('');
   options: optionInterface[] = [];
@@ -181,9 +161,11 @@ export class AddOrderDialog implements OnInit {
   }
 
   ngOnInit(): void {
-    this.data.menus.forEach((e) =>
-      this.options.push({ id: e._id, name: e.name })
-    );
+    this.menus$.subscribe( menus => {
+      menus.forEach((e) =>
+        this.options.push({ id: e._id, name: e.name })
+      );
+    })
     this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
       map((value) => this._filter(value || ''))
@@ -221,11 +203,12 @@ export class AddOrderDialog implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
+      console.log(this.newOrders.value);
       this.newOrders.value.forEach((e: any) => {
         this.dialogRef.close();
         for (let index = 0; index < e.nItems; index++) {
           this.tablesService
-            .addOrderToQueue(this.data.tableId, e.menu.id)
+            .addOrderToQueue(this.data.tableId, {userId: this.store.selectSnapshot(AuthSelectors.getUser)?._id!, menuId: e.menu.id})
             .subscribe();
         }
       });

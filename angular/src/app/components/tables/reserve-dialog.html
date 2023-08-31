@@ -1,0 +1,24 @@
+<div matDialogTitle class="font-bold text-xl">Prenotazione per tavolo N° {{data.tableNumber}}</div>
+<form [formGroup]="reserveForm" (ngSubmit)="onSubmit()" >
+    <div matDialogContent class="p-4">
+        <div class="flex gap-3 items-center">
+            <mat-checkbox labelPosition="before" color="primary" class="pb-6 pl-3" formControlName="status">Riservato</mat-checkbox>
+        </div>
+        <div class="flex gap-3">
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Riservato da</mat-label>
+                <input matInput type="text" formControlName="reservedBy">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Orario prenotazione</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="reservedTime">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+    </div>
+    <div mat-dialog-actions class="px-4 pb-4 py-0">
+        <button mat-flat-button matDialogClose color="warn">Annulla</button>
+        <button mat-stroked-button matDialogClose type="submit" [disabled]="!reserveForm.valid" color="primary">Conferma</button>
+    </div>
+</form>

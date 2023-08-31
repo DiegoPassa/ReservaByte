@@ -8,4 +8,5 @@ export interface IOrder{
     createdAt: Date,
     estimatedCompletation: Date,
     completed: boolean
+    markCompleted: boolean
 };
