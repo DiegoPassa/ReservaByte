@@ -1,10 +1,12 @@
 import mongoose, { Document, Schema, SchemaTypes } from "mongoose"
 import { IDish, IDrink, IMenu, MenuSchema } from "./Menu";
 import { ITable } from "./Table";
+import { IUser } from "./User";
 
 export interface IOrder{
     menu: IDish | IDrink | IMenu,
     table: ITable,
+    orderedBy: IUser,
     createdAt: Date,
     estimatedCompletation: Date,
     completed: boolean
@@ -15,6 +17,7 @@ export interface IOrderModel extends IOrder, Document {};
 const OrderSchema: Schema = new Schema<IOrder>({
     menu: { type: MenuSchema, immutable: true, required: true },
     table: { type: SchemaTypes.ObjectId, ref: 'Table', required: true },
+    orderedBy: { type: SchemaTypes.ObjectId, ref: 'User', required: true },
     createdAt: { type: Date, required: true },
     estimatedCompletation: { type: Date, required: true },
     completed: { type: Boolean, default: false, required: true }

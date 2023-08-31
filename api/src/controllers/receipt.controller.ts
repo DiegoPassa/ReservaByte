@@ -4,7 +4,7 @@ import Table from "../models/Table";
 import Order from "../models/Order";
 
 const createReceipt = async (req: Request, res: Response, next: NextFunction) => {
-    const tableId = req.params.tableId;
+    const tableId = req.body.tableId;
 
     // Create new bill entity
     const receipt = new Receipt({

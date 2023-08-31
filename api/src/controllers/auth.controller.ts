@@ -16,7 +16,7 @@ const signJWT = (user: IUserModel, refresh: boolean = true): string => {
         {
             issuer: "reservaByte",
             algorithm: 'HS256',
-            expiresIn: (!refresh) ? '5s' : '10h'
+            expiresIn: (!refresh) ? '30s' : '10h'
         }
     );
 };
@@ -33,7 +33,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         const refreshToken = signJWT(user);
         const accessToken = signJWT(user, false);
         res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 10 * 60 * 60 * 1000});
-        const response = { accessToken: accessToken, user: { username: user.username, firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role, id: user.id } }
+        const response = { accessToken: accessToken, user: { username: user.username, firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role, _id: user.id } }
         return res.status(200).send(response);
     } catch (error) {
         return res.status(500).json({ error });
@@ -54,7 +54,7 @@ const refresh = async (req: Request, res: Response, next: NextFunction) => {
         if(!user) return res.sendStatus(404);
         jwt.verify(refreshToken, config.jwt.refresh_token);
         const newAccessToken = signJWT(user, false);
-        const response = { accessToken: newAccessToken, user: { username: user.username, firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role, id: user.id } }
+        const response = { accessToken: newAccessToken, user: { username: user.username, firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role, _id: user.id } }
         return res.status(200).send(response);
     } catch (error) {
         return res.status(500).json({ error: error })

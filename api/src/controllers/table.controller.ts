@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import Table from "../models/Table";
-import Order from "../models/Order";
+import Table, { ITable } from "../models/Table";
+import Order, { IOrder } from "../models/Order";
 import { Menu, MenuType } from "../models/Menu";
 import { parseQuerySort } from "../libraries/parseQuerySort";
 import { SocketIOService } from "../libraries/socket.io";
@@ -45,9 +45,9 @@ const readAll = async (req: Request, res: Response, next: NextFunction) => {
     const limit: number = parseInt(req.query?.limit as string) || 20;
 
     const sortObj = (sort) ? parseQuerySort(sort.toString()) : {};
-
     try {
-        const tables = await Table.find({$and: [filter]}).skip(skip).limit(limit).sort(sortObj).populate({path: 'queue', select: '-table', populate: { path: 'menu' }}).populate({path: 'waiters'});
+        let tables = await Table.find({$and: [filter]}).skip(skip).limit(limit).sort(sortObj).populate({path: 'queue', select: '-table', options: { sort: {'createdAt': 1}} , populate: { path: 'menu' }}).populate({path: 'waiters', select: '-password'});
+        // tables.map((table: ITable) => table.queue = table.queue?.filter((order: IOrder) => order.menu.type === MenuType.Drink))
         return res.status(200).send(tables);
     } catch (err) {
         return res.status(500).json({ err });
@@ -90,12 +90,14 @@ const deleteTable = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
-    const { menuId, tableId } = req.params;
+    const { tableId } = req.params;
+    const { userId, menuId } = req.body;
     try {
         const order = new Order({
             menu: await Menu.findById(menuId),
             table: tableId,
-            createdAt: new Date()
+            createdAt: new Date(),
+            orderedBy: userId,
         });
         order.estimatedCompletation = new Date(order.createdAt.getTime() + order.menu.preparationTime*60000);
         await Menu.findByIdAndUpdate({_id: menuId}, {
@@ -103,49 +105,24 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
                 totalOrders: 1
             }
         });
-        await Table.findByIdAndUpdate({_id: tableId}, {
+        const table = await Table.findByIdAndUpdate({_id: tableId}, {
             $push: {
                 queue: order._id
+            },
+            $addToSet: {
+                waiters: userId
             }
-        });
+        }, {new: true});
         await order.save();
-        await order.populate({path: 'table'})
-        SocketIOService.instance().getServer().emit('order:new', {order: order, role: order.menu.type === MenuType.Dish ? UserRole.Cook : UserRole.Bartender});
-        res.status(201).send(order);
+        // await order.populate({path: 'table'});
+        // await table!.populate({path: 'queue'});
+        // SocketIOService.instance().getServer().emit('order:new', {order: order, role: order.menu.type === MenuType.Dish ? UserRole.Cook : UserRole.Bartender});
+        SocketIOService.instance().getServer().emit('order:new', {tableId: table?.id, order, role: order.menu.type === MenuType.Dish ? UserRole.Cook : UserRole.Bartender});
+        res.status(201).send();
     } catch (err) {
+        console.log(err);
         return res.status(500).json({ err });
     }
 }
-
-// const createOrder = async (req: Request, res: Response, next: NextFunction) => {
-//     const { menuId, tableId } = req.params;
-//     try {
-//         const tableQueue = await Queue.find({table: tableId});
-//         const newOrder: IOrder = {
-//             menu: await Menu.findById(menuId)
-//         }
-        
-//         const order = new Order({
-//             menu: await Menu.findById(menuId),
-//             table: tableId
-//         });
-
-//         order.estimatedCompletation = new Date(order.createdAt.getTime() + order.menu.preparationTime*60000);
-//         await Menu.findByIdAndUpdate({_id: menuId}, {
-//             $inc: {
-//                 totalOrders: 1
-//             }
-//         });
-//         await Table.findByIdAndUpdate({_id: tableId}, {
-//             $push: {
-//                 queue: order._id
-//             }
-//         });
-//         await order.save();
-//         res.status(201).json({ order });
-//     } catch (err) {
-//         return res.status(500).json({ err });
-//     }
-// }
 
 export default { createTable, readAll, readTable, updateTable, deleteTable, createOrder };

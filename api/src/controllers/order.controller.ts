@@ -181,7 +181,7 @@ const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const order = await Order.findByIdAndDelete(orderId);
         if(order){
-            SocketIOService.instance().emitAll('order:delete', orderId);
+            SocketIOService.instance().emitAll('order:delete', {tableId: order.table, orderId});
             return res.status(200).json({ message: "Deleted" })
         }
         return res.status(404).json({ message: "Not found" });

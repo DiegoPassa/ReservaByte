@@ -35,7 +35,7 @@ export interface ICashier extends IUser{
 
 export interface IUserModel extends IUser, Document {};
 
-const UserSchema: Schema = new Schema<IUser>({
+export const UserSchema: Schema = new Schema<IUser>({
     username: { type: String, unique: true, required: true},
     firstName: { type: String, required: true},
     lastName: { type: String, required: true},

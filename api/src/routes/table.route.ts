@@ -12,7 +12,7 @@ router.get("/:tableId", controller.readTable); // get a table by tableId
 router.patch("/:tableId", verifyRoles(UserRole.Waiter), controller.updateTable); // update a table by tableId
 router.delete("/:tableId", verifyRoles(), controller.deleteTable); // delete a table by tableId
 
-router.post("/:tableId/queue/:menuId", verifyRoles(UserRole.Waiter), controller.createOrder); // add an order to table queue by tableId and menuId
+router.post("/:tableId/queue", verifyRoles(UserRole.Waiter), controller.createOrder); // add an order to table queue by tableId and menuId
 router.get("/:tableId/queue", verifyRoles(UserRole.Waiter)); // get queue from a table by tableId
 router.delete("/:tableId/queue/:orderId", verifyRoles(UserRole.Waiter)); // delete an order from table's order queue
 
