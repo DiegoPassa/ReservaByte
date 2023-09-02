@@ -37,7 +37,8 @@ export class TablesComponent implements OnInit {
   constructor(
     private socket: SocketIoService,
     private _snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private tablesService: TablesService,
   ) {}
 
   ngOnInit(): void {
@@ -83,9 +84,18 @@ export class TablesComponent implements OnInit {
       disableClose: true,
     });
   }
+
+  removeReserved(tableId: string): void{
+    this.tablesService.updateTableById(tableId, {reserved: false}).subscribe();
+  }
+
+  getOrdersNumber(table: ITable){
+    return table.queue?.filter(e => !e.completed).length
+  }
 }
 
 @Component({
+  selector: 'app-seats-dialog',
   templateUrl: 'seats-dialog.html',
 })
 export class SeatsDialog {
@@ -109,23 +119,33 @@ export class SeatsDialog {
 }
 
 @Component({
+  selector: 'app-reserve-dialog',
   templateUrl: 'reserve-dialog.html',
 })
 export class ReserveDialog {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: ITable,
-    private tableService: TablesService,
+    private tablesService: TablesService,
     private fb: FormBuilder,
   ) {}
   
   reserveForm: FormGroup = this.fb.group({
-    status: [this.data.reserved?.status],
-    reservedBy: [{value: this.data.reserved?.reservedBy, disabled: !this.data.reserved?.status}, (this.data.reserved?.status) ? Validators.required : ''],
-    reservedTime: [{value: this.data.reserved?.reservedTime?.toLocaleString(), disabled: !this.data.reserved?.status}, (this.data.reserved?.status) ? Validators.required : '']
-  });
+    reservedBy: ['',  Validators.required],
+    reservedTime: ['', Validators.required],
+    reservedSeats: [1, Validators.required]
+});
 
   onSubmit(){
-
+    if(this.reserveForm.valid){
+      this.tablesService.updateTableById(this.data._id!, {
+        reserved: {
+          status: true,
+          reservedBy: this.reserveForm.value.reservedBy,
+          reservedTime: this.reserveForm.value.reservedTime,
+          reservedSeats: this.reserveForm.value.reservedSeats
+        }
+      }).subscribe();
+    }
   }
 }
 
@@ -135,6 +155,7 @@ interface optionInterface {
 }
 
 @Component({
+  selector: 'app-add-order-dialog',
   templateUrl: 'add-order-dialog.html',
 })
 export class AddOrderDialog implements OnInit {

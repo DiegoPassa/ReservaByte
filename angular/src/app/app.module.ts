@@ -22,14 +22,17 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { DeleteTableDialog, EditTableDialog, NewTableDialog, TablesDashboardComponent } from './components/admin/tables-dashboard/tables-dashboard.component';
 import { MenusDashboardComponent, DeleteMenuDialog, NewMenuDialog, EditMenuDialog } from './components/admin/menus-dashboard/menus-dashboard.component';
 import { DeleteUserDialog, EditUserDialog, NewUserDialog, UsersDashboardComponent } from './components/admin/users-dashboard/users-dashboard.component';
+import { CashierComponent } from './components/cashier/cashier.component';
+
 import { NgxsModule } from '@ngxs/store';
 import { NgxsStoragePluginModule, SESSION_STORAGE_ENGINE } from '@ngxs/storage-plugin';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
-import { CashierComponent } from './components/cashier/cashier.component';
 import { AuthState } from 'src/shared/auth-state';
 import { TablesState } from 'src/shared/tables-state';
 import { MenusState } from 'src/shared/menus-state';
 import { UsersState } from 'src/shared/users-state';
+
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -76,6 +79,16 @@ import { UsersState } from 'src/shared/users-state';
         key: 'auth',
         engine: SESSION_STORAGE_ENGINE
       }]
+    }),
+    ToastrModule.forRoot({
+      timeOut: 15000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+      countDuplicates: true,
+      resetTimeoutOnDuplicate: true,
+      progressBar: true,
+      progressAnimation: 'decreasing',
+      enableHtml: true
     })
   ],
   providers: [AuthProvider],

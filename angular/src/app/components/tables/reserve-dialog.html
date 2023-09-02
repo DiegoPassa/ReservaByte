@@ -1,9 +1,6 @@
 <div matDialogTitle class="font-bold text-xl">Prenotazione per tavolo N° {{data.tableNumber}}</div>
-<form [formGroup]="reserveForm" (ngSubmit)="onSubmit()" >
+<form [formGroup]="reserveForm" (ngSubmit)="onSubmit()">
     <div matDialogContent class="p-4">
-        <div class="flex gap-3 items-center">
-            <mat-checkbox labelPosition="before" color="primary" class="pb-6 pl-3" formControlName="status">Riservato</mat-checkbox>
-        </div>
         <div class="flex gap-3">
             <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Riservato da</mat-label>
@@ -16,9 +13,16 @@
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
         </div>
+        <div class="flex gap-3 flex-col px-2">
+            <mat-label>Posti riservati: <b>{{slider.value}}</b></mat-label>
+            <mat-slider [max]="data.maxSeats" [min]="1" [step]="1" [discrete]="true" [showTickMarks]="true">
+                <input matSliderThumb formControlName="reservedSeats" #slider>
+            </mat-slider>
+        </div>
     </div>
     <div mat-dialog-actions class="px-4 pb-4 py-0">
         <button mat-flat-button matDialogClose color="warn">Annulla</button>
-        <button mat-stroked-button matDialogClose type="submit" [disabled]="!reserveForm.valid" color="primary">Conferma</button>
+        <button mat-stroked-button matDialogClose type="submit" [disabled]="!reserveForm.valid"
+            color="primary">Conferma</button>
     </div>
 </form>

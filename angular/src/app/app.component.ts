@@ -12,6 +12,7 @@ import { AddUser, GetUsers, UpdateUser } from 'src/shared/users-state';
 import { UserRole } from './models/User';
 import { MenuType } from './models/Menu';
 import { ITable } from './models/Table';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +29,8 @@ export class AppComponent implements OnInit {
     private tablesService: TablesService,
     private menusService: MenusService,
     private usersService: UsersService,
-    private socket: SocketIoService
+    private socket: SocketIoService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -41,7 +43,7 @@ export class AppComponent implements OnInit {
       this.fetchData();
       this.routeLoginUser();
     });
-
+    
     this.actions.pipe(ofActionDispatched(Logout)).subscribe(() => {
       this.store.reset({});
       this.router.navigate(['/login']);
@@ -133,7 +135,7 @@ export class AppComponent implements OnInit {
     this.socket.listen('table:delete').subscribe((tableId: any) => {
       this.store.dispatch(new RemoveTable(tableId));
     });
-
+    
     this.socket.listen('order:new').subscribe((newOrder: any) => {
       if(role === UserRole.Bartender || role === UserRole.Cook){
         if(newOrder.role === role){
@@ -144,7 +146,9 @@ export class AppComponent implements OnInit {
       }
     });
     this.socket.listen('order:update').subscribe((updatedOrder: any) => {
-      this.store.dispatch(new UpdateOrder(updatedOrder));
+      const {order, tableNumber} = updatedOrder;
+      this.store.dispatch(new UpdateOrder(order));
+      this.toastr.info(`Il piatto <b>${order.menu.name}</b> è stato completato per il tavolo <b>${tableNumber.tableNumber}</b>`, 'Piatto completato')
     });
     this.socket.listen('order:delete').subscribe((payload: any) => {
       this.store.dispatch(new RemoveOrder(payload));

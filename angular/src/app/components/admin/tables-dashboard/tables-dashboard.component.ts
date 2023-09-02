@@ -102,6 +102,8 @@ export class NewTableDialog {
 })
 export class EditTableDialog implements OnInit{
   constructor(private tableService: TablesService, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: ITable) {}
+
+  reservedSeats: number = this.data.reserved?.reservedSeats!
     
   editTableForm: FormGroup = this.fb.group({
     tableNumber: [this.data.tableNumber, Validators.required],
@@ -110,7 +112,8 @@ export class EditTableDialog implements OnInit{
     reserved: this.fb.group({
       status: [this.data.reserved?.status],
       reservedBy: [{value: this.data.reserved?.reservedBy, disabled: !this.data.reserved?.status}, (this.data.reserved?.status) ? Validators.required : ''],
-      reservedTime: [{value: this.data.reserved?.reservedTime?.toLocaleString(), disabled: !this.data.reserved?.status}, (this.data.reserved?.status) ? Validators.required : '']
+      reservedTime: [{value: this.data.reserved?.reservedTime?.toLocaleString(), disabled: !this.data.reserved?.status}, (this.data.reserved?.status) ? Validators.required : ''],
+      reservedSeats: [{value: this.data.reserved?.reservedSeats, disabled: !this.data.reserved?.status}, (this.data.reserved?.status) ? Validators.required : '']
     })
   });
 
@@ -121,11 +124,15 @@ export class EditTableDialog implements OnInit{
         this.editTableForm.get('reserved.reservedBy')?.addValidators(Validators.required);
         this.editTableForm.get('reserved.reservedTime')?.enable();
         this.editTableForm.get('reserved.reservedTime')?.addValidators(Validators.required);
+        this.editTableForm.get('reserved.reservedSeats')?.enable();
+        this.editTableForm.get('reserved.reservedSeats')?.addValidators(Validators.required);
       }else{
         this.editTableForm.get('reserved.reservedBy')?.disable();
         this.editTableForm.get('reserved.reservedBy')?.setValue('');
         this.editTableForm.get('reserved.reservedTime')?.disable();
         this.editTableForm.get('reserved.reservedTime')?.setValue('');
+        this.editTableForm.get('reserved.reservedSeats')?.disable();
+        this.editTableForm.get('reserved.reservedSeats')?.setValue('');
       }
     })
   }

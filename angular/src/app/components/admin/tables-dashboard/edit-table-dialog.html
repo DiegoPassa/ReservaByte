@@ -16,19 +16,29 @@
         </div>
         <div formGroupName="reserved">
             <div class="flex gap-3 items-center">
-                <mat-checkbox labelPosition="before" color="primary" class="pb-6 pl-3" formControlName="status">Riservato</mat-checkbox>
+                <mat-checkbox labelPosition="before" color="primary" class="pb-3 pl-3" formControlName="status">Riservato</mat-checkbox>
             </div>
-            <div class="flex gap-3">
-                <mat-form-field appearance="outline" class="w-full">
-                    <mat-label>Riservato da</mat-label>
-                    <input matInput type="text" formControlName="reservedBy">
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="w-full">
-                    <mat-label>Orario prenotazione</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="reservedTime">
-                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
+            <div class="border-2 rounded-md border-slate-200">
+                <div class="m-3">
+                    <div class="flex gap-3">
+                            <mat-form-field appearance="outline" class="w-full">
+                                <mat-label>Riservato da</mat-label>
+                                <input matInput type="text" formControlName="reservedBy">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Orario prenotazione</mat-label>
+                            <input matInput [matDatepicker]="picker" formControlName="reservedTime">
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex gap-3 flex-col px-2">
+                        <mat-label>Posti riservati: <b>{{slider.value}}</b></mat-label>
+                        <mat-slider [max]="data.maxSeats" [min]="1" [step]="1" [discrete]="true" [showTickMarks]="true">
+                            <input matSliderThumb formControlName="reservedSeats" #slider>
+                        </mat-slider>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
