@@ -64,6 +64,7 @@ export class TablesComponent implements OnInit {
       data: table,
       disableClose: true,
       autoFocus: true,
+      minWidth: '300px'
     });
   }
 
@@ -101,18 +102,13 @@ export class TablesComponent implements OnInit {
 export class SeatsDialog {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: ITable,
-    private tableService: TablesService
+    private tablesService: TablesService,
   ) {}
-  min = 0;
-  max = this.data.maxSeats;
-  showTicks = true;
-  step = 1;
-  thumbLabel = false;
   value = 1;
 
   occupySeats(seats: number) {
     this.data.seatsOccupied = seats;
-    this.tableService
+    this.tablesService
       .updateTableById(this.data._id!, { seatsOccupied: seats })
       .subscribe();
   }
@@ -226,7 +222,6 @@ export class AddOrderDialog implements OnInit {
     if (this.form.valid) {
       console.log(this.newOrders.value);
       this.newOrders.value.forEach((e: any) => {
-        this.dialogRef.close();
         for (let index = 0; index < e.nItems; index++) {
           this.tablesService
             .addOrderToQueue(this.data.tableId, {userId: this.store.selectSnapshot(AuthSelectors.getUser)?._id!, menuId: e.menu.id})

@@ -3,12 +3,12 @@
         <mat-icon>menu</mat-icon>
     </button> -->
     <mat-toolbar-row>
-        <span routerLink="/home" class="cursor-pointer mr-3 font-bold text-lg"
+        <span routerLink="/home" class="cursor-pointer mr-3 text-xl font-bold"
             [style.color]="(isAuthenticated$ | async) ? 'green' : 'red'">{{appName}}</span>
         <ng-container *ngIf="(isAuthenticated$ | async)">
             <ng-container *ngFor="let item of routes">
                 <ng-container *ngIf="item.roles.includes((user$ | async)?.role!)">
-                    <a mat-flat-button routerLink="/{{item.route}}" routerLinkActive="bg-blue-200" class="mx-1 bg-slate-200">{{ item.name }}</a>
+                    <a mat-stroked-button routerLink="/{{item.route}}" routerLinkActive="bg-neutral-300" class="mx-1">{{ item.name }}</a>
                 </ng-container>
             </ng-container>
         </ng-container>

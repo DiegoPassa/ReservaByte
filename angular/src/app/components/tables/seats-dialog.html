@@ -1,13 +1,16 @@
 <!-- <div class="grid place-items-center mx-4"> -->
-    <div mat-dialog-title>Seleziona quantità:</div>
-    <div mat-dialog-content>
-        <mat-slider [max]="max" [min]="min" [step]="step" [discrete]="thumbLabel" [showTickMarks]="showTicks">
+<div matDialogTitle class="font-bold text-xl">Occupa tavolo n° {{data.tableNumber}}</div>
+<div matDialogContent class="p-4">
+    <div class="flex gap-3 flex-col px-2">
+        <mat-label>Posti da occupare: <b>{{slider.value}}</b></mat-label>
+        <mat-slider [max]="data.maxSeats" min="1" step="1" discrete="false" showTickMarks="true" show>
             <input matSliderThumb [(ngModel)]="value" #slider>
         </mat-slider>
-        <p>Posti: {{value}}</p>
     </div>
-    <div mat-dialog-actions>
-        <button mat-button mat-dialog-close>Annulla</button>
-        <button mat-stroked-button color="primary" mat-dialog-close (click)="occupySeats(value)">Conferma</button>
-    </div>
+</div>
+<!-- </div> -->
+<div mat-dialog-actions class="px-4 pb-4 py-0">
+    <button mat-flat-button color="warn" mat-dialog-close>Annulla</button>
+    <button mat-stroked-button color="primary" mat-dialog-close (click)="occupySeats(value)">Conferma</button>
+</div>
 <!-- </div> -->

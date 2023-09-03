@@ -140,6 +140,7 @@ export class AppComponent implements OnInit {
       if(role === UserRole.Bartender || role === UserRole.Cook){
         if(newOrder.role === role){
           this.store.dispatch(new AddOrder(newOrder.order));
+          this.toastr.info(`Un nuovo ordine è stato inserito!`, 'Nuovo ordine')
         }
       }else{
         this.store.dispatch(new AddOrder(newOrder.order));
