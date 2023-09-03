@@ -45,12 +45,6 @@ export class TablesComponent implements OnInit {
 
   }
 
-  buildSeats(table: ITable): void {
-    table.seats = Array(table.seatsOccupied)
-      .fill(true)
-      .concat(Array(table.maxSeats! - table.seatsOccupied!).fill(false));
-  }
-
   openSnackBar(message: string, action: string = 'OK') {
     this._snackBar.open(message, action, {
       duration: 3 * 1000,
@@ -156,7 +150,6 @@ interface optionInterface {
 })
 export class AddOrderDialog implements OnInit {
   constructor(
-    private dialogRef: MatDialogRef<AddOrderDialog>,
     @Inject(MAT_DIALOG_DATA) public data: {tableId: string },
     private fb: FormBuilder,
     private tablesService: TablesService,

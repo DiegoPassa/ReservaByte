@@ -22,6 +22,7 @@
     "@angular/router": "^16.0.0",
     "@ngxs/storage-plugin": "^3.8.1",
     "@ngxs/store": "^3.8.1",
+    "@swimlane/ngx-charts": "^20.4.1",
     "ngx-toastr": "^17.0.2",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.7.2",

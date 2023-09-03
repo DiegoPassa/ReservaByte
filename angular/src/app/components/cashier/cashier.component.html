@@ -1,21 +1,23 @@
+
 <div class="grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 gap-6 justify-stretch">
-    <ng-container *ngFor="let table of tables">
-        <!-- <ng-container *ngIf="table.seatsOccupied! > 0"> -->
 
-            <mat-card class="h-fit">
-                <mat-card-header class="flex justify-between">
-                    <mat-card-title class="text-xl">Tavolo <span class="font-bold">{{table.tableNumber}}</span></mat-card-title>
+        <ng-container *ngFor="let table of tables$ | async">
+            <ng-container *ngIf="table.seatsOccupied! > 0">
+                
+                <mat-card class="h-fit">
+                    <mat-card-header class="flex justify-between">
+                        <mat-card-title class="text-xl">Tavolo <span class="font-bold">{{table.tableNumber}}</span></mat-card-title>
                         <button mat-stroked-button color="warn" (click)="createReceipt(table._id!)">Crea scontrino</button>
-                </mat-card-header>
-                <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
-                <mat-card-content>
-                    <p>Posti occupati: {{table.seatsOccupied}}/{{table.maxSeats}}</p>
-                    <br>
-
-                    <p class="font-bold">Camerieri: </p>
-                    <ng-container *ngFor="let waiter of table.waiters">
-                        <p>{{waiter.firstName}} {{waiter.lastName}}</p>
-                    </ng-container>
+                    </mat-card-header>
+                    <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+                    <mat-card-content>
+                        <p>Posti occupati: {{table.seatsOccupied}}/{{table.maxSeats}}</p>
+                        <br>
+                        
+                        <p class="font-bold">Camerieri: </p>
+                        <ng-container *ngFor="let waiter of table.waiters">
+                            <p>{{waiter.firstName}} {{waiter.lastName}}</p>
+                        </ng-container>
                     <br>
                     <p class="font-bold">Coda: </p>
                     <ng-container *ngFor="let order of table.queue">
@@ -25,14 +27,10 @@
                     </ng-container>
                 </mat-card-content>
                 <!-- <mat-card-actions class="flex justify-between px-4 pb-3"> -->
-                <!-- </mat-card-actions> -->
+                    <!-- </mat-card-actions> -->
             </mat-card>
             <!-- <div [ngClass]="{'bg-orange-950': !table.reserved?.status}"> -->
-            <!-- </div> -->
-        </ng-container>
-    <!-- </ng-container> -->
+                <!-- </div> -->
+            </ng-container>
+    </ng-container>
 </div>
-
-<pre>
-    {{tables | json }}
-</pre>
