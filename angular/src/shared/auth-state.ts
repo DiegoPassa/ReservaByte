@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Action, NgxsOnInit, Selector, State, StateContext } from "@ngxs/store";
+import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { IUser } from "src/app/models/User";
 import { AuthService } from "src/app/auth/auth.service";
 import { tap } from "rxjs";
@@ -13,9 +13,14 @@ export class Login {
     static readonly type = '[Auth] Login';
     constructor(public payload: { username: string; password: string }) {}
 }
-  
+
 export class Logout {
     static readonly type = '[Auth] Logout';
+}
+
+export class AuthUpdateUser {
+    static readonly type = '[Auth] UpdateUser';
+    constructor(public updatedUser: IUser) {}
 }
 
 export interface AuthStateModel {
@@ -64,6 +69,13 @@ export class AuthState{
                 })
             })
         )
+    }
+
+    @Action(AuthUpdateUser)
+    updateUser({patchState}: StateContext<AuthStateModel>, {updatedUser}: AuthUpdateUser){
+        patchState({
+            user: updatedUser
+        })
     }
 
 }

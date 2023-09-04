@@ -1,13 +1,13 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { MatTable } from '@angular/material/table';
-import { Actions, Select, ofActionDispatched } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { Actions, Store, ofActionCompleted, ofActionDispatched } from '@ngxs/store';
 import { IUser, UserRole } from 'src/app/models/User';
 import { LoadingService } from 'src/app/services/loading.service';
 import { UsersService } from 'src/app/services/users.service';
-import { AddUser, RemoveUser, UpdateUser, UsersSelectors } from 'src/shared/users-state';
+import { AddUser, GetUsers, RemoveUser, UpdateUser, UsersSelectors } from 'src/shared/users-state';
 
 @Component({
   selector: 'app-users-dashboard',
@@ -15,11 +15,20 @@ import { AddUser, RemoveUser, UpdateUser, UsersSelectors } from 'src/shared/user
   styleUrls: ['./users-dashboard.component.css']
 })
 export class UsersDashboardComponent implements OnInit{
-
+  
   userRoles = UserRole
-
-  @Select(UsersSelectors.getUsers) users$!: Observable<IUser[]>
-
+  
+  roleDistibution: any = []
+  
+  waitersStatistics: any = []
+  cashiersStatistics: any = []
+  bartendersStatistics: any = []
+  cooksStatistics: any = []
+  
+  // @Select(UsersSelectors.getUsers) users$!: Observable<IUser[]>
+  
+  constructor(private dialog: MatDialog, private loading: LoadingService, private actions: Actions, private store: Store) {}
+  
   displayedColumns: string[] = [
     'name',
     'role',
@@ -28,20 +37,105 @@ export class UsersDashboardComponent implements OnInit{
     'actions',
   ];
 
-  constructor(private dialog: MatDialog, private loading: LoadingService, private actions: Actions) {}
+  // @ViewChild(MatTable) table!: MatTable<IUser>;
+  @ViewChild(MatSort) sort!: MatSort;
 
-  @ViewChild(MatTable) table!: MatTable<IUser>;
+  dataSource = new MatTableDataSource(this.store.selectSnapshot(UsersSelectors.getUsers));
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+  }
 
   ngOnInit(): void {
+
+    this.updateChart();
+
     this.actions.pipe(ofActionDispatched(AddUser)).subscribe(() => {
-      this.table.renderRows();
+      this.dataSource.data = this.store.selectSnapshot(UsersSelectors.getUsers);
+      // this.table.renderRows();
+      this.updateChart();
     });
     this.actions.pipe(ofActionDispatched(RemoveUser)).subscribe(() => {
-      this.table.renderRows();
+      this.dataSource.data = this.store.selectSnapshot(UsersSelectors.getUsers);
+      // this.table.renderRows();
+      this.updateChart();
     });
     this.actions.pipe(ofActionDispatched(UpdateUser)).subscribe(() => {
-      this.table.renderRows();
+      // this.table.renderRows();
+      this.dataSource.data = this.store.selectSnapshot(UsersSelectors.getUsers);
     });
+
+    this.actions.pipe(ofActionCompleted(GetUsers)).subscribe(() => {
+      this.dataSource.data = this.store.selectSnapshot(UsersSelectors.getUsers);
+      this.updateChart();
+    })
+  }
+
+  updateChart(){
+    this.roleDistibution = [{
+      "name": "Camerieri",
+      "value": this.store.selectSnapshot(UsersSelectors.getUsers).filter(e => e.role === UserRole.Waiter).length
+    },
+    {
+      "name": "Cassieri",
+      "value": this.store.selectSnapshot(UsersSelectors.getUsers).filter(e => e.role === UserRole.Cashier).length
+    },
+    {
+      "name": "Baristi",
+      "value": this.store.selectSnapshot(UsersSelectors.getUsers).filter(e => e.role === UserRole.Bartender).length
+    },
+    {
+      "name": "Cuochi",
+      "value": this.store.selectSnapshot(UsersSelectors.getUsers).filter(e => e.role === UserRole.Cook).length
+    }]
+
+    const waitersStatistics_tmp: any = []
+    this.store.selectSnapshot(UsersSelectors.getUsers).filter(e => e.role === UserRole.Waiter).forEach(
+      e => {
+        waitersStatistics_tmp.push({
+          name: `${e.firstName} ${e.lastName}`, 
+          series: [{
+            name: "Tavoli servivi", value: e.statistics.tablesServed
+          },{
+            name: "Clienti serviti", value: e.statistics.customersServed
+          }]
+        }); 
+      }
+    )
+    this.waitersStatistics = waitersStatistics_tmp;
+
+    const cashiersStatistics_tmp: any = []
+    this.store.selectSnapshot(UsersSelectors.getUsers).filter(e => e.role === UserRole.Cashier).forEach(
+      e => {
+        cashiersStatistics_tmp.push({
+          name: `${e.firstName} ${e.lastName}`, 
+          value: e.statistics.billsPrepared
+        }); 
+      }
+    )
+    this.cashiersStatistics = cashiersStatistics_tmp;
+
+    const bartendersStatistics_tmp: any = []
+    this.store.selectSnapshot(UsersSelectors.getUsers).filter(e => e.role === UserRole.Bartender).forEach(
+      e => {
+        bartendersStatistics_tmp.push({
+          name: `${e.firstName} ${e.lastName}`, 
+          value: e.statistics.drinksServed
+        }); 
+      }
+    )
+    this.bartendersStatistics = bartendersStatistics_tmp;
+
+    const cooksStatistics_tmp: any = []
+    this.store.selectSnapshot(UsersSelectors.getUsers).filter(e => e.role === UserRole.Cook).forEach(
+      e => {
+        cooksStatistics_tmp.push({
+          name: `${e.firstName} ${e.lastName}`, 
+          value: e.statistics.dishesPrepared
+        }); 
+      }
+    )
+    this.cooksStatistics = cooksStatistics_tmp;
   }
 
   addData() {

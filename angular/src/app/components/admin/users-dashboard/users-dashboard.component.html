@@ -1,11 +1,99 @@
-<table mat-table [dataSource]="users$" class="">
+<div class="p-4">
+    <mat-accordion>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header class="font-bold">
+                Statistiche utenti
+            </mat-expansion-panel-header>
+            <div class="grid grid-cols-2 justify-items-center gap-6">
+                <div class="col-span-2">
+                    <p class="text-center font-bold text-xl">Distribuzione ruoli</p>
+                    <div class="h-96 w-full">
+                        <ngx-charts-pie-chart
+                        [results]="roleDistibution"
+                        [animations]="true"
+                        [labels]="true"
+                        legendTitle="Distribuzione dei ruoli"
+                        [arcWidth]=".33"
+                        [doughnut]="true"
+                        />
+                    </div>
+                </div>
+                <!-- [explodeSlices]="true" -->
+                
+                <div>
+                    <p class="text-center font-bold text-xl">Statistiche camerieri</p>
+                    <div class="w-full h-96">
+                        <ngx-charts-bar-vertical-2d
+                        [results]="waitersStatistics"
+                        [animations]="true"
+                        [xAxis]="true"
+                        [yAxis]="true"
+                        [showXAxisLabel]="true"
+                        [showYAxisLabel]="true"
+                        xAxisLabel="Camerieri"
+                        yAxisLabel="Tavoli / Clienti serviti"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <p class="text-center font-bold text-xl">Statistiche cassieri</p>
+                    <div class="w-full h-96">
+                        <ngx-charts-bar-vertical
+                        [results]="cashiersStatistics"
+                        [animations]="true"
+                        [xAxis]="true"
+                        [yAxis]="true"
+                        [showXAxisLabel]="true"
+                        [showYAxisLabel]="true"
+                        xAxisLabel="Cassieri"
+                        yAxisLabel="Scontrini prodotti"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <p class="text-center font-bold text-xl">Statistiche cuochi</p>
+                    <div class="w-full h-96">
+                        <ngx-charts-bar-vertical
+                        [results]="cooksStatistics"
+                        [animations]="true"
+                        [xAxis]="true"
+                        [yAxis]="true"
+                        [showXAxisLabel]="true"
+                        [showYAxisLabel]="true"
+                        xAxisLabel="Cuochi"
+                        yAxisLabel="Piatti serviti"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <p class="text-center font-bold text-xl">Statistiche baristi</p>
+                    <div class="w-full h-96">
+                        <ngx-charts-bar-vertical
+                        [results]="bartendersStatistics"
+                        [animations]="true"
+                        [xAxis]="true"
+                        [yAxis]="true"
+                        [showXAxisLabel]="true"
+                        [showYAxisLabel]="true"
+                        xAxisLabel="Baristi"
+                        yAxisLabel="Bibite servite"
+                        />
+                    </div>
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>
+
+<table mat-table [dataSource]="dataSource" matSort>
+
     <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Nome e cognome</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">Nome e cognome</th>
         <td mat-cell *matCellDef="let element">{{element.firstName}} {{element.lastName}}</td>
     </ng-container>
 
     <ng-container matColumnDef="role">
-        <th mat-header-cell *matHeaderCellDef>Ruolo</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by role">Ruolo</th>
         <td mat-cell *matCellDef="let element">
             <div [ngSwitch]="element.role">
                 <!-- <div *ngSwitchCase="'admin'" class="flex items-center gap-1">Amministratore <mat-icon class="text-blue-700">admin_panel_settings</mat-icon></div> -->
@@ -23,12 +111,12 @@
     </ng-container>
 
     <ng-container matColumnDef="username">
-        <th mat-header-cell *matHeaderCellDef>Nome utente</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by username">Nome utente</th>
         <td mat-cell *matCellDef="let element">{{element.username}}</td>
     </ng-container>
 
     <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>email</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by email">email</th>
         <td mat-cell *matCellDef="let element">{{element.email}}</td>
     </ng-container>
 

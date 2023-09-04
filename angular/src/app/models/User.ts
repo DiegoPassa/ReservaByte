@@ -7,24 +7,33 @@ export enum UserRole{
 }
 
 export interface IUser {
-    _id?: string,
-    username?: string,
-    firstName?: string,
-    lastName?: string
-    email?: string
-    role?: UserRole
+    _id: string,
+    username: string,
+    firstName: string,
+    lastName: string
+    email: string
+    role: UserRole
+    statistics?: any
 }
 
 export interface ICook extends IUser{
-    dishesPrepared: number
+    statistics: {
+        dishesPrepared: number
+    }
 }
 export interface IWaiter extends IUser{
-    tablesServed: number,
-    customersServed: number
+    statistics: {
+        tablesServed: number,
+        customersServed: number
+    }
 }
 export interface IBartender extends IUser {
-    drinksServed: number
+    statistics:{
+        drinksServed: number
+    }
 }
 export interface ICashier extends IUser{
-    billsPrepared: number
+    statistics: {
+        billsPrepared: number
+    }
 }

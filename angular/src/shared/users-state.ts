@@ -53,8 +53,8 @@ export class UsersState{
     }
 
     @Action(RemoveUser)
-    removeUser(ctx: StateContext<IUser[]>, {userId}: RemoveUser) {
-      ctx.setState(
+    removeUser({setState}: StateContext<IUser[]>, {userId}: RemoveUser) {
+      setState(
         removeItem<IUser>(e => e._id === userId)
       );
     }

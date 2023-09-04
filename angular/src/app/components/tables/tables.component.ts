@@ -1,8 +1,7 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
+  MatDialog
 } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ITable } from 'src/app/models/Table';
@@ -20,9 +19,11 @@ import { IMenu } from 'src/app/models/Menu';
 import { Observable, map, startWith } from 'rxjs';
 import { StateService } from 'src/app/services/state.service';
 import { Select, Store } from '@ngxs/store';
-import { AuthSelectors } from 'src/shared/auth-state';
+import { AuthSelectors, AuthUpdateUser } from 'src/shared/auth-state';
 import { TablesSelectors } from 'src/shared/tables-state';
 import { MenusSelectors } from 'src/shared/menus-state';
+import { UsersService } from 'src/app/services/users.service';
+import { IWaiter, UserRole } from 'src/app/models/User';
 
 @Component({
   selector: 'app-tables',
@@ -97,6 +98,8 @@ export class SeatsDialog {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: ITable,
     private tablesService: TablesService,
+    private usersService: UsersService,
+    private store: Store,
   ) {}
   value = 1;
 
@@ -104,7 +107,19 @@ export class SeatsDialog {
     this.data.seatsOccupied = seats;
     this.tablesService
       .updateTableById(this.data._id!, { seatsOccupied: seats })
-      .subscribe();
+      .subscribe(
+        data => {
+          const user = this.store.selectSnapshot(AuthSelectors.getUser)!;
+          if(user.role === UserRole.Waiter){
+            this.usersService.updateUserById(user._id, <IWaiter>{
+              statistics: {
+                tablesServed: user.statistics.tablesServed + 1,
+                customersServed: user.statistics.customersServed + data.seatsOccupied
+              }
+            }).subscribe(data => this.store.dispatch(new AuthUpdateUser(data)))
+          }
+        }
+      );
   }
 }
 
@@ -150,13 +165,11 @@ interface optionInterface {
 })
 export class AddOrderDialog implements OnInit {
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: {tableId: string },
+    @Inject(MAT_DIALOG_DATA) public data: { tableId: string },
     private fb: FormBuilder,
     private tablesService: TablesService,
     private store: Store,
   ) {}
-
-  @Select(MenusSelectors.getMenus) menus$!: Observable<IMenu[]>
 
   myControl = new FormControl('');
   options: optionInterface[] = [];
@@ -171,11 +184,7 @@ export class AddOrderDialog implements OnInit {
   }
 
   ngOnInit(): void {
-    this.menus$.subscribe( menus => {
-      menus.forEach((e) =>
-        this.options.push({ id: e._id, name: e.name })
-      );
-    })
+    this.store.selectSnapshot(MenusSelectors.getMenus).forEach((e) =>  this.options.push({ id: e._id, name: e.name }))
     this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
       map((value) => this._filter(value || ''))

@@ -16,7 +16,7 @@
         <mat-divider></mat-divider>
         <ng-container *ngFor="let route of routes">
           <a mat-list-item class="px-8 py-2" [routerLink]="[route.path]"
-            routerLinkActive="bg-slate-300">{{route.name}}</a>
+            routerLinkActive="bg-neutral-300">{{route.name}}</a>
           <mat-divider></mat-divider>
         </ng-container>
       </mat-nav-list>
@@ -37,7 +37,7 @@
           </button>
         </span>
       </ng-container>
-      <div class="text-base">
+      <div>
         <router-outlet></router-outlet>
       </div>
     </div>

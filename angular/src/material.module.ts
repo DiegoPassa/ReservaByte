@@ -25,6 +25,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   exports: [
@@ -54,6 +55,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatDatepickerModule,
     MatRadioModule,
     MatChipsModule,
+    MatSortModule,
   ],
 })
 export class MaterialModule {}

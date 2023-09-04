@@ -57,8 +57,8 @@ export class MenusState{
     }
 
     @Action(RemoveMenu)
-    removeMenu(ctx: StateContext<IMenu[]>, {menuId}: RemoveMenu) {
-      ctx.setState(
+    removeMenu({setState}: StateContext<IMenu[]>, {menuId}: RemoveMenu) {
+      setState(
         removeItem<IMenu>(e => e._id === menuId)
       );
     }

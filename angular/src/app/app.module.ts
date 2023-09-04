@@ -33,6 +33,7 @@ import { MenusState } from 'src/shared/menus-state';
 import { UsersState } from 'src/shared/users-state';
 
 import { ToastrModule } from 'ngx-toastr';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
@@ -89,7 +90,8 @@ import { ToastrModule } from 'ngx-toastr';
       progressBar: true,
       progressAnimation: 'decreasing',
       enableHtml: true
-    })
+    }),
+    NgxChartsModule
   ],
   providers: [AuthProvider],
   bootstrap: [AppComponent],

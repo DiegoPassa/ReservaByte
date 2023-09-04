@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Actions, Store, ofActionCompleted, ofActionDispatched } from '@ngxs/store';
+import { Actions, Store, ofActionCompleted, ofActionDispatched, ofActionSuccessful } from '@ngxs/store';
 import { TablesService } from './services/tables.service';
 import { AuthSelectors, Login, Logout } from 'src/shared/auth-state';
 import { AddOrder, AddTable, GetTables, RemoveOrder, RemoveTable, UpdateOrder, UpdateTable } from 'src/shared/tables-state';
@@ -8,7 +8,7 @@ import { MenusService } from './services/menus.service';
 import { AddMenu, GetMenus, RemoveMenu, UpdateMenu } from 'src/shared/menus-state';
 import { SocketIoService } from './services/socket-io.service';
 import { UsersService } from './services/users.service';
-import { AddUser, GetUsers, UpdateUser } from 'src/shared/users-state';
+import { AddUser, GetUsers, RemoveUser, UpdateUser } from 'src/shared/users-state';
 import { UserRole } from './models/User';
 import { MenuType } from './models/Menu';
 import { ITable } from './models/Table';
@@ -39,12 +39,13 @@ export class AppComponent implements OnInit {
       this.fetchData();
     }
 
-    this.actions.pipe(ofActionCompleted(Login)).subscribe(() => {
+    this.actions.pipe(ofActionSuccessful(Login)).subscribe(() => {
       this.fetchData();
       this.routeLoginUser();
     });
     
     this.actions.pipe(ofActionDispatched(Logout)).subscribe(() => {
+      this.socket.socket.removeAllListeners();
       this.store.reset({});
       this.router.navigate(['/login']);
     });
@@ -186,7 +187,7 @@ export class AppComponent implements OnInit {
       this.store.dispatch(new UpdateUser(user));
     });
     this.socket.listen('user:delete').subscribe((userId: any) => {
-      this.store.dispatch(new RemoveMenu(userId));
+      this.store.dispatch(new RemoveUser(userId));
     });
   }
 }
