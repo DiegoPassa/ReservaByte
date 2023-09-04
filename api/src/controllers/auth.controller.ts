@@ -33,7 +33,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         const refreshToken = signJWT(user);
         const accessToken = signJWT(user, false);
         res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 10 * 60 * 60 * 1000});
-        const response = { accessToken: accessToken, user: { username: user.username, firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role, _id: user.id } }
+        const response = { accessToken: accessToken, user: user }
         return res.status(200).send(response);
     } catch (error) {
         return res.status(500).json({ error });

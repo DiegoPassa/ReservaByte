@@ -14,21 +14,30 @@ export interface IUser {
     lastName: string,
     role: UserRole,
     email: string,
-    password: string,
+    password: string
 }
 
 export interface ICook extends IUser{
-    dishesPrepared: number
+    statistics: {
+        dishesPrepared: number
+    }
 }
 export interface IWaiter extends IUser{
-    tablesServed: number,
-    customersServed: number
+    statistics: {
+        tablesServed: number,
+        customersServed: number,
+        // ordersDispached: number
+    }
 }
 export interface IBartender extends IUser {
-    drinksServed: number
+    statistics: {
+        drinksServed: number
+    }
 }
 export interface ICashier extends IUser{
-    billsPrepared: number
+    statistics: {
+        billsPrepared: number
+    }
 }
 
 /** MONGO MODEL */
@@ -54,28 +63,36 @@ export const User = mongoose.model<IUserModel>('User', UserSchema);
 export const Cook = User.discriminator(
     UserRole.Cook,
     new Schema<ICook>({
-        dishesPrepared: {type: Number, default: 0, required: true},
+        statistics: {
+            dishesPrepared: {type: Number, default: 0, required: true},
+        }
     })
 );
 
 export const Waiter = User.discriminator(
     UserRole.Waiter,
     new Schema<IWaiter>({
-        tablesServed: {type: Number, default: 0, required: true},
-        customersServed: {type: Number, default: 0, required: true}
+        statistics: {
+            tablesServed: {type: Number, default: 0, required: true},
+            customersServed: {type: Number, default: 0, required: true}
+        }
     })
 );
 
 export const Bartender = User.discriminator(
     UserRole.Bartender,
     new Schema<IBartender>({
-        drinksServed: {type: Number, default: 0, required: true},
+        statistics: {
+            drinksServed: {type: Number, default: 0, required: true},
+        }
     })
 );
 
 export const Cashier = User.discriminator(
     UserRole.Cashier,
     new Schema<ICashier>({
-        billsPrepared: {type: Number, default: 0, required: true},
+        statistics: {
+            billsPrepared: {type: Number, default: 0, required: true},
+        }
     })
 );

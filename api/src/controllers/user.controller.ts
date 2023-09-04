@@ -71,7 +71,7 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
         if(user){
             await user.set(req.body).save();
             SocketIOService.instance().emitAll('user:update', user);
-            return res.status(200).json({user});
+            return res.status(200).send(user);
         }
         return res.status(404).json({ message: "Not found" });
     } catch (error) {

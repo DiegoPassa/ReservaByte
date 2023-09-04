@@ -36,12 +36,7 @@ export const Schemas = {
             firstName: Joi.string(),
             lastName: Joi.string(),
             password: Joi.string(),
-
-            billsPrepared: Joi.number(),
-            customersServed: Joi.number(),
-            dishesPrepared: Joi.number(),
-            drinksServed: Joi.number(),
-            tablesServed: Joi.number()
+            statistics: Joi.any()
             // role: Joi.array().items(Joi.string().valid(UserRole.Admin, UserRole.Bartender, UserRole.Cashier, UserRole.Cook, UserRole.Waiter))
         })
     },
