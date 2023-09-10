@@ -1,13 +1,14 @@
 
 <div class="grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 gap-6 justify-stretch">
 
-        <ng-container *ngFor="let table of tables$ | async">
+        <ng-container *ngFor="let table of (tables$ | async); trackBy: trackById">
+
             <ng-container *ngIf="table.seatsOccupied! > 0">
                 
                 <mat-card class="h-fit">
                     <mat-card-header class="flex justify-between">
                         <mat-card-title class="text-xl">Tavolo <span class="font-bold">{{table.tableNumber}}</span></mat-card-title>
-                        <button mat-stroked-button color="warn" (click)="createReceipt(table._id!)">Crea scontrino</button>
+                        <button mat-stroked-button color="warn" [disabled]="table.queue?.length === 0 || !isQueueCompleted(table)" (click)="openDialog(table)">Crea scontrino</button>
                     </mat-card-header>
                     <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
                     <mat-card-content>
@@ -15,17 +16,34 @@
                         <br>
                         
                         <p class="font-bold">Camerieri: </p>
+                        <ng-container *ngIf="table.waiters?.length === 0">
+                            <p class="italic">Nessun cameriere ha preso ordini</p>
+                        </ng-container>
                         <ng-container *ngFor="let waiter of table.waiters">
                             <p>{{waiter.firstName}} {{waiter.lastName}}</p>
                         </ng-container>
                     <br>
-                    <p class="font-bold">Coda: </p>
-                    <ng-container *ngFor="let order of table.queue">
-                        <p [ngClass]="{'line-through': order.completed}">  
-                            {{order.menu.name}}
-                        </p>
-                    </ng-container>
-                </mat-card-content>
+                    <mat-accordion>
+                        <mat-expansion-panel [disabled]="table.queue?.length === 0">
+                            <mat-expansion-panel-header class="font-bold">
+                                <div *ngIf="table.queue?.length === 0;then content else other_content"></div>
+                                    <ng-template #content><p class="italic">Nessun ordine in coda</p></ng-template>
+                                    <ng-template #other_content><p>Coda</p></ng-template>
+                            </mat-expansion-panel-header>
+                            <mat-list class="">
+                                <mat-list-item *ngFor="let order of table.queue">
+                                    <span matListItemTitle [ngClass]="{'line-through': order.completed}">{{order.menu.name}}</span>
+                                    <span matListItemLine class="text-sm">ordinazione: {{order.createdAt | date:'HH:mm'}}</span>
+                                    <span matListItemLine class="text-sm">stimato: {{order.estimatedCompletation | date:'HH:mm'}} 
+                                        <ng-container *ngIf="order.completed">
+                                            - completato: {{order.completedAt | date:'HH:mm'}}
+                                        </ng-container>
+                                    </span>
+                                </mat-list-item>
+                            </mat-list>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                    </mat-card-content>
                 <!-- <mat-card-actions class="flex justify-between px-4 pb-3"> -->
                     <!-- </mat-card-actions> -->
             </mat-card>

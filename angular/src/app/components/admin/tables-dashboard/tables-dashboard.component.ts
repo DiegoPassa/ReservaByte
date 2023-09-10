@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
-import { Actions, Select, ofActionDispatched } from '@ngxs/store';
+import { Actions, Select, ofActionDispatched, ofActionSuccessful } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { ITable } from 'src/app/models/Table';
 import { LoadingService } from 'src/app/services/loading.service';
@@ -35,13 +35,13 @@ export class TablesDashboardComponent implements OnInit {
   @ViewChild(MatTable) table!: MatTable<ITable>;
 
   ngOnInit(): void {
-    this.actions.pipe(ofActionDispatched(AddTable)).subscribe(() => {
+    this.actions.pipe(ofActionSuccessful(AddTable)).subscribe(() => {
       this.table.renderRows();
     });
-    this.actions.pipe(ofActionDispatched(RemoveTable)).subscribe(() => {
+    this.actions.pipe(ofActionSuccessful(RemoveTable)).subscribe(() => {
       this.table.renderRows();
     });
-    this.actions.pipe(ofActionDispatched(UpdateTable)).subscribe(() => {
+    this.actions.pipe(ofActionSuccessful(UpdateTable)).subscribe(() => {
       this.table.renderRows();
     });
   }

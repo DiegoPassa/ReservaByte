@@ -9,7 +9,6 @@ import { roleGuard } from './auth/role.guard';
 import { UserRole } from './models/User';
 import { TablesComponent } from './components/tables/tables.component';
 import { OrdersQueueComponent } from './components/orders-queue/orders-queue.component';
-import { TableInfoComponent } from './components/table-info/table-info.component';
 import { DashboardComponent } from './components/admin/dashboard/dashboard.component';
 import { TablesDashboardComponent } from './components/admin/tables-dashboard/tables-dashboard.component';
 import { MenusDashboardComponent } from './components/admin/menus-dashboard/menus-dashboard.component';
@@ -28,12 +27,9 @@ const routes: Routes = [
   },
   {
     path: 'tables',
+    component: TablesComponent,
     canActivate: [authGuard, roleGuard],
     data: { roles: [UserRole.Waiter] },
-    children: [
-      { path: '', component: TablesComponent },
-      { path: ':id', component: TableInfoComponent },
-    ],
     title: 'Tavoli',
   },
   {

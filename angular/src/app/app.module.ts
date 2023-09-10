@@ -16,13 +16,12 @@ import { AuthProvider } from './utils/auth.interceptor';
 import { AddOrderDialog, ReserveDialog, SeatsDialog, TablesComponent } from './components/tables/tables.component';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/material.module';
-import { TableInfoComponent } from './components/table-info/table-info.component';
 import { DashboardComponent } from './components/admin/dashboard/dashboard.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { DeleteTableDialog, EditTableDialog, NewTableDialog, TablesDashboardComponent } from './components/admin/tables-dashboard/tables-dashboard.component';
 import { MenusDashboardComponent, DeleteMenuDialog, NewMenuDialog, EditMenuDialog } from './components/admin/menus-dashboard/menus-dashboard.component';
 import { DeleteUserDialog, EditUserDialog, NewUserDialog, UsersDashboardComponent } from './components/admin/users-dashboard/users-dashboard.component';
-import { CashierComponent } from './components/cashier/cashier.component';
+import { CashierComponent, ConfirmReceiptDialog } from './components/cashier/cashier.component';
 
 import { NgxsModule } from '@ngxs/store';
 import { NgxsStoragePluginModule, SESSION_STORAGE_ENGINE } from '@ngxs/storage-plugin';
@@ -51,7 +50,6 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     DeleteTableDialog,
     DeleteMenuDialog,
     NewMenuDialog,
-    TableInfoComponent,
     DashboardComponent,
     LoadingComponent,
     NavBarComponent,
@@ -65,6 +63,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     ChangePasswordDialog,
     CashierComponent,
     ReserveDialog,
+    ConfirmReceiptDialog,
   ],
   imports: [
     BrowserModule,
@@ -76,10 +75,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     NgxsModule.forRoot([AuthState, TablesState, MenusState, UsersState]),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxsStoragePluginModule.forRoot({
-      key: [{
-        key: 'auth',
-        engine: SESSION_STORAGE_ENGINE
-      }]
+      key: 'auth'
     }),
     ToastrModule.forRoot({
       timeOut: 15000,

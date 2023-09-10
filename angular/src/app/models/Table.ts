@@ -8,6 +8,6 @@ export interface ITable{
     cover?: boolean,
     seatsOccupied?: number | 0,
     tableNumber?: number,
-    waiters?: Set<IUser>,
+    waiters?: IUser[],
     queue?: IOrder[]
 };

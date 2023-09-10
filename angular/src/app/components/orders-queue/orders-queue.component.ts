@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable} from 'rxjs';
+import { IOrder } from 'src/app/models/Order';
 import { ITable } from 'src/app/models/Table';
 import { IBartender, ICook, UserRole } from 'src/app/models/User';
 import { LoadingService } from 'src/app/services/loading.service';
@@ -31,16 +32,21 @@ export class OrdersQueueComponent {
   ngOnInit(): void {
   }
 
+  trackById(index: number, table: ITable){
+    return table._id;
+  }
+
   canRemove(index: number){
     return this.store.selectSnapshot(TablesSelectors.getTables)[index].queue?.every(e => !e.markCompleted)
   }
 
   removeCompleted(index: number){
     let counter = 0;
+    const currentTime = new Date();
     this.store.selectSnapshot(TablesSelectors.getTables)[index].queue?.forEach(
       e => {
         if (e.markCompleted) {
-          this.ordersService.updateOrderById(e._id, {completed: true}).subscribe()
+          this.ordersService.updateOrderById(e._id, <IOrder>{completed: true, completedAt: currentTime}).subscribe()
           e.markCompleted = false;
           counter++;
         }

@@ -17,8 +17,8 @@ export class LoginComponent {
   constructor(private store: Store, private router: Router) { }
 
   loginForm = new FormGroup({
-    username: new FormControl('diego.passa', [Validators.required]),
-    password: new FormControl('password', [Validators.required, Validators.minLength(8)]),
+    username: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required, Validators.minLength(8)]),
   });
 
   onSubmit() {

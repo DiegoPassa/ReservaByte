@@ -1,7 +1,6 @@
-
 <div matDialogTitle class="font-bold text-xl">Nuova ordinazione</div>
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-<div matDialogContent class="p-5">
+  <div matDialogContent class="p-5">
 
     <ng-container formArrayName="newOrders">
       <ng-container *ngFor="let orderForm of newOrders.controls; let i = index">
@@ -13,20 +12,25 @@
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Menu</mat-label>
             <input matInput type="text" placeholder="Seleziona menu" aria-label="Menu" formControlName="menu"
-              [matAutocomplete]="auto">
-            <mat-autocomplete requireSelection autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn">
-              <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                {{option.name}}
-              </mat-option>
+            [matAutocomplete]="auto">
+            <mat-autocomplete requireSelection #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                  <mat-icon>{{option.type === 'dish' ? 'fastfood' : 'local_bar'}}</mat-icon>
+                  <span>
+                    {{option.name}}
+                  </span>
+                  <small>{{option.portionSize}} {{option.type === 'dish' ? 'g' : 'cl'}}</small>
+                </mat-option>
             </mat-autocomplete>
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-32">
             <mat-label>Quantità</mat-label>
             <input matInput type="number" formControlName="nItems">
           </mat-form-field>
-      </div>
+        </div>
       </ng-container>
     </ng-container>
+
 
     <div class="flex items-center justify-center">
       <button mat-mini-fab color="primary" class="shadow-none" (click)="addOrder()">

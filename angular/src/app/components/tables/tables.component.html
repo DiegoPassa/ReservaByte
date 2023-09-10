@@ -1,5 +1,5 @@
 <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6 justify-stretch">
-    <ng-container *ngFor="let table of tables$ | async">
+    <ng-container *ngFor="let table of (tables$ | async); trackBy: trackById">
         <!-- <div [ngClass]="{'bg-orange-950': !table.reserved?.status}"> -->
         <mat-card class="h-fit">
             <mat-card-header class="flex justify-between">
@@ -7,8 +7,7 @@
                         class="font-bold">{{table.tableNumber}}</span></mat-card-title>
                 <ng-container *ngIf="table.reserved?.status">
                     <div class="flex items-center" matTooltip="Riservato da: {{table.reserved?.reservedBy}}">
-                        <span class="pr-1 font-light">{{table.reserved?.reservedTime |
-                            date}}</span><mat-icon>lock_clock</mat-icon>
+                        <span class="pr-1 font-light">{{table.reserved?.reservedTime | date}}</span><mat-icon>lock_clock</mat-icon>
                     </div>
                 </ng-container>
             </mat-card-header>

@@ -1,6 +1,6 @@
 
 <div class="flex flex-row flex-wrap gap-4">
-    <ng-container *ngFor="let queue of (tables$ | async); let i = index">
+    <ng-container *ngFor="let queue of (tables$ | async); let i = index; trackBy: trackById">
         <ng-container *ngIf="!hide(i)">
             <mat-card class="z-{{i}} h-fit w-64 min-w-fit" cdkDrag>
                 <mat-card-header>

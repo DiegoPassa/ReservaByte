@@ -17,7 +17,6 @@ import {
 import { MenusService } from 'src/app/services/menus.service';
 import { IMenu } from 'src/app/models/Menu';
 import { Observable, map, startWith } from 'rxjs';
-import { StateService } from 'src/app/services/state.service';
 import { Select, Store } from '@ngxs/store';
 import { AuthSelectors, AuthUpdateUser } from 'src/shared/auth-state';
 import { TablesSelectors } from 'src/shared/tables-state';
@@ -29,7 +28,7 @@ import { IWaiter, UserRole } from 'src/app/models/User';
   selector: 'app-tables',
   templateUrl: './tables.component.html',
   styleUrls: ['./tables.component.css'],
-  providers: [TablesService, MenusService, StateService]
+  providers: [TablesService, MenusService]
 })
 export class TablesComponent implements OnInit {
 
@@ -44,6 +43,10 @@ export class TablesComponent implements OnInit {
 
   ngOnInit(): void {
 
+  }
+
+  trackById(index: number, table: ITable){
+    return table._id;
   }
 
   openSnackBar(message: string, action: string = 'OK') {
@@ -154,11 +157,6 @@ export class ReserveDialog {
   }
 }
 
-interface optionInterface {
-  id: string;
-  name: string;
-}
-
 @Component({
   selector: 'app-add-order-dialog',
   templateUrl: 'add-order-dialog.html',
@@ -172,8 +170,8 @@ export class AddOrderDialog implements OnInit {
   ) {}
 
   myControl = new FormControl('');
-  options: optionInterface[] = [];
-  filteredOptions!: Observable<optionInterface[]>;
+  menus: IMenu[] = [];
+  filteredOptions!: Observable<IMenu[]>;
 
   form = this.fb.group({
     newOrders: this.fb.array([]),
@@ -184,7 +182,7 @@ export class AddOrderDialog implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.selectSnapshot(MenusSelectors.getMenus).forEach((e) =>  this.options.push({ id: e._id, name: e.name }))
+    this.menus = this.store.selectSnapshot(MenusSelectors.getMenus);
     this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
       map((value) => this._filter(value || ''))
@@ -194,7 +192,7 @@ export class AddOrderDialog implements OnInit {
 
   private _filter(value: string): any[] {
     const filterValue = value.toLowerCase();
-    return this.options.filter((option) =>
+    return this.menus.filter((option) =>
       option.name.toLowerCase().includes(filterValue)
     );
   }
@@ -216,17 +214,18 @@ export class AddOrderDialog implements OnInit {
 
   removeFromOptions() {}
 
-  displayFn(option: optionInterface): string {
+  displayFn(option: IMenu): string {
     return option.name;
   }
 
   onSubmit() {
     if (this.form.valid) {
+      const userId = this.store.selectSnapshot(AuthSelectors.getUser)?._id!;
       console.log(this.newOrders.value);
       this.newOrders.value.forEach((e: any) => {
         for (let index = 0; index < e.nItems; index++) {
           this.tablesService
-            .addOrderToQueue(this.data.tableId, {userId: this.store.selectSnapshot(AuthSelectors.getUser)?._id!, menuId: e.menu.id})
+            .addOrderToQueue(this.data.tableId, {userId, menuId: e.menu._id})
             .subscribe();
         }
       });

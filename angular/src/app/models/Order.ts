@@ -7,6 +7,7 @@ export interface IOrder{
     table: ITable,
     createdAt: Date,
     estimatedCompletation: Date,
+    completedAt: Date,
     completed: boolean
     markCompleted: boolean
 };
