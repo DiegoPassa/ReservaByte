@@ -1,0 +1,44 @@
+[
+  {
+    "name": "amatriciana",
+    "price": 6.99,
+    "ingredients": ["pomodoro", "pasta"],
+    "portionSize": 200,
+    "preparationTime": 10,
+    "totalOrders": 200,
+    "type": "dish"
+  },
+  {
+    "name": "vino bianco",
+    "price": 15.99,
+    "ingredients": ["vino"],
+    "portionSize": 150,
+    "preparationTime": 1,
+    "totalOrders": 261,
+    "type": "drink"
+  },
+  {
+    "name": "vino rosso",
+    "price": 10.99,
+    "ingredients": [
+      "vino",
+      "rosso"
+    ],
+    "portionSize": 33,
+    "preparationTime": 1,
+    "totalOrders": 84,
+    "type": "drink"
+  },
+  {
+    "name": "pasta al pesto",
+    "price": 4.99,
+    "ingredients": [
+      "pasta",
+      "pesto"
+    ],
+    "portionSize": 200,
+    "preparationTime": 10,
+    "totalOrders": 67,
+    "type": "dish"
+  }
+]

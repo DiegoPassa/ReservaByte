@@ -1,0 +1,90 @@
+[
+  {
+    "username": "admin",
+    "firstName": "Diego",
+    "lastName": "Passarella",
+    "role": "admin",
+    "email": "admin@admin.com",
+    "password": "$2b$10$k9oAAYx8zqT3Hp.NyxfAcebQXga0Km7ra6YzX2sNYWEjQ1rZ2wlsO"
+  },
+  {
+    "statistics": {
+      "tablesServed": 10,
+      "customersServed": 26
+    },
+    "username": "waiter1",
+    "firstName": "Mario",
+    "lastName": "Rossi",
+    "role": "waiter",
+    "email": "mario.rossi@email.com",
+    "password": "$2b$10$UOn9CyJnIVZF01My5Lpm1.CUQ7Bg41IKoizVoiAHKpmHrN9fiT4FW"
+  },
+  {
+    "statistics": {
+      "tablesServed": 3,
+      "customersServed": 10
+    },
+    "username": "waiter2",
+    "firstName": "Pietro",
+    "lastName": "Rossi",
+    "role": "waiter",
+    "email": "pietro@email.com",
+    "password": "$2b$10$zYhVZvlrtTGoh/sGhNITf.KMK0XQonjNGra19FwL94Rcg8qeQIr7."
+  },
+  {
+    "statistics": {
+      "tablesServed": 9,
+      "customersServed": 32
+    },
+    "username": "waiter3",
+    "firstName": "Ludovico",
+    "lastName": "Viola",
+    "role": "waiter",
+    "email": "ludovico@email.com",
+    "password": "$2b$10$t4t14/3JTMUkzcpUCy4IWerVcLGWyNo0Y9j9j9W7107jhams3ifIy"
+  },
+  {
+    "statistics": {
+      "dishesPrepared": 44
+    },
+    "username": "cook1",
+    "firstName": "Matteo",
+    "lastName": "Zennaro",
+    "role": "cook",
+    "email": "matteo.zennaro@mail.com",
+    "password": "$2b$10$iN0nc7OWNLmPi/rwAliGaeejBoFrTWyouQw.1ZBuLSyXgaDNVJrpe"
+  },
+  {
+    "statistics": {
+      "dishesPrepared": 46
+    },
+    "username": "cook2",
+    "firstName": "Giovanni",
+    "lastName": "Bianchi",
+    "role": "cook",
+    "email": "giovanni@email.com",
+    "password": "$2b$10$vD66RcKKkiwrvK2ecZwvreM6MQsscG41TY91P57aiD.J2WyF1RcPi"
+  },
+  {
+    "statistics": {
+      "drinksServed": 35
+    },
+    "username": "bartender1",
+    "firstName": "Luca",
+    "lastName": "Verdi",
+    "role": "bartender",
+    "email": "luca.verdi@email.com",
+    "password": "$2b$10$RmiFoJ8bxRwNPwVgGQExg.aav7qkkAPJcP2a1.MNe76Tx.yb6CFNq"
+  },
+  {
+    "statistics": {
+      "billsPrepared": 12
+    },
+    "username": "cashier1",
+    "firstName": "Marco",
+    "lastName": "Gialli",
+    "role": "cashier",
+    "email": "mario@email.com",
+    "password": "$2b$10$oNciXtQxcDVFiVEmNkC53.s1wy3v24/auAKxjCA8SooLsq7LLtggm"
+  }
+]

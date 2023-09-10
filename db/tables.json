@@ -1,0 +1,48 @@
+[
+  {
+    "maxSeats": 7,
+    "cover": true,
+    "seatsOccupied": 0,
+    "tableNumber": 1
+  },
+  {
+    "maxSeats": 3,
+    "reserved": {
+      "status": false
+    },
+    "cover": true,
+    "seatsOccupied": 0,
+    "tableNumber": 2,
+    "waiters": [],
+    "queue": []
+  },
+  {
+    "maxSeats": 8,
+    "reserved": {
+      "status": false
+    },
+    "cover": true,
+    "seatsOccupied": 0,
+    "tableNumber": 3,
+    "waiters": [],
+    "queue": []
+  },
+  {
+    "maxSeats": 4,
+    "cover": false,
+    "seatsOccupied": 0,
+    "tableNumber": 4
+  },
+  {
+    "maxSeats": 5,
+    "cover": true,
+    "seatsOccupied": 0,
+    "tableNumber": 5
+  },
+  {
+    "maxSeats": 10,
+    "cover": false,
+    "seatsOccupied": 0,
+    "tableNumber": 6
+  }
+]

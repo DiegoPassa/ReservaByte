@@ -7,7 +7,7 @@ services:
     ports:
       - 4200:4200
     networks:
-      - taw_unnamed_network
+      - reservabyte_network
     volumes:
       - ./angular/src:/usr/app/src
       - ./angular/public:/usr/app/public
@@ -22,9 +22,10 @@ services:
     ports:
       - 3080:3080
     networks:
-      - taw_unnamed_network
+      - reservabyte_network
     volumes:
       - ./api/src:/usr/app/src
+      - ./db:/usr/app/mongo-data
     depends_on:
       - db
     stdin_open: true
@@ -33,31 +34,29 @@ services:
   db:
     image: mongo
     container_name: mean_mongo
-    # restart: always
     ports:
       - 27017:27017
     networks:
-      - taw_unnamed_network
+      - reservabyte_network
     volumes:
       - mongo-data:/data/db
 
-  nginx:
-    image: nginx
-    container_name: mean_nginx
-    # restart: always
-    ports:
-      - 80:80
-    networks:
-      - taw_unnamed_network
+  # nginx:
+  #   image: nginx
+  #   container_name: mean_nginx
+  #   ports:
+  #     - 80:80
+  #   networks:
+  #     - reservabyte_network
 
-  redis:
-    image: redis
-    container_name: mean_redis
-    networks:
-      - taw_unnamed_network
+  # redis:
+  #   image: redis
+  #   container_name: mean_redis
+  #   networks:
+  #     - reservabyte_network
 
 networks:
-  taw_unnamed_network:
+  reservabyte_network:
     driver: bridge
 
 volumes:
