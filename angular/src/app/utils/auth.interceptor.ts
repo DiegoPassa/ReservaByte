@@ -50,14 +50,12 @@ export class AuthInterceptor implements HttpInterceptor {
                       // session is expired, log out the user
                       this.store.dispatch(new Logout());
                     }
-                    alert(err);
                     return throwError(() => err);
                   })
               );
             })
           );
         }
-        alert(err);
         return throwError(() => err);
       })
     );

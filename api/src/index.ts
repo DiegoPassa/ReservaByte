@@ -18,9 +18,18 @@ import ReceiptRoutes from './routes/receipt.route'
 import verifyAccessToken from "./middleware/verifyJWT";
 import AuthRoutes from "./routes/auth.route";
 import { SocketIOService } from "./libraries/socket.io";
+import { User } from "./models/User";
+import { Menu } from "./models/Menu";
+import Table from "./models/Table";
+
+const fs = require('fs')
+
+const users = JSON.parse(fs.readFileSync('/usr/app/mongo-data/users.json', 'utf-8'))
+const menu = JSON.parse(fs.readFileSync('/usr/app/mongo-data/menu.json', 'utf-8'))
+const tables = JSON.parse(fs.readFileSync('/usr/app/mongo-data/tables.json', 'utf-8'))
 
 mongoose.connect(config.mongo.url)
-    .then(() => {
+    .then(async () => {
         console.log("");
         console.log(
             "ooooooooo.                                                               oooooooooo.                  .             \n",
@@ -34,6 +43,12 @@ mongoose.connect(config.mongo.url)
             "                                                                                    `Y8P'                         \n");
         log.success("Connected to mongoDB");
         startServer();
+        await User.deleteMany({});
+        await Menu.deleteMany({});
+        await Table.deleteMany({});
+        await User.insertMany(users);
+        await Menu.insertMany(menu);
+        await Table.insertMany(tables);
     })
     .catch(error => {
         log.error('Unable to connect to mongoDB');

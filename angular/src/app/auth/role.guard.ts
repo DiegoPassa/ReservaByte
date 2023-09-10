@@ -12,6 +12,5 @@ export const roleGuard: CanActivateFn = (route, state) => {
   if (permitted.includes(userRole)){
     return true;
   }
-  alert('not authorized!');
   return false;
 }
