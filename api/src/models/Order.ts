@@ -9,6 +9,7 @@ export interface IOrder{
     orderedBy: IUser,
     createdAt: Date,
     estimatedCompletation: Date,
+    completedAt?: Date,
     completed: boolean
 };
 
@@ -20,6 +21,7 @@ const OrderSchema: Schema = new Schema<IOrder>({
     orderedBy: { type: SchemaTypes.ObjectId, ref: 'User', required: true },
     createdAt: { type: Date, required: true },
     estimatedCompletation: { type: Date, required: true },
+    completedAt : { type: Date, required: false},
     completed: { type: Boolean, default: false, required: true }
 }, { versionKey: false });
 
@@ -30,7 +32,6 @@ OrderSchema.pre('findOneAndDelete', async function (next){
             queue: orderId
         }
     });
-    console.log('%s has been removed', orderId);
     next();
 });
 

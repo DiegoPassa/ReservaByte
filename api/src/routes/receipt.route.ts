@@ -1,5 +1,6 @@
 import express from "express";
 import controller from "../controllers/receipt.controller";
+import verifyRoles from "../middleware/verifyRole";
 
 const router = express.Router();
 

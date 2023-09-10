@@ -3,6 +3,7 @@ import Order from "../models/Order";
 import { UserRole } from "../models/User";
 import { MenuType } from "../models/Menu";
 import { SocketIOService } from "../libraries/socket.io";
+import Table from "../models/Table";
 
 const readAll = async (req: Request, res: Response, next: NextFunction) => {
     // TODO Add query string to filter
@@ -154,22 +155,24 @@ const readOrder = async (req: Request, res: Response, next: NextFunction) => {
 const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
     const orderId = req.params.orderId;
     try {
-        let order;
-        switch (res.locals.jwtRole) {
+        // let order;
+        // switch (res.locals.jwtRole) {
 
-            case UserRole.Cook:
-                order = await Order.findOneAndUpdate({_id: orderId, 'menu.type': MenuType.Dish}, req.body, {new: true});
-                break;
+        //   case UserRole.Cook:
+        //       order = await Order.findOneAndUpdate({_id: orderId, 'menu.type': MenuType.Dish}, req.body, {new: true});
+        //       break;
 
-            case UserRole.Bartender:
-                order = await Order.findOneAndUpdate({_id: orderId, 'menu.type': MenuType.Drink}, req.body, {new: true});
-                break;
-        
-            default:
-                order = await Order.findByIdAndUpdate(orderId, req.body, {new: true});
-                break;
-        }
-        SocketIOService.instance().emitAll('order:update', order);
+        //   case UserRole.Bartender:
+        //       order = await Order.findOneAndUpdate({_id: orderId, 'menu.type': MenuType.Drink}, req.body, {new: true});
+        //       break;
+      
+        //   default:
+        //       order = await Order.findByIdAndUpdate(orderId, req.body, {new: true});
+        //       break;
+        // }
+        const order = await Order.findByIdAndUpdate(orderId, req.body, {new: true});
+        const tableNumber = await Table.findById(order?.table).select('tableNumber -_id');
+        SocketIOService.instance().emitAll('order:update', {order, tableNumber});
         return res.status(200).json({order});
     } catch (error) {
         return res.status(500).json({error});

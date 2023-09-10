@@ -47,6 +47,7 @@ const startServer = () => {
     router.use(cookieParser())
 
     router.use(cors({
+        // origin: true,
         origin: ['http://localhost:4200'],
         credentials: true
     }));
@@ -89,7 +90,7 @@ const startServer = () => {
 
     router.use((req, res, next) => {
         const error = new Error('not found');
-        log.error(error);
+        log.error(error);   
         return res.status(404).json({ message: error.message });
     })
 
@@ -105,7 +106,7 @@ const startServer = () => {
     SocketIOService.instance().initialize(
         server, { 
             cors: {
-                origin: '*' //["http://localhost:4200"]
+                origin: ["http://localhost:4200"]
             },
             serveClient: false
         }

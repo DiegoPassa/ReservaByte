@@ -46,7 +46,7 @@ const readAll = async (req: Request, res: Response, next: NextFunction) => {
 
     const sortObj = (sort) ? parseQuerySort(sort.toString()) : {};
     try {
-        let tables = await Table.find({$and: [filter]}).skip(skip).limit(limit).sort(sortObj).populate({path: 'queue', select: '-table', options: { sort: {'createdAt': 1}} , populate: { path: 'menu' }}).populate({path: 'waiters', select: '-password'});
+        let tables = await Table.find({$and: [filter]}).skip(skip).limit(limit).sort(sortObj).populate({path: 'queue', select: '-table', options: { sort: {'completed': 1 ,'createdAt': 1}} , populate: { path: 'menu' }}).populate({path: 'waiters', select: '-password'});
         // tables.map((table: ITable) => table.queue = table.queue?.filter((order: IOrder) => order.menu.type === MenuType.Drink))
         return res.status(200).send(tables);
     } catch (err) {
@@ -118,6 +118,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
         // await table!.populate({path: 'queue'});
         // SocketIOService.instance().getServer().emit('order:new', {order: order, role: order.menu.type === MenuType.Dish ? UserRole.Cook : UserRole.Bartender});
         SocketIOService.instance().getServer().emit('order:new', {tableId: table?.id, order, role: order.menu.type === MenuType.Dish ? UserRole.Cook : UserRole.Bartender});
+        // SocketIOService.instance().getServer().emit('table:update', table?.populate('waiters', 'orders'));
         res.status(201).send();
     } catch (err) {
         console.log(err);
